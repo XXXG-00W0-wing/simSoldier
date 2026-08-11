@@ -362,6 +362,7 @@ let matchQuizState = {
     allRanksShuffled: [],
     currentRoundIndex: 0,
     score: 0,
+    totalCorrect: 0,
     currentRoundData: [],
     userAnswers: []
 };
@@ -381,6 +382,7 @@ function startRankMatchQuizGameplay() {
     matchQuizState.allRanksShuffled = [...allRanksList].sort(() => Math.random() - 0.5);
     matchQuizState.currentRoundIndex = 0;
     matchQuizState.score = 0;
+    matchQuizState.totalCorrect = 0;
 
     const mDom = getMatchDom();
     if (mDom.lobby) mDom.lobby.classList.add('hidden');
@@ -399,9 +401,9 @@ function backToModule2FromLobby() {
 
 function loadRankMatchRound() {
     const mDom = getMatchDom();
-    const startIndex = matchQuizState.currentRoundIndex * 5;
-    matchQuizState.currentRoundData = matchQuizState.allRanksShuffled.slice(startIndex, startIndex + 5);
-    matchQuizState.userAnswers = [null, null, null, null, null];
+    const startIndex = matchQuizState.currentRoundIndex * 3;
+    matchQuizState.currentRoundData = matchQuizState.allRanksShuffled.slice(startIndex, startIndex + 3);
+    matchQuizState.userAnswers = [null, null, null];
 
     if (mDom.roundText) mDom.roundText.textContent = `第 ${matchQuizState.currentRoundIndex + 1} 輪`;
 
@@ -424,7 +426,7 @@ function renderMatchSlots() {
         const slotDiv = document.createElement('div');
         slotDiv.className = 'flex flex-col items-center bg-stone-900 rounded-xl border-2 border-stone-700 p-2 pt-6 shadow-lg relative';
 
-        const qNum = matchQuizState.currentRoundIndex * 5 + index + 1;
+        const qNum = matchQuizState.currentRoundIndex * 3 + index + 1;
         const badge = document.createElement('span');
         badge.className = 'absolute top-1.5 left-1.5 bg-stone-950 text-blue-400 border border-stone-700 text-[10px] sm:text-xs font-semibold px-1.5 py-0.5 rounded-md';
         badge.textContent = `第 ${qNum} 題`;
@@ -516,12 +518,13 @@ function gradeRankMatchRound() {
         }
     });
 
-    matchQuizState.score += (roundCorrect * 5);
+    matchQuizState.totalCorrect += roundCorrect;
+    matchQuizState.score = Math.round((matchQuizState.totalCorrect / 12) * 100);
 
     if (mDom.btnGrade) mDom.btnGrade.classList.add('hidden');
     if (mDom.btnNext) mDom.btnNext.classList.remove('hidden');
     if (mDom.poolContainer) {
-        mDom.poolContainer.innerHTML = `<div class="text-stone-300 font-bold text-center text-lg">本輪答對 <span class="text-green-400">${roundCorrect}</span> / 5 題</div>`;
+        mDom.poolContainer.innerHTML = `<div class="text-stone-300 font-bold text-center text-lg">本輪答對 <span class="text-green-400">${roundCorrect}</span> / 3 題</div>`;
     }
 }
 

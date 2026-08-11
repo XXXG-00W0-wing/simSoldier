@@ -308,8 +308,8 @@ export function renderSidebarNav(scenarioKey = 'preparing') {
             btn.className = `nav-btn w-full flex items-center justify-between px-3.5 py-2 rounded-lg transition-all text-stone-400 hover:bg-stone-800 hover:text-stone-200 text-left group`;
 
             const isRecommended = (blockIndex === 0);
-            const badgeHtml = isRecommended 
-                ? `<span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-green-950 text-green-400 border border-green-800/60 shrink-0">推薦</span>` 
+            const badgeHtml = isRecommended
+                ? `<span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-green-950 text-green-400 border border-green-800/60 shrink-0">推薦</span>`
                 : '';
 
             btn.innerHTML = `

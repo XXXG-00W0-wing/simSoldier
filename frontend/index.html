@@ -2677,23 +2677,46 @@
 
                         <!-- Detailed Rules Panel -->
                         <div
-                            class="text-left bg-stone-950/60 border border-stone-800 p-5 rounded-lg mb-8 space-y-4 text-stone-300">
+                            class="text-left bg-stone-950/70 border border-blue-900/40 p-5 md:p-6 rounded-xl mb-8 space-y-3.5 text-stone-300 shadow-inner">
                             <h3
-                                class="font-bold text-lg text-blue-400 border-b border-stone-800 pb-2 mb-2 flex items-center gap-2">
-                                <i class="fa-solid fa-circle-info"></i> 測驗規則說明
+                                class="font-bold text-lg md:text-xl text-blue-400 border-b border-stone-800 pb-3 mb-3 flex items-center gap-2">
+                                <i class="fa-solid fa-clipboard-list text-blue-500"></i> 測驗規則說明
                             </h3>
-                            <ul class="list-disc list-inside space-y-2.5 text-sm md:text-base leading-relaxed">
-                                <li><strong class="text-white">測驗題數：</strong>本測驗共分為 <span
-                                        class="text-blue-400 font-bold">4 輪</span>，每輪隨機出現 5 個軍階徽章，總計 <span
-                                        class="text-blue-400 font-bold">20 題</span>。</li>
-                                <li><strong
-                                        class="text-white">配對玩法：</strong>點擊下方的「待選軍階名稱」，會依序填入上方的空白配對格中；若選錯了，再次點擊空格中的名稱即可將其收回。
+                            <ul class="space-y-3 text-sm md:text-base leading-relaxed">
+                                <li class="flex items-start gap-2.5">
+                                    <i class="fa-solid fa-flag text-blue-400 mt-1 shrink-0"></i>
+                                    <div>
+                                        <strong class="text-white">測驗輪數與題數：</strong>
+                                        本測驗總共分為 <span class="text-blue-400 font-bold">4 輪</span>，每輪隨機抽選 <span class="text-blue-400 font-bold">3 題</span>軍階徽章，全測驗合計 <span class="text-blue-400 font-bold">12 題</span>。
+                                    </div>
                                 </li>
-                                <li><strong class="text-white">提交與評分：</strong>每一輪的 5 個空格都填滿後，點擊「提交答案」送出。答對一題可得 <span
-                                        class="text-green-400 font-bold">5 分</span>，總分 <span
-                                        class="text-green-400 font-bold">100 分</span>。</li>
-                                <li><strong
-                                        class="text-white">即時回饋：</strong>提交後系統會立刻標示對錯（綠色為正確、紅色為錯誤），並顯示正確解答。請點擊「下一輪」繼續挑戰！
+                                <li class="flex items-start gap-2.5">
+                                    <i class="fa-solid fa-layer-group text-blue-400 mt-1 shrink-0"></i>
+                                    <div>
+                                        <strong class="text-white">題目範圍：</strong>
+                                        隨機涵蓋國軍各式官階徽章（包含軍官、士官與士兵階級），考驗你對軍階圖示與名稱的熟悉程度。
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-2.5">
+                                    <i class="fa-solid fa-hand-pointer text-blue-400 mt-1 shrink-0"></i>
+                                    <div>
+                                        <strong class="text-white">填答與取消方式：</strong>
+                                        點擊下方「待選軍階名稱池」中的名稱，將依序填入上方的空白配對格；若要更換或取消，點擊該空格中的名稱即可將其收回。
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-2.5">
+                                    <i class="fa-solid fa-calculator text-blue-400 mt-1 shrink-0"></i>
+                                    <div>
+                                        <strong class="text-white">提交與評分機制：</strong>
+                                        每一輪須將 3 個空格全部填滿後方可點擊「提交答案」。答對每題得約 <span class="text-green-400 font-bold">8.33 分</span>，滿分為 <span class="text-green-400 font-bold">100 分</span>。
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-2.5">
+                                    <i class="fa-solid fa-circle-check text-blue-400 mt-1 shrink-0"></i>
+                                    <div>
+                                        <strong class="text-white">即時解答與結算：</strong>
+                                        送出答案後系統會標示答對（綠色）與答錯（紅色並附正確答案），點擊「下一輪」繼續挑戰，完成 4 輪後結算最終等級與成績！
+                                    </div>
                                 </li>
                             </ul>
                         </div>
@@ -2732,7 +2755,7 @@
                                 請點選下方的軍階名稱，並將其配對至上方正確的官階圖片空白處中。</p>
 
                             <!-- Images and Slots Grid -->
-                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 md:gap-6 mb-6 flex-1"
+                            <div class="grid grid-cols-1 sm:grid-cols-3 max-w-4xl mx-auto w-full gap-4 md:gap-6 mb-6 flex-1"
                                 id="rank-match-slots">
                                 <!-- Slots generated by JS -->
                             </div>
@@ -2777,14 +2800,14 @@
                             class="fa-solid fa-medal text-7xl text-blue-500 mb-6 drop-shadow-[0_0_20px_rgba(59,130,246,0.5)]"></i>
 
                         <h2 class="text-3xl md:text-4xl font-bold text-white mb-2 tracking-wider">配對測驗完成</h2>
-                        <p class="text-stone-400 mb-8">你已經完成了所有 20 個軍階的配對！</p>
+                        <p class="text-stone-400 mb-8">你已經完成了 4 輪共 12 題軍階的配對！</p>
 
                         <div class="bg-stone-950 p-6 rounded-xl border border-stone-800 mb-8 shadow-inner">
                             <p class="text-stone-400 text-sm mb-2 uppercase tracking-widest">最終得分</p>
                             <div class="text-6xl md:text-7xl font-bold font-tech text-white drop-shadow-md">
                                 <span id="rank-match-final-score" class="text-blue-400">0</span>
                             </div>
-                            <div class="text-stone-500 mt-2">滿分：100 (共 20 題)</div>
+                            <div class="text-stone-500 mt-2">滿分：100 (共 12 題)</div>
                         </div>
 
                         <div id="rank-match-rank-text" class="text-2xl font-bold mb-8 tracking-wider text-yellow-400">
