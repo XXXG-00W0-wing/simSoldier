@@ -11,7 +11,7 @@ const EXERCISES = [
     {
         key: 'squats',
         name: '徒手深蹲 (Squats)',
-        targetReps: 3,
+        targetReps: 10,
         viewHint: '💡 正面或側面朝向鏡頭，全身入鏡',
         rules: ['偵測到人體，全身入鏡', '下蹲至大腿約平行地面', '完全站直完成一次'],
         type: 'squat',
@@ -20,7 +20,7 @@ const EXERCISES = [
     {
         key: 'pushups',
         name: '伏地挺身 (Push-ups)',
-        targetReps: 3,
+        targetReps: 10,
         viewHint: '💡 側面朝向鏡頭，手臂與身體完整入鏡',
         rules: ['偵測到人體，全身入鏡', '臂彎至胸接近地面', '完全撐起完成一次'],
         type: 'pushup',
@@ -29,11 +29,65 @@ const EXERCISES = [
     {
         key: 'legraise',
         name: '平躺抬腿 (Leg Raise)',
-        targetReps: 3,
+        targetReps: 10,
         viewHint: '💡 側面平躺，雙腿伸直朝上抬，全身入鏡',
         rules: ['偵測到人體，全身入鏡', '雙腳伸直抬高至約90° (偵測中)', '穩住核心，慢慢放腳回原位計一次'],
         type: 'legraise',
         guideImage: 'assets/images/training/leg_raise_guide.png'
+    },
+    {
+        key: 'jumpingjacks',
+        name: '開合跳 (Jumping Jacks)',
+        targetReps: 10,
+        viewHint: '💡 正面朝向鏡頭，全身入鏡',
+        rules: ['偵測到人體，全身入鏡', '雙手舉過頭頂且雙腳張開大於肩寬', '雙手下放且雙腳併攏計一次'],
+        type: 'jumpingjacks',
+        guideImage: 'assets/images/training/squat_guide.png'
+    },
+    {
+        key: 'lunges',
+        name: '弓箭步 (Lunges)',
+        targetReps: 10,
+        viewHint: '💡 側面朝向鏡頭，全身入鏡',
+        rules: ['偵測到人體，全身入鏡', '前腳膝角呈90度且後膝接近地面', '回到站立姿計一次'],
+        type: 'lunges',
+        guideImage: 'assets/images/training/squat_guide.png' 
+    },
+    {
+        key: 'plank',
+        name: '棒式 (Plank)',
+        targetReps: 10,
+        viewHint: '💡 側面朝向鏡頭，全身入鏡',
+        rules: ['偵測到人體，全身入鏡', '身體連線呈165°~180°', '每維持10秒計為一次 (共100秒)'],
+        type: 'plank',
+        guideImage: 'assets/images/training/squat_guide.png' 
+    },
+    {
+        key: 'bicepcurls',
+        name: '二頭彎舉 (Bicep Curls)',
+        targetReps: 10,
+        viewHint: '💡 正面或側面朝向鏡頭，上半身入鏡',
+        rules: ['偵測到上半身，手臂入鏡', '手肘彎曲小於45度', '手肘伸直大於150度計一次'],
+        type: 'bicepcurls',
+        guideImage: 'assets/images/training/squat_guide.png' 
+    },
+    {
+        key: 'lateralraise',
+        name: '側平舉 (Lateral Raise)',
+        targetReps: 10,
+        viewHint: '💡 正面朝向鏡頭，上半身入鏡',
+        rules: ['偵測到上半身，手臂入鏡', '雙臂側舉至與軀幹呈約80°~90°', '雙臂下放計一次'],
+        type: 'lateralraise',
+        guideImage: 'assets/images/training/squat_guide.png' 
+    },
+    {
+        key: 'crunches',
+        name: '仰臥起坐 / 捲腹 (Crunches)',
+        targetReps: 10,
+        viewHint: '💡 側面朝向鏡頭，全身入鏡',
+        rules: ['偵測到人體，全身入鏡', '軀幹抬起夾角小於60°', '躺平軀幹夾角大於120°計一次'],
+        type: 'crunches',
+        guideImage: 'assets/images/training/squat_guide.png' 
     }
 ];
 
@@ -46,7 +100,19 @@ function initElements() {
     ui.ctx = ui.canvas.getContext('2d');
     ui.video = document.getElementById('training-video');
     ui.cameraBtn = document.getElementById('btn-start-camera');
-    ui.uploadInput = document.getElementById('training-video-upload');
+    ui.exerciseSelector = document.getElementById('exercise-selector');
+    
+    // Populate exercise selector
+    if (ui.exerciseSelector) {
+        ui.exerciseSelector.innerHTML = '';
+        EXERCISES.forEach((ex, idx) => {
+            const option = document.createElement('option');
+            option.value = idx;
+            option.textContent = ex.name;
+            ui.exerciseSelector.appendChild(option);
+        });
+    }
+
     ui.overlay = document.getElementById('training-overlay');
     ui.statusText = document.getElementById('ai-status-text');
     ui.exerciseName = document.getElementById('training-exercise-name');
@@ -61,6 +127,8 @@ function initElements() {
     ui.viewHint = document.getElementById('training-view-hint');
     ui.guideImage = document.getElementById('training-guide-image');
     ui.zoomBtn = document.getElementById('btn-zoom-guide');
+    ui.canvasContainer = document.getElementById('training-canvas-container');
+    ui.fullscreenCloseBtn = document.getElementById('btn-fullscreen-close');
     return true;
 }
 
@@ -73,6 +141,9 @@ let cameraRunning = false;
 let currentExIdx = 0;          // 0=squat, 1=pushup, 2=crunch
 let currentReps = 0;
 let squatState = 'up';
+let plankState = 'not_holding';
+let plankAccumulatedTime = 0; // ms
+let lastPlankTimestamp = 0;
 let lastTransitionTime = 0;     // debounce: ms timestamp of last state change
 const DEBOUNCE_DOWN_MS = 300;   // min ms to accept 'down' after 'up' (reduced to avoid dropping fast reps)
 const DEBOUNCE_UP_MS = 400;   // min ms to accept 'up' (rep count) after 'down'
@@ -121,9 +192,25 @@ function setCameraActive(active) {
     if (active) {
         ui.cameraBtn.innerHTML = '<i class="fa-solid fa-video-slash mr-2"></i>關閉鏡頭';
         ui.cameraBtn.className = 'btn-primary bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded shadow transition-colors flex items-center gap-2';
+        if (window.innerWidth <= 768 && ui.canvasContainer) {
+            ui.canvasContainer.classList.remove('relative', 'aspect-video', 'rounded');
+            ui.canvasContainer.classList.add('fixed', 'inset-0', 'z-[9999]');
+            if (ui.fullscreenCloseBtn) {
+                ui.fullscreenCloseBtn.classList.remove('hidden');
+                ui.fullscreenCloseBtn.classList.add('flex');
+            }
+        }
     } else {
         ui.cameraBtn.innerHTML = '<i class="fa-solid fa-video mr-2"></i>開啟鏡頭';
         ui.cameraBtn.className = 'btn-primary bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded shadow transition-colors flex items-center gap-2';
+        if (ui.canvasContainer) {
+            ui.canvasContainer.classList.add('relative', 'aspect-video', 'rounded');
+            ui.canvasContainer.classList.remove('fixed', 'inset-0', 'z-[9999]');
+            if (ui.fullscreenCloseBtn) {
+                ui.fullscreenCloseBtn.classList.add('hidden');
+                ui.fullscreenCloseBtn.classList.remove('flex');
+            }
+        }
     }
 }
 
@@ -144,6 +231,9 @@ function loadExerciseUI(idx) {
 function resetExerciseState() {
     currentReps = 0;
     squatState = 'up';
+    plankState = 'not_holding';
+    plankAccumulatedTime = 0;
+    lastPlankTimestamp = 0;
     repTimestamps = [];
     sessionToken = null;
     if (ui.repCount) ui.repCount.textContent = '0';
@@ -200,6 +290,15 @@ async function prepareSystem() {
 // ── Pose callback ─────────────────────────────────────────────────────────────
 function onResults(results) {
     if (!ui.ctx) return;
+    
+    // Prevent squashing by matching canvas internal resolution to video source aspect ratio
+    if (results.image && results.image.width && results.image.height) {
+        if (ui.canvas.width !== results.image.width || ui.canvas.height !== results.image.height) {
+            ui.canvas.width = results.image.width;
+            ui.canvas.height = results.image.height;
+        }
+    }
+
     const w = ui.canvas.width, h = ui.canvas.height;
     ui.ctx.save();
     ui.ctx.clearRect(0, 0, w, h);
@@ -267,12 +366,18 @@ function roundRect(ctx, x, y, w, h, r) {
     ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y); ctx.closePath();
 }
 
-// ── Exercise analysis dispatch ────────────────────────────────────────────────
+// ── Exercise Analyzer Dispatcher
 function analyzeExercise(lm, type) {
     switch (type) {
         case 'squat': detectSquat(lm); break;
         case 'pushup': detectPushup(lm); break;
         case 'legraise': detectLegRaise(lm); break;
+        case 'jumpingjacks': detectJumpingJacks(lm); break;
+        case 'lunges': detectLunges(lm); break;
+        case 'plank': detectPlank(lm); break;
+        case 'bicepcurls': detectBicepCurls(lm); break;
+        case 'lateralraise': detectLateralRaise(lm); break;
+        case 'crunches': detectCrunches(lm); break;
     }
 }
 
@@ -301,7 +406,45 @@ function repStateMachine(isDown, isUp) {
     }
 }
 
-// ── Squat (front or side) ────────────────────────────────────────────────────
+// ── Time state machine for time-based exercises (Plank) ──────────────────────
+function timeStateMachine(isHolding) {
+    const now = Date.now();
+    if (isHolding) {
+        if (plankState === 'not_holding') {
+            plankState = 'holding';
+            lastPlankTimestamp = now;
+            updateFeedback('很好！保持住！', 'text-green-400', 'bg-green-900/30');
+            if (ui.rule2) ui.rule2.className = 'transition-colors text-green-400';
+        } else {
+            const delta = now - lastPlankTimestamp;
+            plankAccumulatedTime += delta;
+            lastPlankTimestamp = now;
+            
+            // 10 seconds = 1 rep
+            const newReps = Math.floor(plankAccumulatedTime / 10000);
+            if (newReps > currentReps) {
+                currentReps = newReps;
+                if (ui.repCount) ui.repCount.textContent = currentReps;
+                repTimestamps.push(now);
+                if (ui.rule3) ui.rule3.className = 'transition-colors text-green-400';
+                setTimeout(() => {
+                    if (ui.rule3) ui.rule3.className = 'transition-colors text-stone-400';
+                }, 600);
+                checkCompletion();
+            }
+        }
+    } else {
+        if (plankState === 'holding') {
+            plankState = 'not_holding';
+            updateFeedback('姿勢偏離！請打直身體', 'text-red-400', 'bg-red-900/30');
+            if (ui.rule2) ui.rule2.className = 'transition-colors text-stone-400';
+        } else {
+            updateFeedback('請維持標準姿勢', 'text-yellow-400', 'bg-yellow-900/30');
+        }
+    }
+}
+
+// ── Squat (front or side) ────────────────────────────────────────────────────────
 function detectSquat(lm) {
     const lH = lm[23], lK = lm[25], lA = lm[27], rH = lm[24], rK = lm[26], rA = lm[28];
     const sideOk = (lH.visibility > 0.5 && lK.visibility > 0.5 && lA.visibility > 0.5) ||
@@ -442,11 +585,18 @@ async function submitAllResults() {
     }
 
     // Stop camera
-    if (camera) { camera.stop(); camera = null; cameraRunning = false; setCameraActive(false); }
-    if (ui.video && ui.video.srcObject) {
-        ui.video.srcObject.getTracks().forEach(track => track.stop());
-        ui.video.srcObject = null;
+    if (ui.video) {
+        ui.video.pause();
+        if (ui.video.srcObject) {
+            ui.video.srcObject.getTracks().forEach(track => track.stop());
+            ui.video.srcObject = null;
+        }
+        ui.video.src = '';
+        ui.video.removeAttribute('src');
+        ui.video.removeAttribute('srcObject');
+        ui.video.load();
     }
+    if (camera) { camera.stop(); camera = null; cameraRunning = false; setCameraActive(false); }
 
     // Reset state for next time
     completedResults.length = 0;
@@ -478,18 +628,19 @@ function bindEvents() {
     // Camera toggle
     const toggleCamera = async () => {
         if (cameraRunning || isVideoMode) {
-            if (camera) { camera.stop(); camera = null; }
-            if (ui.video && ui.video.srcObject) {
-                ui.video.srcObject.getTracks().forEach(track => track.stop());
-                ui.video.srcObject = null;
-            }
-            if (isVideoMode) {
+            if (ui.video) {
                 ui.video.pause();
+                if (ui.video.srcObject) {
+                    ui.video.srcObject.getTracks().forEach(track => track.stop());
+                    ui.video.srcObject = null;
+                }
                 ui.video.src = '';
                 ui.video.removeAttribute('src');
+                ui.video.removeAttribute('srcObject');
                 ui.video.load();
-                isVideoMode = false;
             }
+            if (camera) { camera.stop(); camera = null; }
+            isVideoMode = false;
             cameraRunning = false; 
             setCameraActive(false);
             ui.overlay.classList.remove('hidden');
@@ -508,10 +659,22 @@ function bindEvents() {
             await camera.start();
             cameraRunning = true; setCameraActive(true);
         } catch (e) {
-            updateFeedback('無法開啟攝影機：' + e.message, 'text-red-400', 'bg-red-900/30');
+            console.error(e);
+            let errorMsg = e.message;
+            if (errorMsg.includes('NotAllowedError') || errorMsg.includes('Permission dismissed') || errorMsg.includes('Permission denied')) {
+                errorMsg = '相機權限被拒絕或忽略，請至瀏覽器網址列或設定中「允許」相機權限後重試。';
+                alert(errorMsg); // 彈出視窗更能提醒手機使用者
+            } else if (errorMsg.includes('NotFoundError') || errorMsg.includes('Requested device not found')) {
+                errorMsg = '找不到可用的相機設備。';
+            }
+            updateFeedback('無法開啟：' + errorMsg, 'text-red-400', 'bg-red-900/30');
+            if (camera) { camera.stop(); camera = null; }
         }
     };
-    ui.cameraBtn.addEventListener('click', toggleCamera);
+    ui.cameraBtn.onclick = toggleCamera;
+    if (ui.fullscreenCloseBtn) {
+        ui.fullscreenCloseBtn.onclick = toggleCamera;
+    }
 
     // 暴露給全域供其他模組調用
     window.SharedAI = {
@@ -519,46 +682,40 @@ function bindEvents() {
         stopCamera: async () => { if (cameraRunning) await toggleCamera(); }
     };
 
-    // Video file upload
-    ui.uploadInput.addEventListener('change', async (event) => {
-        const file = event.target.files[0];
-        if (!file) return;
-        await prepareSystem();
-        if (camera) { camera.stop(); camera = null; cameraRunning = false; setCameraActive(false); }
-        isVideoMode = true;
-        resetExerciseState();
-        const url = URL.createObjectURL(file);
-        ui.video.src = url; ui.video.muted = true; ui.video.loop = false;
-        ui.video.classList.remove('hidden');
-        ui.video.onloadedmetadata = () => {
-            if (ui.video.videoWidth) ui.canvas.width = ui.video.videoWidth;
-            if (ui.video.videoHeight) ui.canvas.height = ui.video.videoHeight;
-            ui.video.play().then(() => {
-                setCameraActive(true); // 讓按鈕變成關閉狀態，以便使用者點擊停止影片
-                requestAnimationFrame(processVideoFrame);
-            }).catch(e => updateFeedback('影片播放失敗：' + e.message, 'text-red-400', 'bg-red-900/30'));
+    // Exercise selector dropdown
+    if (ui.exerciseSelector) {
+        ui.exerciseSelector.onchange = (event) => {
+            const newIdx = parseInt(event.target.value, 10);
+            if (!isNaN(newIdx) && newIdx >= 0 && newIdx < EXERCISES.length) {
+                currentExIdx = newIdx;
+                resetExerciseState();
+                loadExerciseUI(currentExIdx);
+                // Also update the completion array if we manually switch exercises
+                // We'll clear the completed list to avoid sequence confusion, or just let them jump around
+                completedResults.length = 0;
+            }
         };
-    });
+    }
 
     // Submit / advance button
-    ui.submitBtn.addEventListener('click', advanceOrSubmit);
+    ui.submitBtn.onclick = advanceOrSubmit;
 
     // Retry button: reset current exercise
     const retryBtn = document.getElementById('btn-retry-training');
-    if (retryBtn) retryBtn.addEventListener('click', retryExercise);
+    if (retryBtn) retryBtn.onclick = retryExercise;
 
     // Modal close button
     const modalCloseBtn = document.getElementById('btn-close-complete-modal');
     if (modalCloseBtn) {
-        modalCloseBtn.addEventListener('click', () => {
+        modalCloseBtn.onclick = () => {
             const modal = document.getElementById('training-complete-modal');
             if (modal) modal.classList.add('hidden');
-        });
+        };
     }
 
     // Zoom guide image modal
     if (ui.zoomBtn) {
-        ui.zoomBtn.addEventListener('click', () => {
+        ui.zoomBtn.onclick = () => {
             const ex = currentExercise();
             const modal = document.getElementById('modal-image-zoom');
             const img = document.getElementById('zoom-modal-img');
@@ -568,7 +725,7 @@ function bindEvents() {
                 title.textContent = ex.name;
                 modal.classList.remove('hidden');
             }
-        });
+        };
     }
 }
 
