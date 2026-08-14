@@ -1,4 +1,6 @@
 from google import genai
+from google.genai import types
+from google.genai import errors
 import chromadb
 import os
 import json
@@ -54,6 +56,56 @@ def format_user_info(user_info) -> str:
         return "\n".join(f"{k}: {v}" for k, v in user_info.items())
         
     return str(user_info)
+
+def get_working_flash_model(client: genai.Client) -> str:
+    excluded_keywords = {'omni', 'tts', 'live', 'audio', 'embedding', 'preview', 'robotics'}
+
+    fallback_candidates = [
+        'gemini-2.5-flash-lite',
+        'gemini-2.5-flash',
+        'gemini-1.5-flash'
+    ]
+
+    candidates = []
+    try:
+        for m in client.models.list():
+            name = getattr(m, 'name', str(m)).replace('models/', '')
+            name_lower = name.lower()
+
+            if 'flash' in name_lower and not any(k in name_lower for k in excluded_keywords):
+                candidates.append(name)
+
+        candidates.sort(reverse=True)
+    except Exception as e:
+        print(f"⚠️ Could not list models: {e}")
+
+    if not candidates:
+        candidates = fallback_candidates
+
+    # Test candidates until one succeeds
+    for model_name in candidates:
+        try:
+            # Silence AFC warning by explicitly setting tools=[] for the pre-flight ping
+            client.models.generate_content(
+                model=model_name,
+                contents="ping",
+                config=types.GenerateContentConfig(
+                    max_output_tokens=1,
+                    tools=[]  # Explicitly disables tool/function check during ping
+                )
+            )
+            print(f"✅ Selected active model: {model_name}")
+            return model_name
+        except errors.APIError as e:
+            if e.code == 429:
+                print(f"⏭ Skipping {model_name} (Rate Limited / Quota Exhausted)")
+            else:
+                print(f"⏭ Skipping {model_name} (Error: {e.code})")
+        except Exception:
+            continue
+
+    return 'gemini-2.5-flash'
+
 
 def init_knowledge_base():
     """
@@ -130,9 +182,10 @@ def ask_gemini(user_info, question: str):
             user_info=user_info_str,
             question=question
         )
+        selected_model = get_working_flash_model(client)
         
         response = client.models.generate_content(
-            model="models/gemini-2.5-flash",
+            model=selected_model,
             contents=prompt
         )
         

@@ -1,0 +1,127 @@
+name: Build Android APK (SimSoldier)
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch: # Allows manual trigger from the GitHub Actions tab
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '21'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Initialize npm & Install Capacitor
+        run: |
+          # Create package.json if it doesn't exist (plain HTML project)
+          if [ ! -f package.json ]; then
+            npm init -y
+          fi
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+
+      - name: Write Capacitor Config
+        # webDir points to the frontend folder containing index.html
+        run: |
+          cat > capacitor.config.json << 'EOF'
+          {
+            "appId": "com.simsoldier.app",
+            "appName": "SimSoldier",
+            "webDir": "frontend",
+            "server": {
+              "androidScheme": "http"
+            },
+            "android": {
+              "allowMixedContent": true
+            }
+          }
+          EOF
+
+      - name: Add Android Platform
+        run: |
+          npx cap add android
+
+      - name: Configure Android Manifest (Cleartext & Camera Permissions)
+        # Android blocks HTTP by default and does not include camera permissions in standard Capacitor template.
+        # This script modifies AndroidManifest.xml to enable cleartext traffic and add camera permission / features.
+        run: |
+          python3 -c "
+          import os
+          path = 'android/app/src/main/AndroidManifest.xml'
+          if os.path.exists(path):
+              with open(path, 'r', encoding='utf-8') as f:
+                  data = f.read()
+              
+              # Enable cleartext
+              if 'android:usesCleartextTraffic' not in data:
+                  data = data.replace('<application', '<application\n        android:usesCleartextTraffic=\"true\"')
+              
+              # Add camera permissions and features if missing
+              if 'android.permission.CAMERA' not in data:
+                  camera_declarations = '''
+                      <!-- Camera Permissions & Features -->
+                      <uses-permission android:name=\"android.permission.CAMERA\" />
+                      <uses-feature android:name=\"android.hardware.camera\" android:required=\"false\" />
+                      <uses-feature android:name=\"android.hardware.camera.autofocus\" android:required=\"false\" />
+                  '''
+                  data = data.replace('</manifest>', f'{camera_declarations}\n</manifest>')
+                  
+              with open(path, 'w', encoding='utf-8') as f:
+                  f.write(data)
+              print('Successfully configured AndroidManifest.xml (Cleartext & Camera)')
+          "
+
+      - name: Fix Kotlin stdlib duplicate classes
+        # kotlin-stdlib >= 1.8 bundles jdk7/jdk8 classes, but old transitive
+        # deps still pull in the separate jdk7/jdk8 artifacts, causing duplicates.
+        # Force all three variants to the same version across every subproject.
+        run: |
+          cat >> android/build.gradle << 'GRADLE_EOF'
+
+          // ── Kotlin stdlib dedup fix ──────────────────────────────────────
+          subprojects {
+              configurations.all {
+                  resolutionStrategy {
+                      force "org.jetbrains.kotlin:kotlin-stdlib:1.9.24"
+                      force "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.24"
+                      force "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.24"
+                  }
+              }
+          }
+          GRADLE_EOF
+
+      - name: Sync Web Assets to Android
+        run: |
+          npx cap sync android
+
+      - name: Build Debug APK
+        env:
+          JAVA_HOME: ${{ env.JAVA_HOME }}
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: Upload APK as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: simsoldier-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
