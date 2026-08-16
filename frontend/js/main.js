@@ -214,12 +214,9 @@ function setupEventListeners() {
             if (dom.guidanceDesc) dom.guidanceDesc.textContent = config.guidanceDesc;
             if (dom.guidanceTextContent) {
                 dom.guidanceTextContent.innerHTML = `
-                    <p class="font-bold text-white mb-1">💡 個人客製化引導說明：</p>
+                    <p class="font-bold text-white mb-1">個人客製化引導說明：</p>
                     <p class="leading-relaxed text-stone-300">${config.guidanceText}</p>
                 `;
-            }
-            if (dom.guidanceIconBox) {
-                dom.guidanceIconBox.innerHTML = `<i class="fa-solid ${config.icon}"></i>`;
             }
         }
     };

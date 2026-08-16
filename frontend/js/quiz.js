@@ -424,7 +424,7 @@ function renderMatchSlots() {
 
     matchQuizState.currentRoundData.forEach((rank, index) => {
         const slotDiv = document.createElement('div');
-        slotDiv.className = 'flex flex-col items-center bg-stone-900 rounded-xl border-2 border-stone-700 p-2 pt-6 shadow-lg relative';
+        slotDiv.className = 'flex flex-row items-center justify-between bg-stone-900 rounded-xl border-2 border-stone-700 p-3 pt-8 pb-3 shadow-lg relative gap-3 min-h-[90px]';
 
         const qNum = matchQuizState.currentRoundIndex * 3 + index + 1;
         const badge = document.createElement('span');
@@ -435,17 +435,17 @@ function renderMatchSlots() {
         const img = document.createElement('img');
         img.src = `docs/軍階/${rank}.png`;
         img.alt = rank;
-        img.className = "w-full h-20 sm:h-24 md:h-32 object-contain mb-2 sm:mb-3 drop-shadow-md";
+        img.className = "w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain shrink-0 drop-shadow-md";
 
         const dropZone = document.createElement('div');
         dropZone.dataset.index = index;
         dropZone.onclick = () => onMatchSlotClick(index);
 
         if (matchQuizState.userAnswers[index]) {
-            dropZone.className = 'w-full min-h-[40px] h-auto border-2 border-blue-500 bg-blue-900/30 text-blue-300 font-bold rounded-lg flex items-center justify-center cursor-pointer shadow-inner text-xs sm:text-sm py-1 px-1.5 leading-tight text-center';
+            dropZone.className = 'flex-1 min-h-[44px] h-full border-2 border-blue-500 bg-blue-900/30 text-blue-300 font-bold rounded-lg flex items-center justify-center cursor-pointer shadow-inner text-xs sm:text-sm py-1 px-2 leading-tight text-center';
             dropZone.textContent = matchQuizState.userAnswers[index];
         } else {
-            dropZone.className = 'w-full min-h-[40px] h-auto border-2 border-dashed border-stone-600 rounded-lg flex items-center justify-center cursor-pointer transition-colors hover:bg-stone-800 text-stone-500 text-xs py-1 px-1.5 text-center';
+            dropZone.className = 'flex-1 min-h-[44px] h-full border-2 border-dashed border-stone-600 rounded-lg flex items-center justify-center cursor-pointer transition-colors hover:bg-stone-800 text-stone-500 text-xs py-1 px-2 text-center';
             dropZone.textContent = '點擊放入';
         }
 
@@ -508,11 +508,11 @@ function gradeRankMatchRound() {
 
         if (userAnswer === correctRank) {
             roundCorrect++;
-            dropZone.className = 'w-full min-h-[40px] h-auto border-2 border-green-500 bg-green-900/40 text-green-400 font-bold rounded-lg flex items-center justify-center cursor-default text-xs sm:text-sm py-1 px-1.5 leading-tight text-center';
+            dropZone.className = 'flex-1 min-h-[44px] h-full border-2 border-green-500 bg-green-900/40 text-green-400 font-bold rounded-lg flex items-center justify-center cursor-default text-xs sm:text-sm py-1 px-2 leading-tight text-center';
             dropZone.innerHTML = `${userAnswer} <i class="fa-solid fa-check ml-1"></i>`;
             dropZone.onclick = null;
         } else {
-            dropZone.className = 'w-full min-h-[40px] h-auto border-2 border-red-500 bg-red-900/40 text-red-400 font-bold rounded-lg flex flex-wrap items-center justify-center cursor-default text-[11px] sm:text-xs py-1 px-1.5 leading-tight text-center';
+            dropZone.className = 'flex-1 min-h-[44px] h-full border-2 border-red-500 bg-red-900/40 text-red-400 font-bold rounded-lg flex flex-wrap items-center justify-center cursor-default text-[11px] sm:text-xs py-1 px-2 leading-tight text-center';
             dropZone.innerHTML = `<span class="line-through opacity-70">${userAnswer}</span> <i class="fa-solid fa-xmark mx-0.5"></i> <span class="text-green-400 font-bold">${correctRank}</span>`;
             dropZone.onclick = null;
         }

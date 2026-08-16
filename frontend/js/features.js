@@ -48,8 +48,8 @@ const DOCS_DATA = {
         <tbody class="divide-y divide-stone-800/80 text-sm bg-stone-900/60">
             <tr class="hover:bg-stone-800/40 transition-colors">
                 <td class="py-4 px-4 font-bold text-white whitespace-nowrap">
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-green-900/30 text-green-400 border border-green-800/40">
-                        <i class="fa-solid fa-person-military-pointing"></i> 陸軍
+                    <span class="inline-flex items-center px-2.5 py-1 rounded bg-green-700 text-green-100 border border-green-500 font-bold">
+                        陸軍
                     </span>
                 </td>
                 <td class="py-4 px-4 whitespace-nowrap">
@@ -64,8 +64,8 @@ const DOCS_DATA = {
             </tr>
             <tr class="hover:bg-stone-800/40 transition-colors">
                 <td class="py-4 px-4 font-bold text-white whitespace-nowrap">
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-sky-900/30 text-sky-400 border border-sky-800/40">
-                        <i class="fa-solid fa-ship"></i> 海軍
+                    <span class="inline-flex items-center px-2.5 py-1 rounded bg-blue-900 text-blue-100 border border-blue-600 font-bold">
+                        海軍
                     </span>
                 </td>
                 <td class="py-4 px-4 whitespace-nowrap">
@@ -80,8 +80,8 @@ const DOCS_DATA = {
             </tr>
             <tr class="hover:bg-stone-800/40 transition-colors">
                 <td class="py-4 px-4 font-bold text-white whitespace-nowrap">
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-indigo-900/30 text-indigo-400 border border-indigo-800/40">
-                        <i class="fa-solid fa-plane"></i> 空軍
+                    <span class="inline-flex items-center px-2.5 py-1 rounded bg-sky-800 text-sky-100 border border-sky-400 font-bold">
+                        空軍
                     </span>
                 </td>
                 <td class="py-4 px-4 whitespace-nowrap">
@@ -97,8 +97,8 @@ const DOCS_DATA = {
             <tr class="hover:bg-stone-800/40 transition-colors">
                 <td class="py-4 px-4 font-bold text-white whitespace-nowrap">
                     <span class="block text-xs text-stone-500 mb-1">其他特色軍種</span>
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-red-900/30 text-red-400 border border-red-800/40">
-                        <i class="fa-solid fa-anchor"></i> 海軍陸戰隊
+                    <span class="inline-flex items-center px-2.5 py-1 rounded bg-red-900 text-red-100 border border-red-500 font-bold">
+                        海軍陸戰隊
                     </span>
                 </td>
                 <td class="py-4 px-4 whitespace-nowrap">
@@ -111,8 +111,8 @@ const DOCS_DATA = {
             <tr class="hover:bg-stone-800/40 transition-colors">
                 <td class="py-4 px-4 font-bold text-white whitespace-nowrap">
                     <span class="block text-xs text-stone-500 mb-1">其他特色軍種</span>
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-700/30 text-zinc-300 border border-zinc-600/40">
-                        <i class="fa-solid fa-user-shield"></i> 憲兵
+                    <span class="inline-flex items-center px-2.5 py-1 rounded bg-zinc-700 text-zinc-100 border border-zinc-500 font-bold">
+                        憲兵
                     </span>
                 </td>
                 <td class="py-4 px-4 whitespace-nowrap">
@@ -157,7 +157,7 @@ const DOCS_DATA = {
     <ul class="text-stone-300 text-sm space-y-1 list-disc list-inside ml-2">
       <li>大四畢業後是否直接入伍？</li>
       <li>是否有繼續升學（碩班、插大等）的計畫？</li>
-      <li class="text-amber-300">⚠ 有升學意願者可申請延役，於20歲之年11月15日前暫不接受徵集。</li>
+      <li class="text-white font-bold">⚠ 有升學意願者可申請延役，於20歲之年11月15日前暫不接受徵集。</li>
     </ul>
   </div>
 
@@ -175,12 +175,12 @@ const DOCS_DATA = {
     </ul>
   </div>
 
-  <div class="bg-stone-800 rounded-lg p-4 border border-amber-700/50 border-2">
+  <div class="bg-stone-800 rounded-lg p-4 border border-stone-700">
     <div class="flex items-center gap-2 mb-2">
-      <i class="fa-solid fa-certificate text-amber-400 text-lg"></i>
-      <h4 class="font-bold text-white">四、專長證照 <span class="text-amber-400 text-xs font-normal ml-1">⭐ 非常重要！影響專長兵抽籤資格</span></h4>
+      <i class="fa-solid fa-certificate text-stone-300 text-lg"></i>
+      <h4 class="font-bold text-white">四、專長證照</h4>
     </div>
-    <p class="text-stone-300 text-sm mb-2">具備以下類型的<strong class="text-amber-300">國家級證照</strong>，才有資格參與「專長兵優先抽籤」：</p>
+    <p class="text-stone-300 text-sm mb-2">具備以下類型的<strong class="text-white font-bold">國家級證照</strong>，才有資格參與「專長兵優先抽籤」：</p>
     <ul class="text-stone-300 text-sm space-y-1 list-disc list-inside ml-2">
       <li>資訊安全相關證照</li>
       <li>汽車修護技術士</li>
@@ -188,7 +188,6 @@ const DOCS_DATA = {
       <li>醫護人員執照（醫師、護理師等）</li>
       <li>其他經政府認定之技術士或專業執照</li>
     </ul>
-    <p class="text-amber-300 text-xs mt-2">※ 記得攜帶證照正本或影本備查！</p>
   </div>
 
   <div class="bg-stone-800 rounded-lg p-4 border border-stone-700">

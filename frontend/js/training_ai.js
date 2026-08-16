@@ -42,7 +42,7 @@ const EXERCISES = [
         viewHint: '💡 正面朝向鏡頭，全身入鏡',
         rules: ['偵測到人體，全身入鏡', '雙手舉過頭頂且雙腳張開大於肩寬', '雙手下放且雙腳併攏計一次'],
         type: 'jumpingjacks',
-        guideImage: 'assets/images/training/squat_guide.png'
+        guideImage: 'assets/images/training/jumping_jacks_guide.png'
     },
     {
         key: 'lunges',
@@ -51,7 +51,7 @@ const EXERCISES = [
         viewHint: '💡 側面朝向鏡頭，全身入鏡',
         rules: ['偵測到人體，全身入鏡', '前腳膝角呈90度且後膝接近地面', '回到站立姿計一次'],
         type: 'lunges',
-        guideImage: 'assets/images/training/squat_guide.png' 
+        guideImage: 'assets/images/training/lunges_guide.png'
     },
     {
         key: 'plank',
@@ -60,7 +60,7 @@ const EXERCISES = [
         viewHint: '💡 側面朝向鏡頭，全身入鏡',
         rules: ['偵測到人體，全身入鏡', '身體連線呈165°~180°', '每維持10秒計為一次 (共100秒)'],
         type: 'plank',
-        guideImage: 'assets/images/training/squat_guide.png' 
+        guideImage: 'assets/images/training/plank_guide.png'
     },
     {
         key: 'bicepcurls',
@@ -69,7 +69,7 @@ const EXERCISES = [
         viewHint: '💡 正面或側面朝向鏡頭，上半身入鏡',
         rules: ['偵測到上半身，手臂入鏡', '手肘彎曲小於45度', '手肘伸直大於150度計一次'],
         type: 'bicepcurls',
-        guideImage: 'assets/images/training/squat_guide.png' 
+        guideImage: 'assets/images/training/bicep_curls_guide.png'
     },
     {
         key: 'lateralraise',
@@ -78,7 +78,7 @@ const EXERCISES = [
         viewHint: '💡 正面朝向鏡頭，上半身入鏡',
         rules: ['偵測到上半身，手臂入鏡', '雙臂側舉至與軀幹呈約80°~90°', '雙臂下放計一次'],
         type: 'lateralraise',
-        guideImage: 'assets/images/training/squat_guide.png' 
+        guideImage: 'assets/images/training/lateral_raise_guide.png'
     },
     {
         key: 'crunches',
@@ -87,7 +87,7 @@ const EXERCISES = [
         viewHint: '💡 側面朝向鏡頭，全身入鏡',
         rules: ['偵測到人體，全身入鏡', '軀幹抬起夾角小於60°', '躺平軀幹夾角大於120°計一次'],
         type: 'crunches',
-        guideImage: 'assets/images/training/squat_guide.png' 
+        guideImage: 'assets/images/training/crunches_guide.png'
     }
 ];
 
@@ -101,7 +101,7 @@ function initElements() {
     ui.video = document.getElementById('training-video');
     ui.cameraBtn = document.getElementById('btn-start-camera');
     ui.exerciseSelector = document.getElementById('exercise-selector');
-    
+
     // Populate exercise selector
     if (ui.exerciseSelector) {
         ui.exerciseSelector.innerHTML = '';
@@ -274,7 +274,7 @@ async function prepareSystem() {
     });
     poseTracker.onResults(onResults);
     await poseTracker.initialize();
-    
+
     // 暖機 (Warm-up) 模型：避免第一次處理影像時卡頓太久導致錯過影片開頭
     try {
         const dummyCanvas = document.createElement('canvas');
@@ -283,14 +283,14 @@ async function prepareSystem() {
     } catch (e) {
         console.warn('Warmup skipped:', e);
     }
-    
+
     updateFeedback('模型就緒，開始偵測', 'text-green-400', 'bg-green-900/30');
 }
 
 // ── Pose callback ─────────────────────────────────────────────────────────────
 function onResults(results) {
     if (!ui.ctx) return;
-    
+
     // Prevent squashing by matching canvas internal resolution to video source aspect ratio
     if (results.image && results.image.width && results.image.height) {
         if (ui.canvas.width !== results.image.width || ui.canvas.height !== results.image.height) {
@@ -419,7 +419,7 @@ function timeStateMachine(isHolding) {
             const delta = now - lastPlankTimestamp;
             plankAccumulatedTime += delta;
             lastPlankTimestamp = now;
-            
+
             // 10 seconds = 1 rep
             const newReps = Math.floor(plankAccumulatedTime / 10000);
             if (newReps > currentReps) {
@@ -641,7 +641,7 @@ function bindEvents() {
             }
             if (camera) { camera.stop(); camera = null; }
             isVideoMode = false;
-            cameraRunning = false; 
+            cameraRunning = false;
             setCameraActive(false);
             ui.overlay.classList.remove('hidden');
             if (ui.ctx) ui.ctx.clearRect(0, 0, ui.canvas.width, ui.canvas.height);
