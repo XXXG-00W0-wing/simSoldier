@@ -9,7 +9,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True) # Name
     role = Column(Integer, ForeignKey("roles.id")) # Role ID
-    game_currency = Column(Integer, default=0)
+    game_progress = Column(Integer, default=0)
     date_of_birth = Column(Date)
     date_of_registration = Column(DateTime(timezone=True), server_default=func.now())
     height = Column(Integer) # Height in cm

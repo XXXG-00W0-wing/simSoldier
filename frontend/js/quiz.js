@@ -424,32 +424,37 @@ function renderMatchSlots() {
 
     matchQuizState.currentRoundData.forEach((rank, index) => {
         const slotDiv = document.createElement('div');
-        slotDiv.className = 'flex flex-row items-center justify-between bg-stone-900 rounded-xl border-2 border-stone-700 p-3 pt-8 pb-3 shadow-lg relative gap-3 min-h-[90px]';
+        slotDiv.className = 'flex flex-col sm:flex-row items-center bg-stone-900 rounded-2xl border border-stone-600 p-4 pt-12 sm:p-6 sm:pt-6 shadow-xl relative gap-4 w-full min-h-[160px]';
 
         const qNum = matchQuizState.currentRoundIndex * 3 + index + 1;
         const badge = document.createElement('span');
-        badge.className = 'absolute top-1.5 left-1.5 bg-stone-950 text-blue-400 border border-stone-700 text-[10px] sm:text-xs font-semibold px-1.5 py-0.5 rounded-md';
+        badge.className = 'absolute top-3 left-3 bg-stone-950 text-blue-400 border border-stone-700 text-sm font-semibold px-2 py-1 rounded-md z-10';
         badge.textContent = `第 ${qNum} 題`;
         slotDiv.appendChild(badge);
 
+        const imgContainer = document.createElement('div');
+        imgContainer.className = "w-full sm:w-4/5 flex justify-center items-center py-2 h-full min-h-[100px]";
         const img = document.createElement('img');
         img.src = `docs/軍階/${rank}.png`;
         img.alt = rank;
-        img.className = "w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain shrink-0 drop-shadow-md";
+        img.className = "w-auto max-h-[140px] sm:max-h-[180px] object-contain drop-shadow-md transform sm:scale-125";
+        imgContainer.appendChild(img);
 
         const dropZone = document.createElement('div');
         dropZone.dataset.index = index;
         dropZone.onclick = () => onMatchSlotClick(index);
+        
+        let dropZoneBaseClass = 'w-full sm:w-1/5 min-h-[60px] sm:min-h-[100px] h-full flex flex-col items-center justify-center rounded-xl font-bold cursor-pointer transition-colors px-2 py-2 text-center shadow-inner text-sm md:text-base';
 
         if (matchQuizState.userAnswers[index]) {
-            dropZone.className = 'flex-1 min-h-[44px] h-full border-2 border-blue-500 bg-blue-900/30 text-blue-300 font-bold rounded-lg flex items-center justify-center cursor-pointer shadow-inner text-xs sm:text-sm py-1 px-2 leading-tight text-center';
+            dropZone.className = `${dropZoneBaseClass} border-2 border-blue-500 bg-blue-900/30 text-blue-300`;
             dropZone.textContent = matchQuizState.userAnswers[index];
         } else {
-            dropZone.className = 'flex-1 min-h-[44px] h-full border-2 border-dashed border-stone-600 rounded-lg flex items-center justify-center cursor-pointer transition-colors hover:bg-stone-800 text-stone-500 text-xs py-1 px-2 text-center';
+            dropZone.className = `${dropZoneBaseClass} border-2 border-dashed border-stone-500 hover:bg-stone-800 text-stone-500`;
             dropZone.textContent = '點擊放入';
         }
 
-        slotDiv.appendChild(img);
+        slotDiv.appendChild(imgContainer);
         slotDiv.appendChild(dropZone);
         mDom.slotsContainer.appendChild(slotDiv);
     });
@@ -505,15 +510,17 @@ function gradeRankMatchRound() {
     matchQuizState.currentRoundData.forEach((correctRank, index) => {
         const dropZone = slots[index].lastElementChild;
         const userAnswer = matchQuizState.userAnswers[index];
+        
+        let dropZoneBaseClass = 'w-full sm:w-1/5 min-h-[60px] sm:min-h-[100px] h-full flex flex-col items-center justify-center rounded-xl font-bold cursor-default px-2 py-2 text-center shadow-inner text-sm md:text-base';
 
         if (userAnswer === correctRank) {
             roundCorrect++;
-            dropZone.className = 'flex-1 min-h-[44px] h-full border-2 border-green-500 bg-green-900/40 text-green-400 font-bold rounded-lg flex items-center justify-center cursor-default text-xs sm:text-sm py-1 px-2 leading-tight text-center';
+            dropZone.className = `${dropZoneBaseClass} border-2 border-green-500 bg-green-900/40 text-green-400 flex-row gap-1`;
             dropZone.innerHTML = `${userAnswer} <i class="fa-solid fa-check ml-1"></i>`;
             dropZone.onclick = null;
         } else {
-            dropZone.className = 'flex-1 min-h-[44px] h-full border-2 border-red-500 bg-red-900/40 text-red-400 font-bold rounded-lg flex flex-wrap items-center justify-center cursor-default text-[11px] sm:text-xs py-1 px-2 leading-tight text-center';
-            dropZone.innerHTML = `<span class="line-through opacity-70">${userAnswer}</span> <i class="fa-solid fa-xmark mx-0.5"></i> <span class="text-green-400 font-bold">${correctRank}</span>`;
+            dropZone.className = `${dropZoneBaseClass} border-2 border-red-500 bg-red-900/40 text-red-400 text-xs sm:text-sm gap-1`;
+            dropZone.innerHTML = `<span class="line-through opacity-70">${userAnswer}</span> <i class="fa-solid fa-arrow-down mx-0.5 opacity-50"></i> <span class="text-green-400 font-bold">${correctRank}</span>`;
             dropZone.onclick = null;
         }
     });

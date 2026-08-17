@@ -40,7 +40,7 @@ async def lifespan(app: FastAPI):
             new_user = models.User(
                 username="testuser",
                 role=1,  # Assuming role ID 1 (Soldier) is the default role
-                game_currency=1000,
+                game_progress=1000,
                 date_of_birth="2000-01-01",
                 weight=70,
                 height=175,
@@ -110,7 +110,7 @@ async def register_user(user: schemas.UserCreate, db: Session = Depends(database
         entrance_date=user.entrance_date,
         do_have_chronic_medications=user.do_have_chronic_medications,
         hashed_password=hashed_password,
-        game_currency=1000  # Initial game currency
+        game_progress=1000  # Initial game currency
     )
     db.add(new_user)
     db.commit()
@@ -150,6 +150,8 @@ async def update_user_me(user_update: schemas.UserUpdate, current_user: models.U
         current_user.do_have_chronic_medications = user_update.do_have_chronic_medications
     if user_update.password:
         current_user.hashed_password = auth.get_password_hash(user_update.password)
+    if user_update.game_progress is not None:
+        current_user.game_progress = user_update.game_progress
         
     if user_update.username and user_update.username != current_user.username:
         if db.query(models.User).filter(models.User.username == user_update.username).first():

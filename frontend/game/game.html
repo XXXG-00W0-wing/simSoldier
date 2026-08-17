@@ -365,9 +365,17 @@
         }
 
         @keyframes rotateIcon {
-            0% { transform: rotate(0deg); }
-            50% { transform: rotate(90deg); }
-            100% { transform: rotate(90deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            50% {
+                transform: rotate(90deg);
+            }
+
+            100% {
+                transform: rotate(90deg);
+            }
         }
 
         /* 手機直立時顯示旋轉提示 */
@@ -375,7 +383,14 @@
             #rotate-prompt {
                 display: flex;
             }
-            #main-menu, #top-menu-container, #ui-layer, #history-layer, #options, #bg-layer, #center-character-layer {
+
+            #main-menu,
+            #top-menu-container,
+            #ui-layer,
+            #history-layer,
+            #options,
+            #bg-layer,
+            #center-character-layer {
                 display: none !important;
             }
         }
@@ -386,42 +401,51 @@
                 font-size: 2rem;
                 margin-bottom: 10px;
             }
+
             .menu-btn {
                 padding: 8px 20px;
                 font-size: 1rem;
                 margin-bottom: 10px;
                 width: 200px;
             }
+
             #ui-layer {
                 padding: 5px 2%;
                 gap: 10px;
                 grid-template-columns: 2fr 11fr 2fr;
                 border-top: 1px solid var(--accent-color);
             }
+
             #speaker-name {
                 font-size: 1.1rem;
                 margin-bottom: 2px;
             }
+
             #text-content {
                 font-size: 1rem;
                 line-height: 1.3;
                 min-height: 40px;
             }
+
             #character-img {
                 height: 50vh;
                 bottom: -10px;
             }
+
             #center-character-img {
                 height: 65vh;
             }
+
             .ctrl-btn {
                 padding: 4px;
                 font-size: 0.8rem;
             }
+
             #control-buttons {
                 margin-left: 5px;
                 gap: 5px;
             }
+
             .name-separator {
                 margin-bottom: 3px;
             }
@@ -448,8 +472,8 @@
     <!-- 頂部功能選單 -->
     <div id="top-menu-container">
         <div id="top-menu">
-            <button class="top-btn" onclick="selectChapter(event)">章節選擇</button>
-            <button class="top-btn" onclick="manageSaves(event)">遊戲存檔管理</button>
+            <button class="top-btn" onclick="manageSaves(event)">存檔</button>
+            <button class="top-btn" onclick="loadGame(event)">讀取</button>
             <button class="top-btn" onclick="backToMainMenu(event)">主畫面</button>
         </div>
     </div>
@@ -464,6 +488,54 @@
         </div>
         <button class="menu-btn" style="align-self: center; margin-top: 20px; width: 200px; padding: 10px;"
             onclick="closeHistory(event)">返回遊戲</button>
+    </div>
+
+    <!-- 自訂存檔視窗 -->
+    <div id="save-modal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; justify-content: center; align-items: center; font-family: 'Segoe UI', system-ui, sans-serif;">
+        <div
+            style="background: #1a1a2e; border: 1px solid #14532d; border-radius: 12px; padding: 32px; width: min(420px, 90vw); box-shadow: 0 0 40px rgba(233,69,96,0.3); color: #eee; text-align: center;">
+            <h2 style="color: #22c55e; margin: 0 0 16px;">確認存檔</h2>
+            <p style="margin: 0 0 8px; color: #aaa;">目前的進度將覆蓋原本的紀錄。</p>
+            <div style="margin: 20px 0; font-size: 1.1rem;">
+                原本的 ID: <span id="save-old-id" style="color: #22c55e; font-weight: bold;">--</span><br>
+                ⬇<br>
+                要存的 ID: <span id="save-new-id" style="color: #2ed573; font-weight: bold;">--</span>
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 24px;">
+                <button class="menu-btn" style="width: auto; padding: 10px 20px;" onclick="confirmSave()">確認存檔</button>
+                <button class="menu-btn"
+                    style="width: auto; padding: 10px 20px; background: transparent; border: 1px solid #444; color: #aaa;"
+                    onclick="document.getElementById('save-modal').style.display='none'">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 自訂讀取視窗 -->
+    <div id="load-modal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; justify-content: center; align-items: center; font-family: 'Segoe UI', system-ui, sans-serif;">
+        <div
+            style="background: #1a1a2e; border: 1px solid #14532d; border-radius: 12px; padding: 32px; width: min(420px, 90vw); box-shadow: 0 0 40px rgba(233,69,96,0.3); color: #eee; text-align: center;">
+            <h2 style="color: #14532d; margin: 0 0 20px;">讀取遊戲</h2>
+            <button class="menu-btn" style="width: 100%; padding: 12px; margin-bottom: 20px; font-size: 1.1rem;"
+                onclick="loadSavedProgress()">讀取上次遊玩的進度</button>
+
+            <div style="margin: 20px 0; position: relative;">
+                <hr style="border: none; border-top: 1px solid #444; margin: 0;">
+                <span
+                    style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #1a1a2e; padding: 0 10px; color: #666; font-size: 0.9rem;">或</span>
+            </div>
+
+            <p style="margin: 0 0 8px; color: #aaa; text-align: left;">直接前往特定 ID：</p>
+            <div style="display: flex; gap: 10px;">
+                <input type="number" id="load-jump-id" placeholder="請輸入 ID"
+                    style="flex: 1; padding: 10px 14px; border-radius: 8px; border: 1px solid #444; background: #0f0f1a; color: #eee; font-size: 1rem; outline: none;">
+                <button class="menu-btn" style="width: auto; padding: 10px 20px;" onclick="jumpToId()">前往</button>
+            </div>
+            <button class="menu-btn"
+                style="width: 100%; margin-top: 24px; padding: 10px; background: transparent; border: 1px solid #444; color: #aaa;"
+                onclick="document.getElementById('load-modal').style.display='none'">關閉</button>
+        </div>
     </div>
 
     <div id="bg-layer"></div>
@@ -531,6 +603,7 @@
         let textNodes = [];
         let historyLog = [];
         let isHistoryOpen = false;
+        let currentNodeId = null;
         // Load story data from story.json
         fetch('https://raw.githubusercontent.com/XXXG-00W0-wing/simSoldier_Story/refs/heads/main/story.json')
             .then(response => response.json())
@@ -555,9 +628,57 @@
             }
         }
 
-        function loadGame(e) {
+        async function loadGame(e) {
             if (e) e.stopPropagation();
-            alert("讀取存檔功能尚未實作");
+            document.getElementById('load-modal').style.display = 'flex';
+        }
+
+        async function loadSavedProgress() {
+            const token = localStorage.getItem('simSoldier_token');
+            if (!token) {
+                alert("請先登入才能讀取存檔");
+                return;
+            }
+            try {
+                const res = await fetch('http://localhost:8000/api/user_info', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!res.ok) throw new Error("讀取失敗");
+                const data = await res.json();
+                const saveId = data.game_progress;
+
+                const tryLoad = () => {
+                    if (textNodes.length === 0) {
+                        setTimeout(tryLoad, 100);
+                        return;
+                    }
+                    if (!saveId || !textNodes.find(n => n.id === saveId)) {
+                        alert("目前沒有有效的存檔記錄");
+                        return;
+                    }
+                    document.getElementById('load-modal').style.display = 'none';
+                    document.getElementById('main-menu').style.display = 'none';
+                    historyLog = [];
+                    showNode(saveId);
+                };
+                tryLoad();
+            } catch (err) {
+                console.error(err);
+                alert("讀取存檔發生錯誤：" + err.message);
+            }
+        }
+
+        function jumpToId() {
+            const idInput = document.getElementById('load-jump-id').value;
+            const targetId = parseInt(idInput);
+            if (isNaN(targetId) || !textNodes.find(n => n.id === targetId)) {
+                alert("無效的 ID 或找不到該節點");
+                return;
+            }
+            document.getElementById('load-modal').style.display = 'none';
+            document.getElementById('main-menu').style.display = 'none';
+            historyLog = [];
+            showNode(targetId);
         }
 
         function selectChapter(e) {
@@ -565,9 +686,53 @@
             alert("章節選擇功能尚未實作");
         }
 
-        function manageSaves(e) {
+        async function manageSaves(e) {
             if (e) e.stopPropagation();
-            alert("遊戲存檔管理功能尚未實作");
+            if (!currentNodeId) {
+                alert("目前沒有可存檔的進度");
+                return;
+            }
+            const token = localStorage.getItem('simSoldier_token');
+            if (!token) {
+                alert("請先登入才能使用存檔功能");
+                return;
+            }
+            try {
+                // Fetch current user info to get the old ID
+                const resInfo = await fetch('http://localhost:8000/api/user_info', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!resInfo.ok) throw new Error("讀取使用者資料失敗");
+                const data = await resInfo.json();
+                const oldId = data.game_progress;
+
+                document.getElementById('save-old-id').innerText = (oldId && oldId !== 1000) ? oldId : "無";
+                document.getElementById('save-new-id').innerText = currentNodeId;
+                document.getElementById('save-modal').style.display = 'flex';
+            } catch (err) {
+                console.error(err);
+                alert("準備存檔時發生錯誤：" + err.message);
+            }
+        }
+
+        async function confirmSave() {
+            const token = localStorage.getItem('simSoldier_token');
+            if (!token || !currentNodeId) return;
+            try {
+                const res = await fetch('http://localhost:8000/api/user_edit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ game_progress: currentNodeId })
+                });
+                if (!res.ok) throw new Error("存檔失敗");
+                document.getElementById('save-modal').style.display = 'none';
+            } catch (err) {
+                console.error(err);
+                alert("存檔發生錯誤：" + err.message);
+            }
         }
 
         function backToMainMenu(e) {
@@ -816,6 +981,7 @@
         function showNode(nodeId, isJump = false) {
             const node = textNodes.find(n => n.id === nodeId);
             if (!node) return;
+            currentNodeId = nodeId;
 
             if (isJump) {
                 const idx = historyLog.findIndex(h => h.id === nodeId);

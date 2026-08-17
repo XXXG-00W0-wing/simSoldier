@@ -504,7 +504,7 @@ export const api = {
                     height: data.height,
                     weight: data.weight,
                     medication: data.do_have_chronic_medications,
-                    gold: data.game_currency
+                    gold: data.game_progress
                 }
             };
         } catch (e) {

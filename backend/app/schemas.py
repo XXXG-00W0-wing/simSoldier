@@ -23,10 +23,11 @@ class UserUpdate(BaseModel):
     entrance_date: Optional[date] = None
     do_have_chronic_medications: Optional[bool] = None
     password: Optional[str] = None
+    game_progress: Optional[int] = None
 
 class UserResponse(UserBase):
     id: int
-    game_currency: int
+    game_progress: int
     height: Optional[int] = None
     weight: Optional[int] = None
     role: Optional[int] = None
