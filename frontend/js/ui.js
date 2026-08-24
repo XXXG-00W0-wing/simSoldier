@@ -55,6 +55,42 @@ export const dom = {
     playerTitle: document.getElementById('player-title'),
     playerDesc: document.getElementById('player-desc'),
 
+    // --- Journey Stepper & Tasks ---
+    journeyProgressBar: document.getElementById('journey-progress-bar'),
+    journeyProgressPercent: document.getElementById('journey-progress-percent'),
+    journeyRankBadge: document.getElementById('journey-rank-badge'),
+    journeyOverallCount: document.getElementById('journey-overall-count'),
+    journeyNodesContainer: document.getElementById('journey-nodes-container'),
+    tasksList: document.getElementById('tasks-list'),
+    tasksTitle: document.getElementById('tasks-title'),
+    tasksSubtitle: document.getElementById('tasks-subtitle'),
+    tasksCount: document.getElementById('tasks-count'),
+    tasksStageFilterContainer: document.getElementById('tasks-stage-filter-container'),
+    btnResetJourneyTasks: document.getElementById('btn-reset-journey-tasks'),
+
+    // --- Notice Section ---
+    sectionNotice: document.getElementById('section-notice'),
+    noticeCardsContainer: document.getElementById('notice-cards-container'),
+    btnToggleNoticeCollapse: document.getElementById('btn-toggle-notice-collapse'),
+
+    // --- Task Detail Modal ---
+    modalTaskDetail: document.getElementById('modal-task-detail'),
+    taskDetailIcon: document.getElementById('task-detail-icon'),
+    taskDetailStageBadge: document.getElementById('task-detail-stage-badge'),
+    taskDetailTitle: document.getElementById('task-detail-title'),
+    taskDetailTypeBadge: document.getElementById('task-detail-type-badge'),
+    taskDetailStatusBadge: document.getElementById('task-detail-status-badge'),
+    taskDetailDesc: document.getElementById('task-detail-desc'),
+    taskDetailNote: document.getElementById('task-detail-note'),
+    btnToggleTaskDetailStatus: document.getElementById('btn-toggle-task-detail-status'),
+    btnTaskDetailAction: document.getElementById('btn-task-detail-action'),
+    btnCloseTaskDetail: document.getElementById('btn-close-task-detail'),
+
+    // --- Discharge Celebration Modal ---
+    modalDischargeCelebration: document.getElementById('modal-discharge-celebration'),
+    dischargeUserName: document.getElementById('discharge-user-name'),
+    btnCloseDischargeModal: document.getElementById('btn-close-discharge-modal'),
+
     // --- Tasks (Daily) ---
     dailyTaskBar: document.getElementById('daily-task-bar'), // Need to check HTML if this exists
     dailyTaskPercent: document.getElementById('daily-task-percent'), // Need to check HTML
@@ -90,12 +126,8 @@ export const dom = {
     inputBirthdayY: document.getElementById('input-birthday-y'),
     inputBirthdayM: document.getElementById('input-birthday-m'),
     inputBirthdayD: document.getElementById('input-birthday-d'),
-    inputRole: document.getElementById('input-role'),
-    inputDisabilityType: document.getElementById('input-disability-type'),
-    sectionDisability: document.getElementById('section-disability'),
     inputHeight: document.getElementById('input-height'),
     inputWeight: document.getElementById('input-weight'),
-    inputMeds: document.getElementById('input-meds'),
     btnSubmitOnboarding: document.getElementById('btn-submit-onboarding'),
     btnCloseOnboarding: document.getElementById('btn-close-onboarding'),
     btnUnlockGuest: document.getElementById('btn-unlock-guest'),
@@ -342,6 +374,24 @@ export function renderSidebarNav(scenarioKey = 'preparing') {
     if (state.activeTab) {
         switchTab(state.activeTab);
     }
+
+    // 同步控制「注意事項」獨立區塊顯示 (僅準備入營與延緩入營顯示)
+    updateNoticeVisibility(scenarioKey);
+}
+
+/**
+ * 依據身分情境控制「注意事項」專區顯示狀態
+ * 只有「準備入營」(preparing) 與「延緩入營」(deferred) 顯示
+ * @param {string} scenarioKey - 身分情境
+ */
+export function updateNoticeVisibility(scenarioKey = state.userScenario || 'preparing') {
+    const sectionNotice = document.getElementById('section-notice') || dom.sectionNotice;
+    if (!sectionNotice) return;
+    if (scenarioKey === 'preparing' || scenarioKey === 'deferred') {
+        sectionNotice.classList.remove('hidden');
+    } else {
+        sectionNotice.classList.add('hidden');
+    }
 }
 
 /**
@@ -411,5 +461,9 @@ export function switchTab(tabId) {
             btn.classList.remove('text-green-500');
         }
     });
+
+    // Notify tab change
+    window.dispatchEvent(new CustomEvent('tabSwitched', { detail: tabId }));
 }
+
 window.switchTab = switchTab;

@@ -41,15 +41,24 @@ function setApiBase(url) {
  */
 function resolveUrl(url) {
     const base = getApiBase();
-    // 先將原始 localhost 路徑萃取出 pathname
-    let path = url;
-    try {
-        const parsed = new URL(url);
-        path = parsed.pathname + parsed.search;
-    } catch (_) {
-        // url 已經是相對路徑，直接使用
+    if (base) {
+        let path = url;
+        try {
+            const parsed = new URL(url);
+            path = parsed.pathname + parsed.search;
+        } catch (_) {}
+        return `${base}${path.startsWith('/') ? '' : '/'}${path}`;
     }
-    return base ? `${base}${path}` : path;
+
+    const currentPort = typeof window !== 'undefined' ? window.location.port : '';
+    if (currentPort === '8080' || currentPort === '80' || currentPort === '8443') {
+        return url.replace('http://localhost:8000', '');
+    } else {
+        if (!url.startsWith('http')) {
+            return `http://localhost:8000${url.startsWith('/') ? '' : '/'}${url}`;
+        }
+        return url;
+    }
 }
 
 // ──────────────────────────────────────────────────────────────
@@ -307,6 +316,25 @@ if (typeof document !== 'undefined') {
     }
 }
 
+export const SCENARIO_TO_ROLE_ID = {
+    preparing: 1,
+    enlisted: 2,
+    deferred: 3
+};
+
+export const ROLE_ID_TO_SCENARIO = {
+    1: 'preparing',
+    2: 'enlisted',
+    3: 'deferred'
+};
+
+export const ROLE_NAME_TO_SCENARIO = {
+    '準備入營': 'preparing',
+    '正在入營': 'enlisted',
+    '延後入營': 'deferred',
+    '延緩入營': 'deferred'
+};
+
 // ──────────────────────────────────────────────────────────────
 // API Object
 // ──────────────────────────────────────────────────────────────
@@ -326,7 +354,6 @@ export const api = {
         }
 
         const resolvedUrl = resolveUrl(url);
-
         const controller = new AbortController();
         const id = setTimeout(() => controller.abort(), timeout);
 
@@ -445,18 +472,18 @@ export const api = {
      */
     async register({ username, password, profile }) {
         try {
+            const roleId = SCENARIO_TO_ROLE_ID[profile.role] || (typeof profile.role === 'number' ? profile.role : 1);
             const res = await this._fetch('http://localhost:8000/api/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     username,
                     password,
-                    role: profile.role === 'disability' ? 2 : 1,
+                    role: roleId,
                     date_of_birth: profile.birthday,
                     height: parseInt(profile.height),
                     weight: parseInt(profile.weight),
-                    entrance_date: profile.date,
-                    do_have_chronic_medications: profile.medication === true || profile.isMedicated === 'yes'
+                    entrance_date: profile.date
                 })
             });
 
@@ -494,17 +521,22 @@ export const api = {
             }
 
             const data = await res.json();
+            const scenario = ROLE_NAME_TO_SCENARIO[data.role_name] || ROLE_ID_TO_SCENARIO[data.role] || 'preparing';
             return {
                 username: data.username,
+                role: data.role,
+                role_name: data.role_name,
+                scenario: scenario,
                 profile: {
                     name: data.username,
                     date: data.entrance_date,
                     birthday: data.date_of_birth,
-                    role: data.role === 2 ? 'disability' : 'regular',
+                    role: data.role,
+                    role_name: data.role_name,
+                    scenario: scenario,
                     height: data.height,
                     weight: data.weight,
-                    medication: data.do_have_chronic_medications,
-                    gold: data.game_progress
+                    gold: data.game_progress || 0
                 }
             };
         } catch (e) {
@@ -515,12 +547,24 @@ export const api = {
 
     /**
      * 更新使用者 Profile
-     * @param {object} newProfile 
+     * @param {object} profile 
      */
     async updateProfile(profile) {
         try {
             const token = localStorage.getItem(SESSION_KEY);
             if (!token) throw new Error('Not logged in');
+
+            const payload = {
+                username: profile.name,
+                date_of_birth: profile.birthday,
+                height: parseInt(profile.height),
+                weight: parseInt(profile.weight),
+                entrance_date: profile.date
+            };
+
+            if (profile.role) {
+                payload.role = SCENARIO_TO_ROLE_ID[profile.role] || profile.role;
+            }
 
             const res = await this._fetch('http://localhost:8000/api/user_edit', {
                 method: 'POST',
@@ -528,14 +572,7 @@ export const api = {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({
-                    username: profile.name,
-                    date_of_birth: profile.birthday,
-                    height: parseInt(profile.height),
-                    weight: parseInt(profile.weight),
-                    entrance_date: profile.date,
-                    do_have_chronic_medications: profile.medication
-                })
+                body: JSON.stringify(payload)
             });
 
             if (!res.ok) {
@@ -550,6 +587,39 @@ export const api = {
             return json_res;
         } catch (e) {
             console.error(e);
+            throw e;
+        }
+    },
+
+    /**
+     * 更新使用者服役情境身分
+     * @param {string} scenarioKey ('preparing' | 'enlisted' | 'deferred')
+     */
+    async updateScenario(scenarioKey) {
+        const roleId = SCENARIO_TO_ROLE_ID[scenarioKey] || 1;
+        try {
+            const token = localStorage.getItem(SESSION_KEY);
+            if (!token) throw new Error('Not logged in');
+
+            const res = await this._fetch('http://localhost:8000/api/user_edit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    role: roleId
+                })
+            });
+
+            if (!res.ok) {
+                const error = await res.json();
+                throw new Error(error.detail || '情境身分更新失敗');
+            }
+
+            return await res.json();
+        } catch (e) {
+            console.error('Failed to sync scenario to server:', e);
             throw e;
         }
     },

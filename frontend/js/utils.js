@@ -10,35 +10,31 @@ export function bmi(h, w) {
 }
 
 export function determineServiceType(bmiValue, role, disabilityType = 'none', birthYearStr) {
-    // 預設邏輯 (可以根據需求調整)
-    
+    const numBmi = parseFloat(bmiValue);
+    if (!numBmi || numBmi <= 0) {
+        return { type: '常備役體位', reason: '尚無體位數據', instruction: '請於個人資料設定身高體重以計算體位。' };
+    }
+
     // 1. 免役體位
-    if (bmiValue < 16.5 || bmiValue > 31.5) {
-        return { type: '免役', reason: 'BMI體位免役', instruction: '恭喜！您已獲得國家級認證的自由身。' };
+    if (numBmi < 16.5 || numBmi > 31.5) {
+        return { type: '免役體位', reason: 'BMI符合免役標準', instruction: '經計算體位符合免役標準，請注意體檢複檢通知。' };
     }
 
-    // 2. 替代役 (這裡簡化判斷，實際還有家庭因素等)
-    if (role === 'rd_substitute' || (bmiValue >= 16.5 && bmiValue < 17) || (bmiValue > 31 && bmiValue <= 31.5)) {
-        return { type: '替代役', reason: '體位/申請因素', instruction: '準備申請替代役甄選，注意梯次時間。' };
+    // 2. 替代役體位 (BMI 16.5~17 或 31~31.5)
+    if ((numBmi >= 16.5 && numBmi < 17) || (numBmi > 31 && numBmi <= 31.5)) {
+        return { type: '替代役體位', reason: 'BMI符合替代役標準', instruction: '體位判定為替代役，請注意梯次與役別通知。' };
     }
 
-    // 3. 補充兵 (12天)
-    if (role === 'supplementary_12days') {
-        return { type: '補充兵', reason: '家庭/體位因素', instruction: '12天夏令營，進去發呆一下就出來了。' };
-    }
-
-    // 4. 判斷常備役役期 (1年 vs 4個月)
-    // 94年次 (2005) 以後出生為 1 年
-    // Parse Year
+    // 3. 常備役體位 (依出生年份判斷 1年 / 4個月)
     let year = 1990;
     if (birthYearStr) {
         year = new Date(birthYearStr).getFullYear();
     }
 
     if (year >= 2005) {
-        return { type: '常備役 (1年)', reason: '94年次以後出生', instruction: '做好心理準備，這是一場持久戰。' };
+        return { type: '常備役體位 (1年)', reason: '94年次以後出生', instruction: '一年期義務役，強化體能與部隊適應。' };
     } else {
-        return { type: '常備役 (4個月)', reason: '93年次以前出生', instruction: '軍事訓練役，忍一下就過去了。' };
+        return { type: '常備役體位 (4個月)', reason: '93年次以前出生', instruction: '四個月軍事訓練役，按時入營受訓。' };
     }
 }
 

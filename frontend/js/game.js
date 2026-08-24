@@ -5,6 +5,7 @@
 
 import { state } from './state.js';
 import { dom, switchTab } from './ui.js';
+import { toggleJourneyTask } from './features.js';
 
 let btnDrawVillage, drawAnimationText, resultCard, resultTag, resultNumber, resultMessage, shockOverlay, btnBackHome;
 
@@ -43,7 +44,7 @@ export function quitGame() {
     const gameLobby = document.getElementById('game-lobby');
     const gamePlayArea = document.getElementById('game-play-area');
     const gameOver = document.getElementById('game-over');
-    
+
     if (gameLobby) gameLobby.classList.remove('hidden');
     if (gamePlayArea) gamePlayArea.classList.add('hidden');
     if (gameOver) gameOver.classList.add('hidden');
@@ -52,17 +53,17 @@ export function quitGame() {
 
 function startDraw(isVillageHead) {
     initGameDOM();
-    
+
     const gameLobby = document.getElementById('game-lobby');
     const gamePlayArea = document.getElementById('game-play-area');
     const gameOver = document.getElementById('game-over');
-    
+
     // UI Reset
     if (gameLobby) gameLobby.classList.add('hidden');
     if (gamePlayArea) gamePlayArea.classList.remove('hidden');
     if (gameOver) gameOver.classList.add('hidden');
     if (shockOverlay) shockOverlay.classList.add('hidden');
-    
+
     drawAnimationText.textContent = isVillageHead ? "里長代抽中..." : "籤筒搖晃中...";
 
     // 模擬抽籤延遲 (1.5秒)
@@ -74,7 +75,7 @@ function startDraw(isVillageHead) {
 function finishDraw(isVillageHead) {
     const gamePlayArea = document.getElementById('game-play-area');
     const gameOver = document.getElementById('game-over');
-    
+
     // 權重設定
     const branches = [
         { name: '陸軍', weight: isVillageHead ? 16.6 : 65, colorClass: 'bg-green-700 border-green-500 text-green-100', msg: '常山趙子龍，草綠服穿到退伍！', msgClass: 'text-green-500' },
@@ -103,9 +104,9 @@ function finishDraw(isVillageHead) {
     // 更新 UI
     resultTag.textContent = selectedBranch.name;
     resultTag.className = `inline-block px-6 py-2 rounded font-bold text-xl mb-6 shadow-inner border-2 ${selectedBranch.colorClass}`;
-    
+
     resultNumber.textContent = paddedNumber;
-    
+
     resultMessage.textContent = selectedBranch.msg;
     resultMessage.className = `text-lg mb-8 h-8 ${selectedBranch.msgClass}`;
     resultCard.className = `bg-stone-800 border-2 rounded-xl shadow-2xl p-8 max-w-md w-full text-center transform scale-100 transition-transform duration-300 ${selectedBranch.name === '海軍陸戰隊' ? 'border-red-600' : 'border-stone-600'}`;
@@ -113,6 +114,9 @@ function finishDraw(isVillageHead) {
     // 切換畫面
     if (gamePlayArea) gamePlayArea.classList.add('hidden');
     if (gameOver) gameOver.classList.remove('hidden');
+
+    // 自動標記服役歷程「完成軍種抽籤」任務為已完成
+    toggleJourneyTask('t1_3', true);
 
     // 海陸特殊效果
     if (selectedBranch.name === '海軍陸戰隊') {

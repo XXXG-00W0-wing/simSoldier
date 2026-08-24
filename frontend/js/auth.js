@@ -210,10 +210,8 @@ function setupForms() {
         const bd = document.getElementById('reg-birthday-d').value.padStart(2, '0');
         const birthdayStr = `${by}-${bm}-${bd}`;
 
-        const role = document.getElementById('reg-role').value;
         const height = document.getElementById('reg-height').value;
         const weight = document.getElementById('reg-weight').value;
-        const hasMeds = document.getElementById('reg-meds').checked;
         const btn = e.target.querySelector('button[type="submit"]');
 
         // Validation Helper
@@ -245,24 +243,24 @@ function setupForms() {
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> 註冊中...';
             btn.disabled = true;
 
-            // 1. Register
+            // 1. Register (預設註冊，情境身分於首次進入系統時讓使用者點選)
             await api.register({
                 username, password, profile: {
                     name: realName,
                     date: dateStr,
                     birthday: birthdayStr,
-                    role: role,
-                    disability: role === 'disability' ? 'physical' : 'none',
                     height: height,
-                    weight: weight,
-                    medication: hasMeds
+                    weight: weight
                 }
             });
 
             // 2. Auto Login (using the same credentials)
             await api.login(username, password);
 
-            alert('註冊成功！正在進入系統...');
+            // 標記新註冊狀態，讓主系統進入時立即跳出「選擇您的服役情境身分」
+            sessionStorage.setItem('simSoldier_justRegistered', 'true');
+            localStorage.removeItem('simSoldier_userScenario');
+
             window.location.href = 'loadingbar.html?dest=index.html';
 
         } catch (error) {

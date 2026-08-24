@@ -43,12 +43,26 @@ def format_user_info(user_info) -> str:
         return "無資料"
     
     if hasattr(user_info, "username"):
+        profile = getattr(user_info, "profile", None)
+        role_text = "準備入營"
+        
+        if profile and hasattr(profile, "role_rel") and profile.role_rel:
+            role_text = profile.role_rel.name
+        elif hasattr(user_info, "role_name") and user_info.role_name:
+            role_text = user_info.role_name
+        elif hasattr(user_info, "role_rel") and user_info.role_rel:
+            role_text = user_info.role_rel.name
+
+        height = getattr(profile, "height", None) if profile else getattr(user_info, "height", None)
+        weight = getattr(profile, "weight", None) if profile else getattr(user_info, "weight", None)
+        entrance_date = getattr(profile, "entrance_date", None) if profile else getattr(user_info, "entrance_date", None)
+
         info_lines = [
             f"姓名: {user_info.username or '未提供'}",
-            f"身高: {user_info.height or '未提供'} 公分" if user_info.height else "身高: 未提供",
-            f"體重: {user_info.weight or '未提供'} 公斤" if user_info.weight else "體重: 未提供",
-            f"入伍日期: {user_info.entrance_date or '未提供'}",
-            f"慢性病藥物史: {'是' if user_info.do_have_chronic_medications else '否'}"
+            f"服役情境身分: {role_text}",
+            f"身高: {height or '未提供'} 公分" if height else "身高: 未提供",
+            f"體重: {weight or '未提供'} 公斤" if weight else "體重: 未提供",
+            f"入伍日期: {entrance_date or '未提供'}"
         ]
         return "\n".join(info_lines)
     

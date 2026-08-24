@@ -1,3 +1,5 @@
+import { toggleJourneyTask } from './features.js';
+
 export function initShootingGame() {
     // --- 1. Mnemonic Order Quiz Elements & State ---
     const MNEMONIC_CORRECT_ORDER = ['托', '抵', '握', '貼', '瞄', '停', '扣', '報'];
@@ -199,9 +201,11 @@ export function initShootingGame() {
             if (correctCount === 8) {
                 quizRankBadge.textContent = '100% 滿分！完全精通';
                 quizRankBadge.className = 'text-lg font-bold text-yellow-400 px-3 py-1 bg-yellow-950/80 rounded border border-yellow-500/50 shadow-[0_0_10px_rgba(234,179,8,0.3)]';
+                toggleJourneyTask('t2_2', true);
             } else if (correctCount >= 6) {
                 quizRankBadge.textContent = '良好 (需微調)';
                 quizRankBadge.className = 'text-lg font-bold text-green-400 px-3 py-1 bg-stone-900 rounded border border-green-700';
+                toggleJourneyTask('t2_2', true);
             } else {
                 quizRankBadge.textContent = '不熟練 (需加強)';
                 quizRankBadge.className = 'text-lg font-bold text-red-400 px-3 py-1 bg-red-950/80 rounded border border-red-800';
@@ -737,6 +741,10 @@ export function initShootingGame() {
         } else {
             rank = '天兵 (不及格)';
             rankClass = 'text-red-500';
+        }
+
+        if (score >= 30) {
+            toggleJourneyTask('t2_2', true);
         }
 
         if (rankDisplay) {

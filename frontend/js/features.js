@@ -3,8 +3,8 @@
  * 包含：背包、聊天室、課表、影片、說明文件、日曆、倒數
  */
 
-import { state } from './state.js';
-import { dom } from './ui.js';
+import { state, INITIAL_JOURNEY_STAGES } from './state.js';
+import { dom, switchTab } from './ui.js';
 import { api } from './api.js';
 
 // --- Constants ---
@@ -331,6 +331,7 @@ function toggleItem(id) {
     if (item) {
         item.acquired = !item.acquired;
         renderInventory();
+        syncJourneyAutoProgress();
     }
 }
 
@@ -343,6 +344,9 @@ export async function handleChatSubmit(e) {
     // Add user message
     addMessage(text, 'user');
     dom.chatInput.value = '';
+
+    // Mark AI chat task as completed in Journey
+    toggleJourneyTask('t3_3', true);
 
     // Add "typing" indicator
     const typingId = 'typing-' + Date.now();
@@ -416,39 +420,37 @@ function addMessage(text, sender) {
 export function initChatGreeting() {
     dom.chatMessages.innerHTML = '';
 
-    if (!state.userData || !state.serviceStatus) {
-        addMessage("注意！有什麼問題現在問，不要進去才在那邊什麼都不知道！", 'bot');
+    if (!state.userData) {
+        addMessage("注意！歡迎來到 SimSoldier 戰情顧問中心，有任何軍旅、生活適應或權益法規問題，隨時向教官發問！", 'bot');
         return;
     }
 
-    const name = state.userData.name || "菜鳥";
-    const statusType = state.serviceStatus.type || "";
-
+    const name = state.userData.name || "新兵";
+    const scenario = state.userScenario || 'preparing';
     let greeting = "";
-    if (statusType.includes("免役")) {
-        greeting = `注意！${name}，聽說你免役了是不是？那還來戰情中心幹嘛？不想去玩沙就來練習問答！`;
-    } else if (statusType.includes("替代役")) {
-        greeting = `注意！${name}，${statusType}也是要好好表現的，不要給我丟臉！有什麼問題現在提早問！`;
+
+    if (scenario === 'enlisted') {
+        greeting = `注意！${name}，現役在營期間請保持良好軍紀與作息！操課遇到瓶頸、射擊口訣要領、每日訓練或軍人權益申訴，有任何問題隨時向教官提問！`;
+    } else if (scenario === 'deferred') {
+        greeting = `您好！${name}，目前系統已為您優先排程「延役專區」。若對延期徵集申請條件、應備證明文件、體位複檢或停役法規有疑問，歡迎隨時在此諮詢！`;
     } else {
-        if (!state.userData.date) {
-            greeting = `注意！${name}，連入伍日期都還沒去設定，皮在癢是不是？遇到什麼不懂的趕緊發問！`;
-        } else {
+        // 準備入營 (preparing) 或預設
+        if (state.userData.date) {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             const targetDate = new Date(state.userData.date);
             targetDate.setHours(0, 0, 0, 0);
 
-            const dischargeDate = new Date(targetDate);
-            dischargeDate.setMonth(dischargeDate.getMonth() + 4);
-
-            if (today >= dischargeDate) {
-                greeting = `注意！${name}，你都退伍了還回來幹嘛？想重新簽志願役是不是？！`;
-            } else if (today >= targetDate) {
-                greeting = `您好！${name}，這裡是 simSoldier 官方諮詢服務，請說明您的問題！`;
+            const diffDays = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
+            if (diffDays > 0) {
+                greeting = `注意！${name}，距離您預計入營尚有 ${diffDays} 天！請務必提前檢查入伍背包與必備證件，有任何新訓生活、折抵流程或準備問題，隨時向教官發問！`;
+            } else if (diffDays === 0) {
+                greeting = `注意！${name}，今日為入營報到日！請確認身分證、徵集令與隨身證件均已帶齊，祝入伍順利！有任何疑問隨時諮詢！`;
             } else {
-                const diffDays = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
-                greeting = `注意！${name}，距離你入營只剩 ${diffDays} 天！東西準備好了沒？有問題快問！`;
+                greeting = `注意！${name}，歡迎來到 SimSoldier 戰情中心！即將入伍的新兵請提早做好體能與心理調適，有任何入營疑難雜症歡迎隨時發問！`;
             }
+        } else {
+            greeting = `注意！${name}，歡迎來到 SimSoldier 戰情中心！即將入伍的新兵請提早做好生活與心理調適，有任何入營疑難雜症歡迎隨時向教官諮詢！`;
         }
     }
 
@@ -490,6 +492,7 @@ export function toggleTrainingDay(dayId, cardElement, btnElement) {
         }
     }
     updateTrainingProgress();
+    syncJourneyAutoProgress();
     updateDailyTaskProgress();
 }
 
@@ -908,4 +911,723 @@ function autoTriggerHospitalGPS() {
         },
         { timeout: 10000 }
     );
+}
+
+// ==========================================
+// --- 服役歷程進度系統 (Service Journey System) ---
+// ==========================================
+
+export function initJourneySystem() {
+    // 1. Load saved tasks or initialize from state
+    try {
+        const saved = localStorage.getItem('simSoldier_journeyTasks');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            // Merge with INITIAL_JOURNEY_STAGES to ensure structure integrity
+            state.journeyStages = INITIAL_JOURNEY_STAGES.map(stage => {
+                const savedStage = parsed.find(s => s.id === stage.id);
+                return {
+                    ...stage,
+                    tasks: stage.tasks.map(task => {
+                        const savedTask = savedStage?.tasks?.find(t => t.id === task.id);
+                        return {
+                            ...task,
+                            completed: savedTask ? !!savedTask.completed : false
+                        };
+                    })
+                };
+            });
+        } else {
+            state.journeyStages = JSON.parse(JSON.stringify(INITIAL_JOURNEY_STAGES));
+        }
+    } catch (e) {
+        console.error('Error loading journey tasks:', e);
+        state.journeyStages = JSON.parse(JSON.stringify(INITIAL_JOURNEY_STAGES));
+    }
+
+    // 2. Setup Stage Tabs Listener
+    setupJourneyEventListeners();
+
+    // 3. Auto sync with backpack / training / scenario
+    syncJourneyAutoProgress(false);
+    applyScenarioTaskProgression(state.userScenario, false);
+
+    // 4. Initial Render
+    renderJourneySystem();
+}
+
+/**
+ * 依據身分情境自動推進任務進度
+ * 當選擇「正在入營」(enlisted) 時，自動將「兵役整備期」(stage_1) 與「入營前適應期」(stage_2) 的任務標示為完成
+ * @param {string} scenarioKey - 身分情境
+ * @param {boolean} shouldRender - 是否立即重新渲染 UI
+ */
+export function applyScenarioTaskProgression(scenarioKey = state.userScenario, shouldRender = true) {
+    if (!state.journeyStages || state.journeyStages.length === 0) return;
+
+    if (scenarioKey === 'enlisted') {
+        let hasChanges = false;
+        state.journeyStages.forEach(stage => {
+            if (stage.id === 'stage_1' || stage.id === 'stage_2') {
+                stage.tasks.forEach(task => {
+                    if (!task.completed) {
+                        task.completed = true;
+                        hasChanges = true;
+                    }
+                });
+            }
+        });
+        if (hasChanges) {
+            saveJourneyProgress();
+            if (shouldRender) renderJourneySystem();
+        }
+    }
+}
+
+export function setupJourneyEventListeners() {
+    // Reset Button
+    if (dom.btnResetJourneyTasks) {
+        dom.btnResetJourneyTasks.onclick = () => {
+            if (confirm('確定要重置所有服役歷程階段任務進度嗎？')) {
+                resetJourneyTasks();
+            }
+        };
+    }
+
+    // Stage filter tabs
+    document.querySelectorAll('.journey-stage-tab').forEach(btn => {
+        btn.onclick = () => {
+            const stageId = btn.dataset.stage;
+            setJourneyActiveStage(stageId);
+        };
+    });
+
+    // Task Detail Modal Close
+    if (dom.btnCloseTaskDetail) {
+        dom.btnCloseTaskDetail.onclick = closeTaskDetailModal;
+    }
+    if (dom.modalTaskDetail) {
+        dom.modalTaskDetail.onclick = (e) => {
+            if (e.target === dom.modalTaskDetail) closeTaskDetailModal();
+        };
+    }
+
+    // Discharge Celebration Modal Close
+    if (dom.btnCloseDischargeModal) {
+        dom.btnCloseDischargeModal.onclick = closeDischargeCelebrationModal;
+    }
+    if (dom.modalDischargeCelebration) {
+        dom.modalDischargeCelebration.onclick = (e) => {
+            if (e.target === dom.modalDischargeCelebration) closeDischargeCelebrationModal();
+        };
+    }
+
+    // Clicking Rank Badge when 100%
+    if (dom.journeyRankBadge) {
+        dom.journeyRankBadge.onclick = () => {
+            let totalTasks = 0, completedTasks = 0;
+            state.journeyStages.forEach(s => s.tasks.forEach(t => { totalTasks++; if (t.completed) completedTasks++; }));
+            if (completedTasks === totalTasks && totalTasks > 0) {
+                openDischargeCelebrationModal();
+            }
+        };
+    }
+
+    // Auto complete tasks on tab switch (e.g. Rhapsody / Delay)
+    window.addEventListener('tabSwitched', (e) => {
+        if (e.detail === 'rhapsody') {
+            toggleJourneyTask('t2_4', true);
+        } else if (e.detail === 'delay') {
+            toggleJourneyTask('t1_4', true);
+        }
+    });
+}
+
+let activeDetailTaskId = null;
+
+export function openTaskDetailModal(taskId) {
+    let targetTask = null;
+    let targetStage = null;
+
+    for (const stage of state.journeyStages) {
+        const found = stage.tasks.find(t => t.id === taskId);
+        if (found) {
+            targetTask = found;
+            targetStage = stage;
+            break;
+        }
+    }
+
+    if (!targetTask || !dom.modalTaskDetail) return;
+    activeDetailTaskId = taskId;
+
+    // Set UI
+    if (dom.taskDetailStageBadge) {
+        dom.taskDetailStageBadge.textContent = `STAGE 0${targetStage.number} • ${targetStage.title}`;
+    }
+    if (dom.taskDetailTitle) {
+        dom.taskDetailTitle.textContent = targetTask.title;
+    }
+    if (dom.taskDetailDesc) {
+        dom.taskDetailDesc.textContent = targetTask.detail || targetTask.note || '暫無詳細說明。';
+    }
+    if (dom.taskDetailNote) {
+        dom.taskDetailNote.textContent = targetTask.note || '請依照指引完成相關作業。';
+    }
+
+    // Type badge
+    if (dom.taskDetailTypeBadge) {
+        dom.taskDetailTypeBadge.textContent = targetTask.typeName;
+    }
+
+    // Status badge & toggle button
+    updateDetailModalStatusUI(targetTask);
+
+    // Action button
+    if (dom.btnTaskDetailAction) {
+        if (targetTask.linkTab) {
+            dom.btnTaskDetailAction.classList.remove('hidden');
+            const tabNames = {
+                inventory: '前往入伍背包',
+                training: '前往今日課表',
+                shooting: '前往射擊口訣',
+                quiz: '前往天兵課堂',
+                chat: targetTask.id === 't1_2' ? '諮詢體檢地點' : '諮詢 AI 教官',
+                delay: '前往延役專區',
+                docs: '查看法規與折抵',
+                game: '前往模擬籤筒',
+                rhapsody: '前往大兵狂想曲'
+            };
+            dom.btnTaskDetailAction.innerHTML = `<span>${tabNames[targetTask.linkTab] || '前往查看'}</span> <i class="fa-solid fa-arrow-right text-[10px] ml-1"></i>`;
+            dom.btnTaskDetailAction.onclick = () => {
+                closeTaskDetailModal();
+                switchTab(targetTask.linkTab);
+                if (targetTask.prompt) {
+                    fillAndFocusChatPrompt(targetTask.prompt);
+                }
+            };
+        } else if (targetTask.linkUrl) {
+            dom.btnTaskDetailAction.classList.remove('hidden');
+            dom.btnTaskDetailAction.innerHTML = `<span>開啟線上申報</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px] ml-1"></i>`;
+            dom.btnTaskDetailAction.onclick = () => {
+                window.open(targetTask.linkUrl, '_blank');
+            };
+        } else {
+            dom.btnTaskDetailAction.classList.add('hidden');
+        }
+    }
+
+    // Toggle button listener
+    if (dom.btnToggleTaskDetailStatus) {
+        dom.btnToggleTaskDetailStatus.onclick = () => {
+            toggleJourneyTask(taskId);
+            const updated = findTaskById(taskId);
+            if (updated) updateDetailModalStatusUI(updated);
+        };
+    }
+
+    dom.modalTaskDetail.classList.remove('hidden');
+}
+
+function updateDetailModalStatusUI(task) {
+    if (dom.taskDetailStatusBadge) {
+        if (task.completed) {
+            dom.taskDetailStatusBadge.className = 'text-xs px-2.5 py-0.5 rounded border font-bold bg-emerald-950 text-emerald-300 border-emerald-700 flex items-center gap-1';
+            dom.taskDetailStatusBadge.innerHTML = '<i class="fa-solid fa-circle-check"></i> 已完成';
+        } else {
+            dom.taskDetailStatusBadge.className = 'text-xs px-2.5 py-0.5 rounded border font-bold bg-stone-800 text-stone-300 border-stone-700 flex items-center gap-1';
+            dom.taskDetailStatusBadge.innerHTML = '<i class="fa-regular fa-circle"></i> 進行中';
+        }
+    }
+
+    if (dom.btnToggleTaskDetailStatus) {
+        if (task.completed) {
+            dom.btnToggleTaskDetailStatus.className = 'px-4 py-2 rounded-xl text-xs font-bold border transition-colors flex items-center gap-1.5 bg-red-950/60 text-red-300 border-red-800 hover:bg-red-900/80';
+            dom.btnToggleTaskDetailStatus.innerHTML = '<i class="fa-solid fa-rotate-left"></i> <span>取消完成狀態</span>';
+        } else {
+            dom.btnToggleTaskDetailStatus.className = 'px-4 py-2 rounded-xl text-xs font-bold border transition-colors flex items-center gap-1.5 bg-emerald-900/70 text-emerald-200 border-emerald-700 hover:bg-emerald-800';
+            dom.btnToggleTaskDetailStatus.innerHTML = '<i class="fa-solid fa-check"></i> <span>標記為已完成</span>';
+        }
+    }
+}
+
+export function closeTaskDetailModal() {
+    const modal = document.getElementById('modal-task-detail') || dom.modalTaskDetail;
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+    activeDetailTaskId = null;
+}
+
+export function openDischargeCelebrationModal() {
+    const modal = document.getElementById('modal-discharge-celebration') || dom.modalDischargeCelebration;
+    const nameEl = document.getElementById('discharge-user-name') || dom.dischargeUserName;
+    const rateEl = document.getElementById('discharge-rate-text');
+    if (modal) {
+        if (nameEl && state.userData && state.userData.name) {
+            nameEl.textContent = state.userData.name;
+        }
+        if (rateEl) {
+            let totalTasks = 0, completedTasks = 0;
+            state.journeyStages.forEach(s => s.tasks.forEach(t => { totalTasks++; if (t.completed) completedTasks++; }));
+            rateEl.textContent = `${completedTasks} / ${totalTasks} (100%)`;
+        }
+        modal.classList.remove('hidden');
+
+        if (window.confetti) {
+            window.confetti({
+                particleCount: 120,
+                spread: 90,
+                origin: { y: 0.5 }
+            });
+        }
+    }
+}
+
+export function closeDischargeCelebrationModal() {
+    const modal = document.getElementById('modal-discharge-celebration') || dom.modalDischargeCelebration;
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+export function setJourneyActiveStage(stageId) {
+    state.activeJourneyStage = stageId;
+    renderJourneySystem();
+}
+
+export function resetJourneyTasks() {
+    state.journeyStages.forEach(stage => {
+        stage.tasks.forEach(task => {
+            task.completed = false;
+        });
+    });
+    saveJourneyProgress();
+    renderJourneySystem();
+}
+
+export function saveJourneyProgress() {
+    try {
+        localStorage.setItem('simSoldier_journeyTasks', JSON.stringify(state.journeyStages));
+    } catch (e) {
+        console.error('Error saving journey progress:', e);
+    }
+}
+
+export function toggleJourneyTask(taskId, manualState = null) {
+    if (!state.journeyStages || state.journeyStages.length === 0) return;
+
+    let targetTask = null;
+    let targetStage = null;
+
+    for (const stage of state.journeyStages) {
+        const found = stage.tasks.find(t => t.id === taskId);
+        if (found) {
+            targetTask = found;
+            targetStage = stage;
+            break;
+        }
+    }
+
+    if (!targetTask) return;
+
+    const previousState = targetTask.completed;
+    targetTask.completed = manualState !== null ? manualState : !targetTask.completed;
+
+    saveJourneyProgress();
+    renderJourneySystem();
+
+    // Trigger celebration if newly completed
+    if (!previousState && targetTask.completed) {
+        let totalTasks = 0, completedTasks = 0;
+        state.journeyStages.forEach(s => s.tasks.forEach(t => { totalTasks++; if (t.completed) completedTasks++; }));
+
+        if (completedTasks === totalTasks && totalTasks > 0) {
+            // Full 100% Discharge Celebration!
+            openDischargeCelebrationModal();
+        } else if (targetStage) {
+            const isStageAllDone = targetStage.tasks.every(t => t.completed);
+            if (isStageAllDone && window.confetti) {
+                window.confetti({
+                    particleCount: 60,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+    }
+}
+
+export function syncJourneyAutoProgress(shouldRender = true) {
+    if (!state.journeyStages || state.journeyStages.length === 0) return;
+    let hasChanges = false;
+
+    // Check Backpack: if 8 required items or >= 8 items acquired, auto mark t1_5
+    if (state.backpack && state.backpack.length > 0) {
+        const requiredAcquired = state.backpack.filter(i => i.required && i.acquired).length;
+        const totalAcquired = state.backpack.filter(i => i.acquired).length;
+        if (requiredAcquired >= 6 || totalAcquired >= 8) {
+            const t1_5 = findTaskById('t1_5');
+            if (t1_5 && !t1_5.completed) {
+                t1_5.completed = true;
+                hasChanges = true;
+            }
+        }
+    }
+
+    // Check Training: if any day completed, auto mark t2_1
+    if (state.training && state.training.completed && state.training.completed.length > 0) {
+        const t2_1 = findTaskById('t2_1');
+        if (t2_1 && !t2_1.completed) {
+            t2_1.completed = true;
+            hasChanges = true;
+        }
+    }
+
+    if (hasChanges) {
+        saveJourneyProgress();
+        if (shouldRender) renderJourneySystem();
+    }
+}
+
+function findTaskById(taskId) {
+    if (!state.journeyStages) return null;
+    for (const stage of state.journeyStages) {
+        const found = stage.tasks.find(t => t.id === taskId);
+        if (found) return found;
+    }
+    return null;
+}
+
+export function renderJourneySystem() {
+    if (!state.journeyStages || state.journeyStages.length === 0) return;
+
+    // Calculate totals
+    let totalTasks = 0;
+    let completedTasks = 0;
+
+    state.journeyStages.forEach(stage => {
+        stage.tasks.forEach(task => {
+            totalTasks++;
+            if (task.completed) completedTasks++;
+        });
+    });
+
+    const percent = totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100);
+
+    // 1. Dynamic Element Lookup for 100% Reliability
+    const progressBar = document.getElementById('journey-progress-bar') || dom.journeyProgressBar;
+    const progressPercent = document.getElementById('journey-progress-percent') || dom.journeyProgressPercent;
+    const rankBadge = document.getElementById('journey-rank-badge') || dom.journeyRankBadge;
+    const tasksCount = document.getElementById('tasks-count') || dom.tasksCount;
+    const dailyTaskBar = document.getElementById('daily-task-bar') || dom.dailyTaskBar;
+    const dailyTaskPercent = document.getElementById('daily-task-percent') || dom.dailyTaskPercent;
+
+    if (progressBar) {
+        progressBar.style.width = `${percent}%`;
+    }
+    if (progressPercent) {
+        progressPercent.textContent = `${percent}%`;
+    }
+
+    // Also sync daily task bar in calendar widget
+    if (dailyTaskBar) {
+        dailyTaskBar.style.width = `${percent}%`;
+    }
+    if (dailyTaskPercent) {
+        dailyTaskPercent.textContent = `${percent}%`;
+    }
+
+    // 2. Determine Military Rank Title Badge
+    let rankTitle = '役男整備中';
+    let rankBadgeClass = 'bg-stone-800 text-stone-300 border-stone-600';
+    let rankIcon = 'fa-file-signature';
+
+    if (percent === 0) {
+        rankTitle = '役男整備中';
+        rankBadgeClass = 'bg-stone-800 text-stone-300 border-stone-600';
+        rankIcon = 'fa-file-signature';
+    } else if (percent > 0 && percent < 30) {
+        rankTitle = '準入營新兵';
+        rankBadgeClass = 'bg-emerald-950/80 text-emerald-300 border-emerald-700/60';
+        rankIcon = 'fa-shield-halved';
+    } else if (percent >= 30 && percent < 60) {
+        rankTitle = '新訓適應勇士';
+        rankBadgeClass = 'bg-amber-950/80 text-amber-300 border-amber-700/60';
+        rankIcon = 'fa-person-military-rifle';
+    } else if (percent >= 60 && percent < 90) {
+        rankTitle = '戰備一等兵';
+        rankBadgeClass = 'bg-blue-950/80 text-blue-300 border-blue-700/60';
+        rankIcon = 'fa-award';
+    } else if (percent >= 90 && percent < 100) {
+        rankTitle = '待退榮譽學長';
+        rankBadgeClass = 'bg-purple-950/80 text-purple-300 border-purple-700/60';
+        rankIcon = 'fa-star';
+    } else {
+        rankTitle = '光榮退伍傳奇';
+        rankBadgeClass = 'bg-gradient-to-r from-amber-600 to-yellow-500 text-stone-950 border-yellow-300 font-black animate-pulse';
+        rankIcon = 'fa-medal';
+    }
+
+    if (rankBadge) {
+        rankBadge.className = `text-xs px-2.5 py-0.5 rounded-full border font-bold flex items-center gap-1.5 transition-all ${rankBadgeClass}`;
+        rankBadge.innerHTML = `<i class="fa-solid ${rankIcon}"></i> ${rankTitle}`;
+    }
+
+    if (tasksCount) {
+        tasksCount.textContent = `已完成 ${completedTasks} / ${totalTasks} 項 (${percent}%)`;
+    }
+
+    // 3. Render 4 Stage Nodes Cards
+    renderJourneyNodes();
+
+    // 4. Render Stage Tasks List
+    renderJourneyTasksList();
+
+    // 5. Update Active Stage Filter Buttons UI
+    updateStageFilterTabsUI();
+}
+
+function renderJourneyNodes() {
+    const container = document.getElementById('journey-nodes-container') || dom.journeyNodesContainer;
+    if (!container) return;
+    container.innerHTML = '';
+
+    state.journeyStages.forEach(stage => {
+        const stageTotal = stage.tasks.length;
+        const stageCompleted = stage.tasks.filter(t => t.completed).length;
+        const stagePercent = stageTotal === 0 ? 0 : Math.round((stageCompleted / stageTotal) * 100);
+        const isDone = stageCompleted === stageTotal && stageTotal > 0;
+        const isSelected = state.activeJourneyStage === stage.id;
+
+        const card = document.createElement('div');
+        card.className = `p-4 rounded-2xl border transition-all duration-300 cursor-pointer flex flex-col justify-between group relative overflow-hidden ${
+            isSelected
+                ? 'bg-stone-800/90 border-green-500/80 ring-2 ring-green-500/30 shadow-[0_0_20px_rgba(34,197,94,0.15)]'
+                : isDone
+                ? 'bg-emerald-950/20 border-emerald-800/60 hover:bg-stone-800/60'
+                : 'bg-stone-950/60 border-stone-800 hover:border-stone-700 hover:bg-stone-800/40'
+        }`;
+
+        card.onclick = () => {
+            setJourneyActiveStage(stage.id);
+            const tasksCard = document.getElementById('tasks-card') || dom.tasksCard;
+            if (tasksCard) {
+                tasksCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        };
+
+        let badgeHtml = '';
+        if (isDone) {
+            badgeHtml = `<span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-900/80 text-emerald-300 border border-emerald-700/60 flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> 已達成</span>`;
+        } else if (stageCompleted > 0) {
+            badgeHtml = `<span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-950/80 text-amber-300 border border-amber-700/60 flex items-center gap-1"><i class="fa-solid fa-spinner fa-spin"></i> 進行中</span>`;
+        } else {
+            badgeHtml = `<span class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-stone-800 text-stone-400 border border-stone-700 flex items-center gap-1"><i class="fa-regular fa-circle"></i> 待整備</span>`;
+        }
+
+        card.innerHTML = `
+            <div>
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-mono font-bold text-stone-400">STAGE 0${stage.number}</span>
+                    ${badgeHtml}
+                </div>
+                <div class="flex items-center gap-2.5 mb-1.5">
+                    <div class="w-8 h-8 rounded-lg bg-stone-800 border border-stone-700/80 flex items-center justify-center text-sm ${isDone ? 'text-emerald-400' : 'text-stone-300'} group-hover:scale-110 transition-transform">
+                        <i class="fa-solid ${stage.icon}"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-base text-white group-hover:text-green-400 transition-colors">${stage.title}</h4>
+                        <div class="text-[11px] text-stone-400">${stage.period}</div>
+                    </div>
+                </div>
+                <p class="text-xs text-stone-400 leading-relaxed mt-2 line-clamp-2">${stage.description}</p>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-stone-800/80">
+                <div class="flex justify-between items-center text-xs mb-1.5">
+                    <span class="text-stone-400">階段進度</span>
+                    <span class="font-mono font-bold ${isDone ? 'text-emerald-400' : 'text-stone-300'}">${stageCompleted} / ${stageTotal} (${stagePercent}%)</span>
+                </div>
+                <div class="w-full bg-stone-900 rounded-full h-1.5 overflow-hidden">
+                    <div class="h-full rounded-full transition-all duration-500 ${isDone ? 'bg-emerald-500' : 'bg-green-600'}" style="width: ${stagePercent}%"></div>
+                </div>
+            </div>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+function renderJourneyTasksList() {
+    const container = document.getElementById('tasks-list') || dom.tasksList;
+    if (!container) return;
+    container.innerHTML = '';
+
+    const currentFilter = state.activeJourneyStage || 'all';
+
+    const stagesToRender = currentFilter === 'all'
+        ? state.journeyStages
+        : state.journeyStages.filter(s => s.id === currentFilter);
+
+    if (stagesToRender.length === 0) {
+        container.innerHTML = `<div class="text-center py-8 text-stone-500 text-sm">無對應階段任務</div>`;
+        return;
+    }
+
+    stagesToRender.forEach(stage => {
+        // Stage Header
+        const stageHeader = document.createElement('div');
+        stageHeader.className = 'pt-2 pb-1 flex items-center justify-between border-b border-stone-800 mb-2';
+        stageHeader.innerHTML = `
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                <span class="text-xs font-bold uppercase tracking-wider text-stone-300">階段 0${stage.number}：${stage.title}</span>
+                <span class="text-[11px] text-stone-500">(${stage.period})</span>
+            </div>
+            <span class="text-xs font-mono text-stone-400 font-bold">${stage.tasks.filter(t => t.completed).length}/${stage.tasks.length}</span>
+        `;
+        container.appendChild(stageHeader);
+
+        // Tasks in this stage
+        stage.tasks.forEach(task => {
+            const taskEl = document.createElement('div');
+            taskEl.className = `flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border transition-all duration-200 group ${
+                task.completed
+                    ? 'bg-emerald-950/15 border-emerald-800/40 hover:bg-emerald-950/25'
+                    : 'bg-stone-800/50 border-stone-700/60 hover:bg-stone-800/80 hover:border-stone-600'
+            }`;
+
+            // Type badge color mapping
+            const typeBadgeColors = {
+                main: 'bg-emerald-950/80 text-emerald-300 border-emerald-700/60',
+                equipment: 'bg-purple-950/80 text-purple-300 border-purple-700/60',
+                prep: 'bg-cyan-950/80 text-cyan-300 border-cyan-700/60',
+                training: 'bg-amber-950/80 text-amber-300 border-amber-700/60',
+                quiz: 'bg-indigo-950/80 text-indigo-300 border-indigo-700/60',
+                unit: 'bg-blue-950/80 text-blue-300 border-blue-700/60',
+                daily: 'bg-teal-950/80 text-teal-300 border-teal-700/60',
+                discharge: 'bg-rose-950/80 text-rose-300 border-rose-700/60',
+                game: 'bg-orange-950/80 text-orange-300 border-orange-700/60',
+                media: 'bg-pink-950/80 text-pink-300 border-pink-700/60'
+            };
+            const badgeClass = typeBadgeColors[task.type] || 'bg-stone-800 text-stone-300 border-stone-700';
+
+            // Action Button
+            let actionBtnHtml = '';
+            if (task.linkTab) {
+                const tabNames = {
+                    inventory: '前往入伍背包',
+                    training: '前往今日課表',
+                    shooting: '前往射擊口訣',
+                    quiz: '前往天兵課堂',
+                    chat: task.id === 't1_2' ? '諮詢體檢地點' : '諮詢 AI 教官',
+                    delay: '前往延役專區',
+                    docs: '查看法規與折抵',
+                    game: '前往模擬籤筒',
+                    rhapsody: '前往大兵狂想曲'
+                };
+                const label = tabNames[task.linkTab] || '前往查看';
+                actionBtnHtml = `
+                    <button class="btn-task-action text-xs px-2.5 py-1 rounded bg-stone-700/80 hover:bg-green-700 text-stone-200 hover:text-white border border-stone-600 hover:border-green-500 transition-colors flex items-center gap-1 font-medium whitespace-nowrap"
+                        data-tab="${task.linkTab}" data-task-id="${task.id}">
+                        <span>${label}</span>
+                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                `;
+            } else if (task.linkUrl) {
+                actionBtnHtml = `
+                    <a href="${task.linkUrl}" target="_blank" rel="noopener noreferrer"
+                        class="text-xs px-2.5 py-1 rounded bg-stone-700/80 hover:bg-blue-700 text-stone-200 hover:text-white border border-stone-600 hover:border-blue-500 transition-colors flex items-center gap-1 font-medium whitespace-nowrap">
+                        <span>線上申報</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                    </a>
+                `;
+            }
+
+            taskEl.innerHTML = `
+                <div class="flex items-start gap-3 flex-1 cursor-pointer task-content-area">
+                    <input type="checkbox" class="task-journey-checkbox w-5 h-5 mt-0.5 accent-green-600 rounded cursor-pointer shrink-0"
+                        ${task.completed ? 'checked' : ''} data-task-id="${task.id}">
+                    <div class="flex-1">
+                        <div class="flex flex-wrap items-center gap-2 mb-1">
+                            <span class="text-[10px] px-2 py-0.5 rounded border font-bold ${badgeClass}">
+                                ${task.typeName}
+                            </span>
+                            <span class="font-bold text-sm text-stone-100 group-hover:text-green-400 transition-colors ${task.completed ? 'line-through text-stone-400' : ''}">
+                                ${task.title}
+                            </span>
+                            <span class="text-[10px] text-stone-500 hidden sm:inline-block">
+                                <i class="fa-solid fa-circle-info"></i> 點擊查看詳情
+                            </span>
+                        </div>
+                        <p class="text-xs text-stone-400 leading-relaxed">${task.note || ''}</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 self-end sm:self-center pl-8 sm:pl-0">
+                    ${actionBtnHtml}
+                </div>
+            `;
+
+            // Bind checkbox change
+            const checkbox = taskEl.querySelector('.task-journey-checkbox');
+            if (checkbox) {
+                checkbox.addEventListener('change', () => {
+                    toggleJourneyTask(task.id, checkbox.checked);
+                });
+            }
+
+            // Bind click on task content (excluding checkbox) to open detail modal
+            const contentArea = taskEl.querySelector('.task-content-area');
+            if (contentArea) {
+                contentArea.addEventListener('click', (e) => {
+                    if (e.target.closest('.task-journey-checkbox')) return;
+                    openTaskDetailModal(task.id);
+                });
+            }
+
+            // Bind action button click
+            const actionBtn = taskEl.querySelector('.btn-task-action');
+            if (actionBtn) {
+                actionBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const tabId = actionBtn.dataset.tab;
+                    const taskId = actionBtn.dataset.taskId;
+                    if (tabId) {
+                        switchTab(tabId);
+                        const currentTask = findTaskById(taskId);
+                        if (currentTask && currentTask.prompt) {
+                            fillAndFocusChatPrompt(currentTask.prompt);
+                        }
+                    }
+                });
+            }
+
+            container.appendChild(taskEl);
+        });
+    });
+}
+
+function updateStageFilterTabsUI() {
+    const current = state.activeJourneyStage || 'all';
+    document.querySelectorAll('.journey-stage-tab').forEach(btn => {
+        if (btn.dataset.stage === current) {
+            btn.className = 'journey-stage-tab px-3 py-1.5 rounded-lg border font-bold transition-all shrink-0 bg-green-900/40 text-green-300 border-green-700/60 shadow-sm';
+        } else {
+            btn.className = 'journey-stage-tab px-3 py-1.5 rounded-lg border font-medium transition-all shrink-0 bg-stone-800/80 text-stone-400 border-stone-700/60 hover:text-stone-200';
+        }
+    });
+}
+
+export function fillAndFocusChatPrompt(promptText) {
+    const chatInput = document.getElementById('chat-input') || dom.chatInput;
+    if (chatInput) {
+        chatInput.value = promptText;
+        setTimeout(() => {
+            chatInput.focus();
+            if (chatInput.setSelectionRange) {
+                chatInput.setSelectionRange(promptText.length, promptText.length);
+            }
+        }, 150);
+    }
 }

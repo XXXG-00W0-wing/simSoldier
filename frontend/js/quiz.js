@@ -1,5 +1,6 @@
 import { api } from './api.js';
 import { dom } from './ui.js';
+import { toggleJourneyTask } from './features.js';
 
 let quizData = [];
 let currentIndex = 0;
@@ -322,6 +323,10 @@ function showResults() {
         qDom.rankText.className = `text-xl font-bold mb-8 tracking-wider ${color}`;
     }
 
+    if (score >= 400) {
+        toggleJourneyTask('t2_3', true);
+    }
+
     if (score >= 500 && window.confetti) {
         window.confetti({
             particleCount: 150,
@@ -443,7 +448,7 @@ function renderMatchSlots() {
         const dropZone = document.createElement('div');
         dropZone.dataset.index = index;
         dropZone.onclick = () => onMatchSlotClick(index);
-        
+
         let dropZoneBaseClass = 'w-full sm:w-1/5 min-h-[60px] sm:min-h-[100px] h-full flex flex-col items-center justify-center rounded-xl font-bold cursor-pointer transition-colors px-2 py-2 text-center shadow-inner text-sm md:text-base';
 
         if (matchQuizState.userAnswers[index]) {
@@ -510,7 +515,7 @@ function gradeRankMatchRound() {
     matchQuizState.currentRoundData.forEach((correctRank, index) => {
         const dropZone = slots[index].lastElementChild;
         const userAnswer = matchQuizState.userAnswers[index];
-        
+
         let dropZoneBaseClass = 'w-full sm:w-1/5 min-h-[60px] sm:min-h-[100px] h-full flex flex-col items-center justify-center rounded-xl font-bold cursor-default px-2 py-2 text-center shadow-inner text-sm md:text-base';
 
         if (userAnswer === correctRank) {
@@ -563,6 +568,10 @@ function showRankMatchResult() {
     if (mDom.finalRankText) {
         mDom.finalRankText.textContent = `等級：${rank}`;
         mDom.finalRankText.className = `text-2xl font-bold mb-8 tracking-wider ${color}`;
+    }
+
+    if (matchQuizState.score >= 60) {
+        toggleJourneyTask('t2_3', true);
     }
 
     if (matchQuizState.score >= 80 && window.confetti) {

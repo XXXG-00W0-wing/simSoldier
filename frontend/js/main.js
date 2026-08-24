@@ -5,12 +5,12 @@
 
 import { api } from './api.js';
 import { state, INITIAL_BACKPACK } from './state.js';
-import { dom, switchTab, renderSidebarNav, openScenarioModal, closeScenarioModal, SCENARIO_CONFIG } from './ui.js';
+import { dom, switchTab, renderSidebarNav, openScenarioModal, closeScenarioModal, SCENARIO_CONFIG, updateNoticeVisibility } from './ui.js';
 import { determineServiceType, bmi } from './utils.js';
 import * as game from './game.js';
-import * as features from './features.js?v=4';
+import * as features from './features.js';
 import { training_ai } from './training_ai.js';
-import { initQuiz } from './quiz.js?v=105';
+import { initQuiz } from './quiz.js';
 import { initDelay } from './delay.js';
 import { initShootingGame } from './shooting.js';
 
@@ -35,30 +35,19 @@ async function init() {
         if (user) {
             if (!user.profile) {
                 console.warn('Auto-fixing missing user profile...');
-                user.profile = { name: "士兵", height: 175, weight: 70, role: "regular", disability: false, date: null };
+                user.profile = { name: "士兵", height: 175, weight: 70, role: 1, role_name: "準備入營", scenario: "preparing", date: null };
             }
             state.isLoggedIn = true;
             state.userData = user.profile;
+            state.userScenario = user.scenario || 'preparing';
             state.serviceStatus = determineServiceType(
                 bmi(user.profile.height, user.profile.weight),
                 user.profile.role,
-                user.profile.disability,
+                'none',
                 user.profile.birthday
             );
 
             updateUIForUser();
-
-            // Dynamic Backpack Items
-            if (state.userData.medication) {
-                state.backpack.push({
-                    id: 99,
-                    name: "診斷證明書",
-                    category: "document",
-                    acquired: false,
-                    required: true,
-                    note: "慢性病佐證(正本)"
-                });
-            }
         } else {
             console.error('User not found, clearing session.');
             // 只清空當前登入狀態，絕對不要動 localStorage
@@ -71,6 +60,7 @@ async function init() {
         features.startCountdownTimer();
         features.setupDateInputs(); // Init Date Input Logic
         features.initChatGreeting(); // 根據兵役狀態與日期產生自適應的教官開場白
+        features.initJourneySystem(); // 初始化服役歷程進度系統
         setupEventListeners();
 
         // 啟動 AI 訓練模組與天兵課堂
@@ -103,13 +93,22 @@ async function init() {
         }
 
         // Scenario Triage & Dynamic Sidebar Navigation Initialization
-        const savedScenario = localStorage.getItem('simSoldier_userScenario');
-        if (savedScenario && SCENARIO_CONFIG[savedScenario]) {
-            state.userScenario = savedScenario;
-            renderSidebarNav(savedScenario);
-        } else {
+        const isJustRegistered = sessionStorage.getItem('simSoldier_justRegistered') === 'true';
+        if (isJustRegistered) {
+            sessionStorage.removeItem('simSoldier_justRegistered');
+            state.userScenario = 'preparing';
             renderSidebarNav('preparing');
-            openScenarioModal(false);
+            openScenarioModal(false); // 註冊完成後立即彈出「選擇您的服役情境身分」
+        } else {
+            const initialScenario = state.userScenario || localStorage.getItem('simSoldier_userScenario') || 'preparing';
+            state.userScenario = initialScenario;
+            localStorage.setItem('simSoldier_userScenario', initialScenario);
+            renderSidebarNav(initialScenario);
+
+            // If user scenario was not set previously, prompt modal
+            if (!user || !user.role_name) {
+                openScenarioModal(false);
+            }
         }
 
         // Reveal UI after successful load
@@ -174,6 +173,11 @@ function updateUIForUser() {
     // Tasks Unlock
     dom.tasksCard.classList.remove('opacity-50', 'pointer-events-none', 'grayscale');
     dom.tasksLockOverlay.classList.add('hidden');
+    features.renderJourneySystem();
+
+    // Notice Visibility & Task Progression based on Scenario
+    updateNoticeVisibility(state.userScenario || 'preparing');
+    features.applyScenarioTaskProgression(state.userScenario || 'preparing');
 }
 
 
@@ -230,16 +234,33 @@ function setupEventListeners() {
 
     // Confirm Scenario Button
     if (dom.btnConfirmScenario) {
-        dom.btnConfirmScenario.addEventListener('click', () => {
+        dom.btnConfirmScenario.addEventListener('click', async () => {
+            const originalBtnText = dom.btnConfirmScenario.innerHTML;
+
+            // 1. 立即套用狀態並更新 UI
             state.userScenario = pendingScenario;
             localStorage.setItem('simSoldier_userScenario', pendingScenario);
             renderSidebarNav(pendingScenario);
+            features.initChatGreeting(); // 即時同步更新聊天室教官開場白
+            features.applyScenarioTaskProgression(pendingScenario); // 正在入營自動推進階段一與階段二任務
 
-            // Switch to default tab for scenario
+            // 2. 切換對應的預設分頁並立即關閉彈窗 (極速響應)
             const defaultTab = SCENARIO_CONFIG[pendingScenario]?.defaultTab || 'home';
             switchTab(defaultTab);
-
             closeScenarioModal();
+
+            // 3. 背景異步同步至 PostgreSQL 資料庫
+            try {
+                await api.updateScenario(pendingScenario);
+                console.log(`[SimSoldier] Successfully synced scenario '${pendingScenario}' to database.`);
+            } catch (err) {
+                console.warn('[SimSoldier] Background sync scenario warning:', err);
+            } finally {
+                if (dom.btnConfirmScenario) {
+                    dom.btnConfirmScenario.innerHTML = originalBtnText;
+                    dom.btnConfirmScenario.disabled = false;
+                }
+            }
         });
     }
 
@@ -267,17 +288,9 @@ function setupEventListeners() {
         dom.btnHeaderScenarioSwitch.addEventListener('click', () => openScenarioModal(true));
     }
 
-    // Onboarding Modal
-    dom.inputRole.addEventListener('change', (e) => {
-        if (e.target.value === 'disability') {
-            dom.sectionDisability.classList.remove('hidden');
-        } else {
-            dom.sectionDisability.classList.add('hidden');
-        }
-    });
-
-    dom.btnSubmitOnboarding.addEventListener('click', handleOnboardingSubmit);
-    dom.btnCloseOnboarding.addEventListener('click', () => dom.modalOnboarding.classList.add('hidden'));
+    // Onboarding / Profile Edit Modal
+    if (dom.btnSubmitOnboarding) dom.btnSubmitOnboarding.addEventListener('click', handleOnboardingSubmit);
+    if (dom.btnCloseOnboarding) dom.btnCloseOnboarding.addEventListener('click', () => dom.modalOnboarding.classList.add('hidden'));
 
     // Edit Profile Buttons
     const openModal = () => {
@@ -302,17 +315,8 @@ function setupEventListeners() {
                 if (dom.inputBirthdayD) dom.inputBirthdayD.value = d;
             }
 
-            dom.inputRole.value = state.userData.role || 'regular';
             dom.inputHeight.value = state.userData.height || 175;
             dom.inputWeight.value = state.userData.weight || 70;
-            if (dom.inputMeds) dom.inputMeds.checked = state.userData.medication || false;
-
-            if (state.userData.role === 'disability') {
-                dom.sectionDisability.classList.remove('hidden');
-                dom.inputDisabilityType.value = state.userData.disability || 'none';
-            } else {
-                dom.sectionDisability.classList.add('hidden');
-            }
         }
     };
 
@@ -569,11 +573,8 @@ async function handleOnboardingSubmit() {
     const birthD = dom.inputBirthdayD.value.padStart(2, '0');
     const birthday = (birthY && birthM && birthD) ? `${birthY}-${birthM}-${birthD}` : '';
 
-    const role = dom.inputRole.value;
-    const disability = dom.inputDisabilityType.value;
     const height = dom.inputHeight.value;
     const weight = dom.inputWeight.value;
-    const hasMeds = dom.inputMeds.checked;
     const btnSubmit = dom.btnSubmitOnboarding;
 
     if (!name || !date) {
@@ -581,7 +582,11 @@ async function handleOnboardingSubmit() {
         return;
     }
 
-    const userData = { name, date, birthday, role, disability, height, weight, medication: hasMeds };
+    const currentRole = state.userData?.role;
+    const userData = { name, date, birthday, height, weight };
+    if (currentRole) {
+        userData.role = currentRole;
+    }
 
     const originalText = btnSubmit.innerHTML;
     btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>處理中...';
@@ -596,9 +601,10 @@ async function handleOnboardingSubmit() {
             return;
         }
 
-        // Update local state
-        state.userData = userData;
-        state.serviceStatus = determineServiceType(bmi(height, weight), role, disability, birthday);
+        // Update local state (保持當前情境身分不變)
+        state.userData = { ...state.userData, ...userData };
+
+        state.serviceStatus = determineServiceType(bmi(height, weight), currentRole, 'none', birthday);
 
         updateUIForUser();
         dom.modalOnboarding.classList.add('hidden');

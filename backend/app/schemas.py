@@ -5,11 +5,11 @@ from datetime import date, datetime
 class UserBase(BaseModel):
     username: str
     role: Optional[int] = None
+    role_name: Optional[str] = None
     date_of_birth: Optional[date] = None
     height: Optional[int] = None
     weight: Optional[int] = None
     entrance_date: Optional[date] = None
-    do_have_chronic_medications: Optional[bool] = None
 
 class UserCreate(UserBase):
     password: str
@@ -17,22 +17,22 @@ class UserCreate(UserBase):
 class UserUpdate(BaseModel):
     username: Optional[str] = None
     role: Optional[int] = None
+    role_name: Optional[str] = None
     date_of_birth: Optional[date] = None
     height: Optional[int] = None
     weight: Optional[int] = None
     entrance_date: Optional[date] = None
-    do_have_chronic_medications: Optional[bool] = None
     password: Optional[str] = None
     game_progress: Optional[int] = None
 
 class UserResponse(UserBase):
     id: int
-    game_progress: int
+    game_progress: Optional[int] = 0
     height: Optional[int] = None
     weight: Optional[int] = None
     role: Optional[int] = None
+    role_name: Optional[str] = None
     entrance_date: Optional[date] = None
-    do_have_chronic_medications: Optional[bool] = None
     date_of_registration: datetime
 
     class Config:
@@ -48,14 +48,24 @@ class TokenData(BaseModel):
 class ChatRequest(BaseModel):
     question: str
 
+class QuizOptionResponse(BaseModel):
+    id: int
+    option_key: str
+    option_text: str
+    is_correct: bool
+
+    class Config:
+        from_attributes = True
+
 class QuizQuestionResponse(BaseModel):
     id: int
     question: str
-    option_a: str
-    option_b: str
-    option_c: str
-    option_d: str
-    correct_option: str
+    options: List[QuizOptionResponse] = []
+    option_a: Optional[str] = None
+    option_b: Optional[str] = None
+    option_c: Optional[str] = None
+    option_d: Optional[str] = None
+    correct_option: Optional[str] = None
     explanation: Optional[str] = None
     source: Optional[str] = None
 

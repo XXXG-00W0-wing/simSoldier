@@ -289,25 +289,6 @@
                 </div>
             </div>
 
-            <div>
-                <label class="block text-sm text-stone-400 mb-1">身分</label>
-                <select id="input-role"
-                    class="w-full bg-stone-900 border border-stone-600 rounded p-2 focus:border-green-500 focus:outline-none">
-                    <option value="regular">常備兵</option>
-                </select>
-            </div>
-
-            <div id="section-disability" class="hidden">
-                <label class="block text-sm text-stone-400 mb-1">障礙類別</label>
-                <select id="input-disability-type"
-                    class="w-full bg-stone-900 border border-stone-600 rounded p-2 focus:border-green-500 focus:outline-none">
-                    <option value="none">請選擇</option>
-                    <option value="physical">肢體障礙</option>
-                    <option value="mental">智能/精神障礙 (如唐氏症)</option>
-                    <option value="visual">視障</option>
-                </select>
-            </div>
-
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm text-stone-400 mb-1">身高 (cm)</label>
@@ -320,14 +301,6 @@
                         class="w-full bg-stone-900 border border-stone-600 rounded p-2 font-tech">
                 </div>
             </div>
-
-            <div class="flex items-center gap-2 p-2 bg-stone-900/50 rounded border border-stone-800">
-                <input type="checkbox" id="input-meds"
-                    class="w-4 h-4 rounded border-stone-600 bg-stone-900 text-green-600 focus:ring-green-500">
-                <label for="input-meds" class="text-sm text-stone-400 cursor-pointer select-none">我有使用慢性藥物習慣</label>
-            </div>
-
-
 
             <button id="btn-submit-onboarding"
                 class="w-full bg-green-700 hover:bg-green-600 text-white font-bold py-3 rounded mt-4 transition-colors">
@@ -412,6 +385,106 @@
     </div>
 </div>
 
+<!-- Task Detail Modal -->
+<div id="modal-task-detail"
+    class="fixed inset-0 z-[60] bg-black/90 flex items-center justify-center p-4 backdrop-blur-sm hidden">
+    <div class="max-w-xl w-full bg-stone-900 rounded-2xl border border-stone-700 shadow-2xl relative overflow-hidden animate-fade-in flex flex-col max-h-[90vh]">
+        <!-- Header -->
+        <div class="bg-stone-800/90 border-b border-stone-700 p-5 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-green-950/80 border border-green-700/60 flex items-center justify-center text-green-400 text-lg shadow">
+                    <i id="task-detail-icon" class="fa-solid fa-list-check"></i>
+                </div>
+                <div>
+                    <div id="task-detail-stage-badge" class="text-[11px] font-mono text-stone-400 font-bold uppercase tracking-wider">STAGE 01</div>
+                    <h3 id="task-detail-title" class="text-lg md:text-xl font-bold text-white leading-tight">任務名稱</h3>
+                </div>
+            </div>
+            <button id="btn-close-task-detail" class="text-stone-400 hover:text-white p-2 transition-colors">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Body -->
+        <div class="p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
+            <div class="flex items-center gap-2">
+                <span id="task-detail-type-badge" class="text-xs px-2.5 py-0.5 rounded border font-bold bg-emerald-950 text-emerald-300 border-emerald-700">主線任務</span>
+                <span id="task-detail-status-badge" class="text-xs px-2.5 py-0.5 rounded border font-bold bg-stone-800 text-stone-300 border-stone-700">進行中</span>
+            </div>
+
+            <div class="bg-stone-950/70 p-4 rounded-xl border border-stone-800">
+                <h4 class="text-xs font-bold text-stone-400 uppercase mb-2 flex items-center gap-1.5">
+                    <i class="fa-solid fa-circle-info text-green-500"></i> 任務說明與指引
+                </h4>
+                <p id="task-detail-desc" class="text-sm text-stone-200 leading-relaxed whitespace-pre-wrap"></p>
+            </div>
+
+            <div class="bg-stone-800/40 p-4 rounded-xl border border-stone-700/60">
+                <h4 class="text-xs font-bold text-yellow-500 uppercase mb-1.5 flex items-center gap-1.5">
+                    <i class="fa-solid fa-lightbulb"></i> 備忘與操作要點
+                </h4>
+                <p id="task-detail-note" class="text-xs text-stone-300 leading-relaxed"></p>
+            </div>
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="p-4 bg-stone-950/80 border-t border-stone-800 flex flex-wrap items-center justify-between gap-3">
+            <button id="btn-toggle-task-detail-status"
+                class="px-4 py-2 rounded-xl text-xs font-bold border transition-colors flex items-center gap-1.5 bg-stone-800 text-stone-200 border-stone-600 hover:bg-stone-700">
+                <i class="fa-solid fa-check"></i> <span>標記為已完成</span>
+            </button>
+            <div class="flex items-center gap-2">
+                <button id="btn-task-detail-action"
+                    class="px-5 py-2 rounded-xl text-xs font-bold bg-green-700 hover:bg-green-600 text-white transition-colors flex items-center gap-1.5 shadow">
+                    <span>前往對應模組</span>
+                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Discharge Certificate Celebration Modal -->
+<div id="modal-discharge-celebration"
+    class="fixed inset-0 z-[70] bg-black/95 flex items-center justify-center p-4 backdrop-blur-md hidden">
+    <div class="max-w-md w-full bg-gradient-to-b from-stone-900 via-stone-900 to-stone-950 rounded-3xl border-2 border-yellow-500/80 shadow-[0_0_50px_rgba(234,179,8,0.4)] relative overflow-hidden animate-fade-in p-6 text-center">
+        <div class="absolute -top-12 -right-12 w-32 h-32 bg-yellow-500/10 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="absolute -bottom-12 -left-12 w-32 h-32 bg-green-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+        <div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-tr from-yellow-600 to-amber-400 p-0.5 shadow-[0_0_25px_rgba(234,179,8,0.6)] mb-4 flex items-center justify-center">
+            <div class="w-full h-full rounded-full bg-stone-950 flex items-center justify-center">
+                <i class="fa-solid fa-medal text-4xl text-yellow-400 animate-bounce"></i>
+            </div>
+        </div>
+
+        <div class="text-xs font-mono font-bold tracking-[0.3em] text-yellow-400 uppercase mb-1">HONORABLE DISCHARGE</div>
+        <h2 class="text-2xl font-black text-white tracking-wider mb-3">中華民國役男光榮退伍令</h2>
+
+        <div class="bg-stone-950/80 border border-yellow-600/40 rounded-2xl p-4 mb-5 text-left text-xs space-y-2.5">
+            <div class="flex justify-between items-center pb-2 border-b border-stone-800">
+                <span class="text-stone-400">役男姓名：</span>
+                <span id="discharge-user-name" class="font-bold text-white text-sm">士兵</span>
+            </div>
+            <div class="flex justify-between items-center pb-2 border-b border-stone-800">
+                <span class="text-stone-400">最高成就稱號：</span>
+                <span class="font-bold text-yellow-400 flex items-center gap-1"><i class="fa-solid fa-crown"></i> 光榮退伍傳奇</span>
+            </div>
+            <div class="flex justify-between items-center pb-2 border-b border-stone-800">
+                <span class="text-stone-400">歷程任務完成率：</span>
+                <span id="discharge-rate-text" class="font-bold text-green-400 font-mono">100% 全數達成</span>
+            </div>
+            <p class="text-stone-300 leading-relaxed pt-1 text-[11px]">
+                茲證明該役男已圓滿達成由「兵役整備」、「入營適應」、「入營服役」至「退伍倒數」全歷程階段任務，表現卓越，特頒此令以資表彰，並祝前程似錦、歸鄉大吉！
+            </p>
+        </div>
+
+        <button id="btn-close-discharge-modal"
+            class="w-full py-3 rounded-xl font-bold text-stone-950 bg-gradient-to-r from-yellow-500 via-amber-400 to-yellow-500 hover:from-yellow-400 hover:to-amber-300 transition-all shadow-lg flex items-center justify-center gap-2">
+            <i class="fa-solid fa-check"></i> 領取退伍令並返回戰情中心
+        </button>
+    </div>
+</div>
+
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const modalTimeline = document.getElementById('modal-timeline');
@@ -438,26 +511,26 @@
             });
         }
 
-        // Notice Horizontal Panel Controls
-        const noticePanel = document.getElementById('notice-horizontal-panel');
-        const btnCloseNotice = document.getElementById('btn-close-notice-panel');
-        const btnToggleNotice = document.getElementById('btn-toggle-notice-panel');
+        // Notice Section Controls
+        const btnToggleNoticeCollapse = document.getElementById('btn-toggle-notice-collapse');
+        const noticeCardsContainer = document.getElementById('notice-cards-container');
+        const iconNoticeCollapse = document.getElementById('icon-notice-collapse');
+        const textNoticeCollapse = document.getElementById('text-notice-collapse');
 
-        if (btnCloseNotice && noticePanel) {
-            btnCloseNotice.addEventListener('click', () => {
-                noticePanel.classList.add('hidden');
-                if (btnToggleNotice) btnToggleNotice.classList.remove('hidden');
+        if (btnToggleNoticeCollapse && noticeCardsContainer) {
+            btnToggleNoticeCollapse.addEventListener('click', () => {
+                const isCollapsed = noticeCardsContainer.classList.toggle('hidden');
+                if (isCollapsed) {
+                    if (iconNoticeCollapse) iconNoticeCollapse.style.transform = 'rotate(180deg)';
+                    if (textNoticeCollapse) textNoticeCollapse.textContent = '展開';
+                } else {
+                    if (iconNoticeCollapse) iconNoticeCollapse.style.transform = 'rotate(0deg)';
+                    if (textNoticeCollapse) textNoticeCollapse.textContent = '收合';
+                }
             });
         }
 
-        if (btnToggleNotice && noticePanel) {
-            btnToggleNotice.addEventListener('click', () => {
-                noticePanel.classList.remove('hidden');
-                btnToggleNotice.classList.add('hidden');
-            });
-        }
-
-        const noticeScrollContainer = document.querySelector('#notice-horizontal-panel .overflow-x-auto');
+        const noticeScrollContainer = document.getElementById('notice-cards-container');
         if (noticeScrollContainer) {
             noticeScrollContainer.addEventListener('wheel', (e) => {
                 if (e.deltaY !== 0) {
@@ -726,104 +799,32 @@
                         </div>
                     </div>
 
-                    <!-- Timeline Section -->
-                    <div class="bg-stone-900 p-6 rounded-lg shadow-lg flex flex-col justify-center">
-                        <div class="flex items-center justify-between mb-6">
-                            <h3 class="font-bold text-white flex items-center gap-2 text-xl">
-                                <i class="fa-solid fa-timeline text-green-500"></i>
-                                <span>徵兵處理流程</span>
-                            </h3>
-                            <button id="btn-toggle-notice-panel"
-                                class="hidden text-xs bg-stone-800 hover:bg-stone-700 text-yellow-500 hover:text-yellow-400 border border-yellow-600/40 px-3 py-1.5 rounded-full transition-all flex items-center gap-1.5 shadow-sm focus:outline-none">
-                                <i class="fa-solid fa-file-contract"></i>
-                                <span>顯示注意事項</span>
+                    <!-- 注意事項 (獨立專區，僅在「準備入營」與「延緩入營」情境顯示) -->
+                    <div id="section-notice"
+                        class="bg-stone-900 p-6 rounded-lg shadow-lg flex flex-col justify-center border border-stone-800/80 transition-all duration-300">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-2.5">
+                                <div
+                                    class="w-8 h-8 rounded-full bg-yellow-950/80 border border-yellow-600/50 flex items-center justify-center shadow">
+                                    <i class="fa-solid fa-file-contract text-yellow-500 text-sm"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-yellow-500 flex items-center gap-2">
+                                        <span>徵兵與入營注意事項</span>
+                                        <span
+                                            class="text-xs text-stone-400 bg-stone-800/90 px-2.5 py-0.5 rounded-full border border-stone-700/60 font-normal hidden sm:inline-block">共
+                                            12 條重要法規須知 • 左右滑動瀏覽</span>
+                                    </h4>
+                                </div>
+                            </div>
+                            <button id="btn-toggle-notice-collapse"
+                                class="text-xs bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-white border border-stone-700 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 focus:outline-none">
+                                <i class="fa-solid fa-chevron-up text-xs transition-transform duration-300" id="icon-notice-collapse"></i>
+                                <span id="text-notice-collapse">收合</span>
                             </button>
                         </div>
 
-                        <!-- Timeline part (Full Width) -->
-                        <div
-                            class="relative flex flex-col md:flex-row justify-between items-start md:items-start w-full md:px-12 py-2">
-                            <!-- horizontal line (desktop) -->
-                            <div class="hidden md:block absolute left-24 right-24 top-5 h-1 bg-stone-700 rounded">
-                            </div>
-                            <!-- vertical line (mobile fallback) -->
-                            <div class="md:hidden absolute left-[1.65rem] top-4 bottom-10 w-1 bg-stone-700 rounded">
-                            </div>
-
-                            <!-- 兵籍調查 -->
-                            <div
-                                class="relative flex flex-row md:flex-col items-center group w-full md:w-1/3 mb-8 md:mb-0">
-                                <div
-                                    class="w-6 h-6 shrink-0 rounded-full bg-stone-500 border-4 border-stone-900 group-hover:bg-green-500 transition-colors md:mb-4 mr-4 md:mr-0 z-10 relative">
-                                </div>
-                                <button class="timeline-btn text-left md:text-center focus:outline-none w-full"
-                                    data-title="兵籍調查"
-                                    data-content="役男在接獲戶籍地鄉(鎮、巿、區)公所通知辦理兵籍調查時，除可至「徵兵及齡男子兵籍調查線上申報系統」進行網路申報，亦可親自、委託代理人前往指定地點、臨櫃、傳真或郵寄的方式完成兵籍調查。">
-                                    <h4
-                                        class="text-lg font-bold text-stone-200 group-hover:text-green-400 transition-colors whitespace-nowrap">
-                                        兵籍調查</h4>
-                                    <p class="text-sm text-stone-500 mt-1 group-hover:text-stone-300 transition-colors">
-                                        點擊查看詳細說明</p>
-                                </button>
-                            </div>
-
-                            <!-- 役男徵兵體檢作業 -->
-                            <div
-                                class="relative flex flex-row md:flex-col items-center group w-full md:w-1/3 mb-8 md:mb-0">
-                                <div
-                                    class="w-6 h-6 shrink-0 rounded-full bg-stone-500 border-4 border-stone-900 group-hover:bg-green-500 transition-colors md:mb-4 mr-4 md:mr-0 z-10 relative">
-                                </div>
-                                <button class="timeline-btn text-left md:text-center focus:outline-none w-full"
-                                    data-title="役男徵兵體檢作業"
-                                    data-content="應依指定時間、地點、攜帶徵兵檢查通知書、國民身分證及照片等前往報到接受體格檢查。&#10;&#10;應受檢查役男，如在外謀生或就學，不能返回戶籍地受檢，得使用線上預約系統申請跨縣市代辦體檢，或臨櫃向寄居地直轄市、縣（市）政府申請代檢。">
-                                    <h4
-                                        class="text-lg font-bold text-stone-200 group-hover:text-green-400 transition-colors whitespace-nowrap">
-                                        徵兵體檢作業</h4>
-                                    <p class="text-sm text-stone-500 mt-1 group-hover:text-stone-300 transition-colors">
-                                        點擊查看詳細說明</p>
-                                </button>
-                            </div>
-
-                            <!-- 抽籤 -->
-                            <div
-                                class="relative flex flex-row md:flex-col items-center group w-full md:w-1/3 mb-8 md:mb-0">
-                                <div
-                                    class="w-6 h-6 shrink-0 rounded-full bg-stone-500 border-4 border-stone-900 group-hover:bg-green-500 transition-colors md:mb-4 mr-4 md:mr-0 z-10 relative">
-                                </div>
-                                <button class="timeline-btn text-left md:text-center focus:outline-none w-full"
-                                    data-title="抽籤"
-                                    data-content="役男如經徵兵檢查後，判定為常備兵役體位，或是替代役體位者，應辦理抽籤，凡參加抽籤役男親自到場抽籤。&#10;&#10;本人確因故不能到場時，可委託有行為能力之家屬代抽，事後不得提出異議。">
-                                    <h4
-                                        class="text-lg font-bold text-stone-200 group-hover:text-green-400 transition-colors whitespace-nowrap">
-                                        抽籤</h4>
-                                    <p class="text-sm text-stone-500 mt-1 group-hover:text-stone-300 transition-colors">
-                                        點擊查看詳細說明</p>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- 注意事項 (Horizontal Panel) -->
-                        <div id="notice-horizontal-panel"
-                            class="mt-6 pt-5 border-t border-stone-800 w-full transition-all duration-300">
-                            <div class="flex items-center justify-between mb-4 px-1">
-                                <div class="flex items-center gap-2.5">
-                                    <div
-                                        class="w-8 h-8 rounded-full bg-yellow-950/80 border border-yellow-600/50 flex items-center justify-center shadow">
-                                        <i class="fa-solid fa-file-contract text-yellow-500 text-sm"></i>
-                                    </div>
-                                    <h4 class="text-base font-bold text-yellow-500">注意事項</h4>
-                                    <span
-                                        class="text-xs text-stone-400 bg-stone-800/90 px-2.5 py-0.5 rounded-full border border-stone-700/60 hidden sm:inline-block">共
-                                        12 條說明 • 左右滾動瀏覽</span>
-                                </div>
-                                <button id="btn-close-notice-panel"
-                                    class="text-stone-400 hover:text-white bg-stone-800 hover:bg-stone-700 p-1.5 rounded-full transition-colors focus:outline-none flex items-center justify-center"
-                                    title="關閉注意事項">
-                                    <i class="fa-solid fa-xmark text-sm w-4 h-4 flex items-center justify-center"></i>
-                                </button>
-                            </div>
-
-                            <div class="flex gap-4 overflow-x-auto pb-4 pt-1 px-1 custom-scrollbar scroll-smooth">
+                        <div id="notice-cards-container" class="flex gap-4 overflow-x-auto pb-4 pt-1 px-1 custom-scrollbar scroll-smooth">
                                 <!-- Card 1 -->
                                 <button
                                     class="timeline-btn text-left focus:outline-none cursor-pointer bg-stone-800/70 hover:bg-stone-800 border border-stone-700/60 hover:border-yellow-500/50 rounded-xl p-4 min-w-[280px] max-w-[320px] shrink-0 shadow-md transition-all flex flex-col justify-between group"
@@ -1062,6 +1063,48 @@
                                 </button>
                             </div>
                         </div>
+
+                    <!-- Service Journey Timeline Stepper Section -->
+                    <div class="bg-stone-900 p-6 rounded-lg shadow-lg flex flex-col justify-center border border-stone-800/80">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h3 class="font-bold text-white flex items-center gap-2 text-xl">
+                                        <i class="fa-solid fa-route text-green-500"></i>
+                                        <span>服役歷程進度條</span>
+                                    </h3>
+                                    <span id="journey-rank-badge"
+                                        class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-700/60 font-bold flex items-center gap-1 cursor-pointer transition-all hover:scale-105"
+                                        title="點擊查看榮譽成就">
+                                        <i class="fa-solid fa-award"></i> 役男整備中
+                                    </span>
+                                </div>
+                                <p class="text-xs text-stone-400 mt-1">
+                                    從收到兵單、新訓操課到退伍歸鄉，完成各階段任務自動向前推進役期進度！
+                                </p>
+                            </div>
+
+                            <div class="flex items-center gap-3 self-end sm:self-auto">
+                                <div class="text-right">
+                                    <div class="text-xs text-stone-400">總歷程推進度</div>
+                                    <div class="font-tech font-bold text-lg text-green-400" id="journey-progress-percent">0%</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Global Master Progress Track -->
+                        <div class="w-full bg-stone-950 rounded-full h-3 mb-6 p-0.5 border border-stone-800 overflow-hidden relative shadow-inner">
+                            <div id="journey-progress-bar"
+                                class="bg-gradient-to-r from-emerald-600 via-amber-500 to-rose-600 h-full rounded-full transition-all duration-700 ease-out shadow-[0_0_12px_rgba(16,185,129,0.7)]"
+                                style="width: 0%;">
+                            </div>
+                        </div>
+
+                        <!-- 3 Stages Interactive Stepper (Desktop & Mobile Grid) -->
+                        <div id="journey-nodes-container"
+                            class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+                            <!-- JS Dynamically Injected Stage Cards -->
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -1123,7 +1166,7 @@
 
                             <!-- Tasks Card -->
                             <div id="tasks-card"
-                                class="bg-stone-900 p-6 rounded-lg shadow-lg opacity-50 pointer-events-none grayscale relative h-full flex flex-col">
+                                class="bg-stone-900 p-6 rounded-lg shadow-lg opacity-50 pointer-events-none grayscale relative h-full flex flex-col border border-stone-800/80">
                                 <div id="tasks-lock-overlay"
                                     class="absolute inset-0 flex items-center justify-center z-10">
                                     <div
@@ -1132,31 +1175,53 @@
                                     </div>
                                 </div>
 
-                                <div class="flex justify-between items-center mb-4">
-                                    <h3 class="font-bold text-white flex items-center gap-2 text-lg">
-                                        <i class="fa-solid fa-square-check text-[20px] text-green-500"></i>
-                                        <span id="tasks-title">入營倒數任務</span>
-                                    </h3>
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-stone-800">
+                                    <div>
+                                        <h3 class="font-bold text-white flex items-center gap-2 text-lg">
+                                            <i class="fa-solid fa-list-check text-[20px] text-green-500"></i>
+                                            <span id="tasks-title">服役歷程階段任務</span>
+                                        </h3>
+                                        <p class="text-xs text-stone-400 mt-0.5" id="tasks-subtitle">
+                                            勾選任務自動推動服役進度條，也可前往對應模組同步完成
+                                        </p>
+                                    </div>
+
+                                    <div class="flex items-center gap-2">
+                                        <span id="tasks-count"
+                                            class="text-xs px-2.5 py-1 rounded bg-stone-800 text-stone-300 border border-stone-700 font-mono">
+                                            已完成 0 / 8 項
+                                        </span>
+                                        <button id="btn-reset-journey-tasks"
+                                            class="text-xs text-stone-500 hover:text-stone-300 transition-colors px-2 py-1 hover:bg-stone-800 rounded"
+                                            title="重置任務進度">
+                                            <i class="fa-solid fa-rotate-left"></i>
+                                        </button>
+                                    </div>
                                 </div>
 
-                                <div id="tasks-list" class="space-y-3">
-                                    <div
-                                        class="flex items-center gap-4 p-4 bg-stone-800 rounded-lg border border-stone-700 hover:bg-stone-750 transition-colors">
-                                        <input type="checkbox" class="w-5 h-5 accent-green-600 cursor-pointer">
-                                        <div class="flex-1">
-                                            <p class="font-bold text-stone-200">完成每日課表</p>
-                                        </div>
-                                        <span class="text-xs bg-red-900 text-red-200 px-3 py-1 rounded-full">緊急</span>
-                                    </div>
-                                    <div
-                                        class="flex items-center gap-4 p-4 bg-stone-800 rounded-lg border border-stone-700 hover:bg-stone-750 transition-colors">
-                                        <input type="checkbox" class="w-5 h-5 accent-green-600 cursor-pointer">
-                                        <div class="flex-1">
-                                            <p class="font-bold text-stone-200">進行一次天兵課堂</p>
-                                        </div>
-                                        <span
-                                            class="text-xs bg-stone-700 text-stone-300 px-3 py-1 rounded-full">每日</span>
-                                    </div>
+                                <!-- Stage Filter Tabs -->
+                                <div id="tasks-stage-filter-container"
+                                    class="flex gap-2 overflow-x-auto pb-2 mb-4 custom-scrollbar text-xs">
+                                    <button class="journey-stage-tab px-3 py-1.5 rounded-lg border font-bold transition-all shrink-0 bg-green-900/40 text-green-300 border-green-700/60 shadow-sm"
+                                        data-stage="all">
+                                        <i class="fa-solid fa-layer-group mr-1"></i>全部階段
+                                    </button>
+                                    <button class="journey-stage-tab px-3 py-1.5 rounded-lg border font-medium transition-all shrink-0 bg-stone-800/80 text-stone-400 border-stone-700/60 hover:text-stone-200"
+                                        data-stage="stage_1">
+                                        一、兵役整備
+                                    </button>
+                                    <button class="journey-stage-tab px-3 py-1.5 rounded-lg border font-medium transition-all shrink-0 bg-stone-800/80 text-stone-400 border-stone-700/60 hover:text-stone-200"
+                                        data-stage="stage_2">
+                                        二、入營適應
+                                    </button>
+                                    <button class="journey-stage-tab px-3 py-1.5 rounded-lg border font-medium transition-all shrink-0 bg-stone-800/80 text-stone-400 border-stone-700/60 hover:text-stone-200"
+                                        data-stage="stage_3">
+                                        三、入營服役
+                                    </button>
+                                </div>
+
+                                <div id="tasks-list" class="space-y-3 flex-1 overflow-y-auto max-h-[480px] pr-1 custom-scrollbar">
+                                    <!-- Dynamically Populated Tasks -->
                                 </div>
                             </div>
                         </div>
@@ -3640,7 +3705,7 @@
             <script src="js/map.js"></script>
 
             <!-- Main Application Script -->
-            <script type="module" src="js/main.js?v=105"></script>
+            <script type="module" src="js/main.js"></script>
             </body>
 
 </html>

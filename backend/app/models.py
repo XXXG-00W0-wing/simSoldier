@@ -7,16 +7,26 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True) # Name
+    username = Column(String, unique=True, index=True) # Name / Account
+    date_of_registration = Column(DateTime(timezone=True), server_default=func.now())
+    hashed_password = Column(String)
+
+    # 1-to-1 relationship with UserProfile
+    profile = relationship("UserProfile", back_populates="user", uselist=False, cascade="all, delete-orphan")
+
+class UserProfile(Base):
+    __tablename__ = "user_profiles"
+
+    id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), primary_key=True, index=True)
     role = Column(Integer, ForeignKey("roles.id")) # Role ID
     game_progress = Column(Integer, default=0)
     date_of_birth = Column(Date)
-    date_of_registration = Column(DateTime(timezone=True), server_default=func.now())
     height = Column(Integer) # Height in cm
     weight = Column(Integer) # Weight in kg
-    entrance_date = Column(Date) # Date of entrance to the Real Madrid Academy
-    do_have_chronic_medications = Column(Boolean, default=False) # Whether the user has chronic medications
-    hashed_password = Column(String)
+    entrance_date = Column(Date) # 入伍日期
+
+    user = relationship("User", back_populates="profile")
+    role_rel = relationship("Role", foreign_keys=[role])
 
 class Role(Base):
     __tablename__ = "roles"
@@ -29,20 +39,29 @@ class QuizQuestion(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     question = Column(String, nullable=False)
-    option_a = Column(String, nullable=False)
-    option_b = Column(String, nullable=False)
-    option_c = Column(String, nullable=False)
-    option_d = Column(String, nullable=False)
-    correct_option = Column(String, nullable=False)
     explanation = Column(String)
     source = Column(String)
+
+    # 1-to-many relationship with QuizOption
+    options = relationship("QuizOption", back_populates="question", cascade="all, delete-orphan", order_by="QuizOption.option_key")
+
+class QuizOption(Base):
+    __tablename__ = "quiz_options"
+
+    id = Column(Integer, primary_key=True, index=True)
+    question_id = Column(Integer, ForeignKey("quiz_questions.id", ondelete="CASCADE"), nullable=False, index=True)
+    option_key = Column(String(10), nullable=False) # e.g., 'A', 'B', 'C', 'D'
+    option_text = Column(String, nullable=False)
+    is_correct = Column(Boolean, default=False)
+
+    question = relationship("QuizQuestion", back_populates="options")
 
 class TrainingRecord(Base):
     __tablename__ = "training_records"
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
-    date = Column(DateTime(timezone=True), server_default=func.now())
+    create_at = Column(DateTime(timezone=True), server_default=func.now())
     exercise_type = Column(String, index=True) # e.g., 'squats', 'salute'
     reps = Column(Integer)
     duration_seconds = Column(Integer)

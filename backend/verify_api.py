@@ -59,8 +59,8 @@ def run_tests():
         "height": 180,
         "weight": 75,
         "entrance_date": "2022-09-01",
-        "do_have_chronic_medications":True
-        }
+        "game_progress": 1500
+    }
     try:
         response = requests.post(f"{BASE_URL}/api/user_edit", json=edit_data, headers=headers)
         if response.status_code != 200:
@@ -76,6 +76,9 @@ def run_tests():
             return False
         if updated_user.get("weight") != 75:
             print("Weight not updated")
+            return False
+        if updated_user.get("game_progress") != 1500:
+            print("Game progress not updated")
             return False
         
         
@@ -94,6 +97,24 @@ def run_tests():
         print(f"Chat exception: {e}")
         return False
         
+    # 6. Testing Random Quiz (QuizQuestion & QuizOption split)
+    print("\n6. Testing Random Quiz...")
+    try:
+        response = requests.get(f"{BASE_URL}/api/quiz/random?limit=3")
+        if response.status_code != 200:
+            print(f"Quiz test failed: {response.text}")
+            return False
+        quizzes = response.json()
+        print(f"Received {len(quizzes)} quiz questions.")
+        for q in quizzes:
+            print(f"  Q{q['id']}: {q['question'][:30]}... Options: {len(q.get('options', []))}, Correct: {q.get('correct_option')}")
+            if not q.get('options') or len(q['options']) == 0:
+                print("Error: No options returned for question")
+                return False
+    except Exception as e:
+        print(f"Quiz exception: {e}")
+        return False
+
     # 4. Logout (Client side really, but checking endpoint)
     print("\n4. Testing Logout...")
     try:

@@ -18,19 +18,23 @@ async def lifespan(app: FastAPI):
     # Startup logic
     models.Base.metadata.create_all(bind=database.engine)
     
-    # Check if we need to seed roles
+    # Check if we need to seed/sync roles
     db = database.SessionLocal()
     try:
-        if db.query(models.Role).count() == 0:
-            print("Seeding roles...")
-            roles = [
-                models.Role(id=1, name="Soldier"),
-                models.Role(id=2, name="Commander"),
-                models.Role(id=3, name="Officer")
-            ]
-            db.add_all(roles)
-            db.commit()
-            print("Roles seeded.")
+        default_roles = {
+            1: "準備入營",
+            2: "正在入營",
+            3: "延後入營",
+            4: "admin"
+        }
+        for role_id, role_name in default_roles.items():
+            existing_role = db.query(models.Role).filter(models.Role.id == role_id).first()
+            if not existing_role:
+                db.add(models.Role(id=role_id, name=role_name))
+            else:
+                existing_role.name = role_name
+        db.commit()
+        print("Scenario roles seeded/synchronized.")
 
         # Check if we need to seed a user
         user = db.query(models.User).first()
@@ -39,42 +43,61 @@ async def lifespan(app: FastAPI):
             hashed_pwd = auth.get_password_hash("password123")
             new_user = models.User(
                 username="testuser",
-                role=1,  # Assuming role ID 1 (Soldier) is the default role
-                game_progress=1000,
-                date_of_birth="2000-01-01",
-                weight=70,
-                height=175,
-                entrance_date="2015-09-01",
-                do_have_chronic_medications=False,
                 hashed_password=hashed_pwd
             )
             db.add(new_user)
             db.commit()
-            print("Initial user 'testuser' created with password 'password123'.")
+            db.refresh(new_user)
+
+            new_profile = models.UserProfile(
+                id=new_user.id,
+                role=1,  # 1: 準備入營
+                game_progress=1000,
+                date_of_birth="2000-01-01",
+                weight=70,
+                height=175,
+                entrance_date="2026-09-01"
+            )
+            db.add(new_profile)
+            db.commit()
+            print("Initial user 'testuser' and profile created with password 'password123'.")
         
         # Check if we need to seed quiz questions
         if db.query(models.QuizQuestion).count() == 0:
             csv_path = os.path.join(os.path.dirname(__file__), "..", "data", "問題集.csv")
             if os.path.exists(csv_path):
-                print(f"Seeding quiz questions from {csv_path}...")
+                print(f"Seeding quiz questions and options from {csv_path}...")
                 with open(csv_path, mode='r', encoding='utf-8') as file:
                     reader = csv.DictReader(file)
-                    questions = []
+                    count = 0
                     for row in reader:
                         q = models.QuizQuestion(
                             question=row.get('question', ''),
-                            option_a=row.get('option_a', ''),
-                            option_b=row.get('option_b', ''),
-                            option_c=row.get('option_c', ''),
-                            option_d=row.get('option_d', ''),
-                            correct_option=row.get('answer', ''),
                             explanation=row.get('explanation', ''),
                             source=row.get('source', '')
                         )
-                        questions.append(q)
-                    db.add_all(questions)
+                        db.add(q)
+                        db.flush()
+                        
+                        correct_ans = (row.get('answer', '') or '').strip().upper()
+                        options_data = [
+                            ('A', row.get('option_a', '')),
+                            ('B', row.get('option_b', '')),
+                            ('C', row.get('option_c', '')),
+                            ('D', row.get('option_d', ''))
+                        ]
+                        for opt_key, opt_text in options_data:
+                            if opt_text:
+                                opt = models.QuizOption(
+                                    question_id=q.id,
+                                    option_key=opt_key,
+                                    option_text=opt_text,
+                                    is_correct=(opt_key == correct_ans)
+                                )
+                                db.add(opt)
+                        count += 1
                     db.commit()
-                print(f"Successfully seeded {len(questions)} quiz questions.")
+                print(f"Successfully seeded {count} quiz questions and their options.")
             else:
                 print(f"Warning: Quiz CSV file not found at {csv_path}")
     finally:
@@ -84,6 +107,23 @@ async def lifespan(app: FastAPI):
     # Shutdown logic if any
 
 app = FastAPI(lifespan=lifespan)
+
+def build_user_response(user: models.User) -> schemas.UserResponse:
+    profile = user.profile
+    role_id = profile.role if (profile and profile.role) else 1
+    role_name = profile.role_rel.name if (profile and profile.role_rel) else "準備入營"
+    return schemas.UserResponse(
+        id=user.id,
+        username=user.username,
+        role=role_id,
+        role_name=role_name,
+        game_progress=profile.game_progress if (profile and profile.game_progress is not None) else 0,
+        date_of_birth=profile.date_of_birth if profile else None,
+        height=profile.height if profile else None,
+        weight=profile.weight if profile else None,
+        entrance_date=profile.entrance_date if profile else None,
+        date_of_registration=user.date_of_registration
+    )
 
 # Setup CORS
 app.add_middleware(
@@ -100,22 +140,35 @@ async def register_user(user: schemas.UserCreate, db: Session = Depends(database
     if db_user:
         raise HTTPException(status_code=400, detail="Username already registered")
     
+    # Resolve role ID
+    assigned_role_id = user.role or 1
+    if user.role_name:
+        matched_role = db.query(models.Role).filter(models.Role.name == user.role_name).first()
+        if matched_role:
+            assigned_role_id = matched_role.id
+
     hashed_password = auth.get_password_hash(user.password)
     new_user = models.User(
         username=user.username,
-        role=user.role,  # Default role ID
-        date_of_birth=user.date_of_birth,
-        height=user.height,
-        weight=user.weight,
-        entrance_date=user.entrance_date,
-        do_have_chronic_medications=user.do_have_chronic_medications,
-        hashed_password=hashed_password,
-        game_progress=1000  # Initial game currency
+        hashed_password=hashed_password
     )
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    return new_user
+
+    new_profile = models.UserProfile(
+        id=new_user.id,
+        role=assigned_role_id,
+        game_progress=1000,
+        date_of_birth=user.date_of_birth,
+        height=user.height,
+        weight=user.weight,
+        entrance_date=user.entrance_date
+    )
+    db.add(new_profile)
+    db.commit()
+    db.refresh(new_user)
+    return build_user_response(new_user)
 
 @app.post("/api/login", response_model=schemas.Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
@@ -134,24 +187,36 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 
 @app.get("/api/user_info", response_model=schemas.UserResponse)
 async def read_users_me(current_user: models.User = Depends(auth.get_current_user)):
-    return current_user
+    return build_user_response(current_user)
 
 @app.post("/api/user_edit", response_model=schemas.UserResponse)
 async def update_user_me(user_update: schemas.UserUpdate, current_user: models.User = Depends(auth.get_current_user), db: Session = Depends(database.get_db)):
+    # Ensure profile exists
+    if not current_user.profile:
+        current_user.profile = models.UserProfile(id=current_user.id, role=1)
+        db.add(current_user.profile)
+        db.commit()
+        db.refresh(current_user)
+
+    if user_update.role is not None:
+        current_user.profile.role = user_update.role
+    if user_update.role_name:
+        matched_role = db.query(models.Role).filter(models.Role.name == user_update.role_name).first()
+        if matched_role:
+            current_user.profile.role = matched_role.id
+
     if user_update.date_of_birth:
-        current_user.date_of_birth = user_update.date_of_birth
+        current_user.profile.date_of_birth = user_update.date_of_birth
     if user_update.height:
-        current_user.height = user_update.height
+        current_user.profile.height = user_update.height
     if user_update.weight:
-        current_user.weight = user_update.weight
+        current_user.profile.weight = user_update.weight
     if user_update.entrance_date:
-        current_user.entrance_date = user_update.entrance_date
-    if user_update.do_have_chronic_medications is not None:
-        current_user.do_have_chronic_medications = user_update.do_have_chronic_medications
+        current_user.profile.entrance_date = user_update.entrance_date
     if user_update.password:
         current_user.hashed_password = auth.get_password_hash(user_update.password)
     if user_update.game_progress is not None:
-        current_user.game_progress = user_update.game_progress
+        current_user.profile.game_progress = user_update.game_progress
         
     if user_update.username and user_update.username != current_user.username:
         if db.query(models.User).filter(models.User.username == user_update.username).first():
@@ -160,7 +225,7 @@ async def update_user_me(user_update: schemas.UserUpdate, current_user: models.U
     
     db.commit()
     db.refresh(current_user)
-    return current_user
+    return build_user_response(current_user)
 
 @app.post("/api/logout")
 async def logout():
@@ -175,7 +240,31 @@ async def get_random_quiz(limit: int = 5, db: Session = Depends(database.get_db)
     questions = db.query(models.QuizQuestion).order_by(func.random()).limit(limit).all()
     if not questions:
         raise HTTPException(status_code=404, detail="No quiz questions found in database")
-    return questions
+    
+    result = []
+    for q in questions:
+        opt_dict = {opt.option_key: opt for opt in q.options}
+        correct_key = next((opt.option_key for opt in q.options if opt.is_correct), "A")
+        result.append(schemas.QuizQuestionResponse(
+            id=q.id,
+            question=q.question,
+            options=[
+                schemas.QuizOptionResponse(
+                    id=opt.id,
+                    option_key=opt.option_key,
+                    option_text=opt.option_text,
+                    is_correct=opt.is_correct
+                ) for opt in q.options
+            ],
+            option_a=opt_dict.get('A').option_text if opt_dict.get('A') else "",
+            option_b=opt_dict.get('B').option_text if opt_dict.get('B') else "",
+            option_c=opt_dict.get('C').option_text if opt_dict.get('C') else "",
+            option_d=opt_dict.get('D').option_text if opt_dict.get('D') else "",
+            correct_option=correct_key,
+            explanation=q.explanation,
+            source=q.source
+        ))
+    return result
 
 # In-memory session store for anti-cheat: { session_token -> start_time }
 active_training_sessions = {}
