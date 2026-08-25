@@ -388,15 +388,18 @@
 <!-- Task Detail Modal -->
 <div id="modal-task-detail"
     class="fixed inset-0 z-[60] bg-black/90 flex items-center justify-center p-4 backdrop-blur-sm hidden">
-    <div class="max-w-xl w-full bg-stone-900 rounded-2xl border border-stone-700 shadow-2xl relative overflow-hidden animate-fade-in flex flex-col max-h-[90vh]">
+    <div
+        class="max-w-xl w-full bg-stone-900 rounded-2xl border border-stone-700 shadow-2xl relative overflow-hidden animate-fade-in flex flex-col max-h-[90vh]">
         <!-- Header -->
         <div class="bg-stone-800/90 border-b border-stone-700 p-5 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-green-950/80 border border-green-700/60 flex items-center justify-center text-green-400 text-lg shadow">
+                <div
+                    class="w-10 h-10 rounded-xl bg-green-950/80 border border-green-700/60 flex items-center justify-center text-green-400 text-lg shadow">
                     <i id="task-detail-icon" class="fa-solid fa-list-check"></i>
                 </div>
                 <div>
-                    <div id="task-detail-stage-badge" class="text-[11px] font-mono text-stone-400 font-bold uppercase tracking-wider">STAGE 01</div>
+                    <div id="task-detail-stage-badge"
+                        class="text-[11px] font-mono text-stone-400 font-bold uppercase tracking-wider">STAGE 01</div>
                     <h3 id="task-detail-title" class="text-lg md:text-xl font-bold text-white leading-tight">任務名稱</h3>
                 </div>
             </div>
@@ -408,8 +411,10 @@
         <!-- Body -->
         <div class="p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
             <div class="flex items-center gap-2">
-                <span id="task-detail-type-badge" class="text-xs px-2.5 py-0.5 rounded border font-bold bg-emerald-950 text-emerald-300 border-emerald-700">主線任務</span>
-                <span id="task-detail-status-badge" class="text-xs px-2.5 py-0.5 rounded border font-bold bg-stone-800 text-stone-300 border-stone-700">進行中</span>
+                <span id="task-detail-type-badge"
+                    class="text-xs px-2.5 py-0.5 rounded border font-bold bg-emerald-950 text-emerald-300 border-emerald-700">主線任務</span>
+                <span id="task-detail-status-badge"
+                    class="text-xs px-2.5 py-0.5 rounded border font-bold bg-stone-800 text-stone-300 border-stone-700">進行中</span>
             </div>
 
             <div class="bg-stone-950/70 p-4 rounded-xl border border-stone-800">
@@ -444,43 +449,27 @@
     </div>
 </div>
 
-<!-- Discharge Certificate Celebration Modal -->
-<div id="modal-discharge-celebration"
-    class="fixed inset-0 z-[70] bg-black/95 flex items-center justify-center p-4 backdrop-blur-md hidden">
-    <div class="max-w-md w-full bg-gradient-to-b from-stone-900 via-stone-900 to-stone-950 rounded-3xl border-2 border-yellow-500/80 shadow-[0_0_50px_rgba(234,179,8,0.4)] relative overflow-hidden animate-fade-in p-6 text-center">
-        <div class="absolute -top-12 -right-12 w-32 h-32 bg-yellow-500/10 rounded-full blur-2xl pointer-events-none"></div>
-        <div class="absolute -bottom-12 -left-12 w-32 h-32 bg-green-500/10 rounded-full blur-2xl pointer-events-none"></div>
+<!-- Military Service Completion Congratulation Modal -->
+<div id="modal-service-completed"
+    class="fixed inset-0 z-[70] bg-black/90 flex items-center justify-center p-4 backdrop-blur-md hidden">
+    <div
+        class="max-w-md w-full bg-stone-900 rounded-2xl border-2 border-emerald-500/80 shadow-[0_0_40px_rgba(16,185,129,0.3)] relative overflow-hidden animate-fade-in p-6 text-center">
+        <div class="text-xs font-mono font-bold tracking-widest text-emerald-400 uppercase mb-1">SERVICE COMPLETED</div>
+        <h3 class="text-xl font-black text-white mb-2">恭喜圓滿完成兵役！</h3>
 
-        <div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-tr from-yellow-600 to-amber-400 p-0.5 shadow-[0_0_25px_rgba(234,179,8,0.6)] mb-4 flex items-center justify-center">
-            <div class="w-full h-full rounded-full bg-stone-950 flex items-center justify-center">
-                <i class="fa-solid fa-medal text-4xl text-yellow-400 animate-bounce"></i>
-            </div>
-        </div>
-
-        <div class="text-xs font-mono font-bold tracking-[0.3em] text-yellow-400 uppercase mb-1">HONORABLE DISCHARGE</div>
-        <h2 class="text-2xl font-black text-white tracking-wider mb-3">中華民國役男光榮退伍令</h2>
-
-        <div class="bg-stone-950/80 border border-yellow-600/40 rounded-2xl p-4 mb-5 text-left text-xs space-y-2.5">
-            <div class="flex justify-between items-center pb-2 border-b border-stone-800">
-                <span class="text-stone-400">役男姓名：</span>
-                <span id="discharge-user-name" class="font-bold text-white text-sm">士兵</span>
-            </div>
-            <div class="flex justify-between items-center pb-2 border-b border-stone-800">
-                <span class="text-stone-400">最高成就稱號：</span>
-                <span class="font-bold text-yellow-400 flex items-center gap-1"><i class="fa-solid fa-crown"></i> 光榮退伍傳奇</span>
-            </div>
-            <div class="flex justify-between items-center pb-2 border-b border-stone-800">
-                <span class="text-stone-400">歷程任務完成率：</span>
-                <span id="discharge-rate-text" class="font-bold text-green-400 font-mono">100% 全數達成</span>
-            </div>
-            <p class="text-stone-300 leading-relaxed pt-1 text-[11px]">
-                茲證明該役男已圓滿達成由「兵役整備」、「入營適應」、「入營服役」至「退伍倒數」全歷程階段任務，表現卓越，特頒此令以資表彰，並祝前程似錦、歸鄉大吉！
+        <div
+            class="bg-stone-950/80 border border-stone-800 rounded-xl p-4 my-4 text-stone-300 text-sm leading-relaxed text-left">
+            <p class="mb-2">
+                親愛的役男 <span id="completed-modal-username" class="text-white font-bold">士兵</span>：
+            </p>
+            <p class="text-xs text-stone-300 leading-relaxed">
+                恭喜您已順利服滿兵役役期，離營倒數正式歸零！感謝您為國家與社會付出的汗水與辛勞，祝您退伍歸鄉前程似錦、萬事大吉！
             </p>
         </div>
 
-        <button id="btn-close-discharge-modal"
-            class="w-full py-3 rounded-xl font-bold text-stone-950 bg-gradient-to-r from-yellow-500 via-amber-400 to-yellow-500 hover:from-yellow-400 hover:to-amber-300 transition-all shadow-lg flex items-center justify-center gap-2">
-            <i class="fa-solid fa-check"></i> 領取退伍令並返回戰情中心
+        <button id="btn-close-service-completed-modal"
+            class="w-full py-2.5 rounded-xl font-bold text-white bg-emerald-600 hover:bg-emerald-500 transition-colors shadow-lg flex items-center justify-center gap-2 text-sm">
+            確認並返回戰情中心
         </button>
     </div>
 </div>
@@ -756,7 +745,6 @@
                                     <div class="flex justify-between items-end mb-4 border-b border-stone-800 pb-2">
                                         <div class="text-2xl font-bold text-white font-tech" id="calendar-month-year">
                                             2024 / 01</div>
-                                        <div class="text-xs text-stone-500">入營日程表</div>
                                     </div>
 
                                     <!-- Calendar Grid -->
@@ -781,19 +769,6 @@
                                                 class="w-2 h-2 rounded-full bg-red-600"></span> 入營日</div>
                                     </div>
 
-                                    <!-- Daily Task Progress Bar -->
-                                    <div class="mt-6 border-t border-stone-800 pt-4">
-                                        <div class="flex justify-between items-center mb-2">
-                                            <span class="text-xs text-stone-400">今日任務達成率</span>
-                                            <span id="daily-task-percent"
-                                                class="text-xs font-bold text-green-500 font-tech">0%</span>
-                                        </div>
-                                        <div class="w-full bg-stone-900 rounded-full h-2 overflow-hidden shadow-inner">
-                                            <div id="daily-task-bar"
-                                                class="bg-green-600 h-full w-0 transition-all duration-500 ease-out">
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -819,297 +794,327 @@
                             </div>
                             <button id="btn-toggle-notice-collapse"
                                 class="text-xs bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-white border border-stone-700 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 focus:outline-none">
-                                <i class="fa-solid fa-chevron-up text-xs transition-transform duration-300" id="icon-notice-collapse"></i>
+                                <i class="fa-solid fa-chevron-up text-xs transition-transform duration-300"
+                                    id="icon-notice-collapse"></i>
                                 <span id="text-notice-collapse">收合</span>
                             </button>
                         </div>
 
-                        <div id="notice-cards-container" class="flex gap-4 overflow-x-auto pb-4 pt-1 px-1 custom-scrollbar scroll-smooth">
-                                <!-- Card 1 -->
-                                <button
-                                    class="timeline-btn text-left focus:outline-none cursor-pointer bg-stone-800/70 hover:bg-stone-800 border border-stone-700/60 hover:border-yellow-500/50 rounded-xl p-4 min-w-[280px] max-w-[320px] shrink-0 shadow-md transition-all flex flex-col justify-between group"
-                                    data-title="注意事項 - 01. 徵集令簽收"
-                                    data-content="凡應徵役男接到徵集令時，應在徵集令（第一聯）回執上記入收到日期並簽章或按指模。">
-                                    <div>
-                                        <div class="flex items-center justify-between mb-2">
-                                            <span
-                                                class="w-6 h-6 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold flex items-center justify-center border border-yellow-500/30">01</span>
-                                            <span
-                                                class="text-xs font-semibold text-stone-400 group-hover:text-yellow-400 transition-colors">徵集令簽收</span>
-                                        </div>
-                                        <p class="text-sm text-stone-300 leading-relaxed line-clamp-3">
-                                            凡應徵役男接到徵集令時，應在徵集令（第一聯）回執上記入收到日期並簽章或按指模。</p>
+                        <div id="notice-cards-container"
+                            class="flex gap-4 overflow-x-auto pb-4 pt-1 px-1 custom-scrollbar scroll-smooth">
+                            <!-- Card 1 -->
+                            <button
+                                class="timeline-btn text-left focus:outline-none cursor-pointer bg-stone-800/70 hover:bg-stone-800 border border-stone-700/60 hover:border-yellow-500/50 rounded-xl p-4 min-w-[280px] max-w-[320px] shrink-0 shadow-md transition-all flex flex-col justify-between group"
+                                data-title="注意事項 - 01. 徵集令簽收" data-content="凡應徵役男接到徵集令時，應在徵集令（第一聯）回執上記入收到日期並簽章或按指模。">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span
+                                            class="w-6 h-6 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold flex items-center justify-center border border-yellow-500/30">01</span>
+                                        <span
+                                            class="text-xs font-semibold text-stone-400 group-hover:text-yellow-400 transition-colors">徵集令簽收</span>
                                     </div>
-                                    <span
-                                        class="text-xs text-yellow-500/80 mt-3 block group-hover:text-yellow-400">點擊查看詳情
-                                        <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
-                                </button>
-
-                                <!-- Card 2 -->
-                                <button
-                                    class="timeline-btn text-left focus:outline-none cursor-pointer bg-stone-800/70 hover:bg-stone-800 border border-stone-700/60 hover:border-yellow-500/50 rounded-xl p-4 min-w-[280px] max-w-[320px] shrink-0 shadow-md transition-all flex flex-col justify-between group"
-                                    data-title="注意事項 - 02. 代收通報"
-                                    data-content="如徵集令由徵兵處理通報人代收其應辦手續按前項規定辦理，並應儘速通報應徵役男，依照規定時間地點前往報到入營。">
-                                    <div>
-                                        <div class="flex items-center justify-between mb-2">
-                                            <span
-                                                class="w-6 h-6 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold flex items-center justify-center border border-yellow-500/30">02</span>
-                                            <span
-                                                class="text-xs font-semibold text-stone-400 group-hover:text-yellow-400 transition-colors">代收通報</span>
-                                        </div>
-                                        <p class="text-sm text-stone-300 leading-relaxed line-clamp-3">
-                                            如徵集令由徵兵處理通報人代收其應辦手續按前項規定辦理，並應儘速通報應徵役男，依照規定時間地點前往報到入營。</p>
-                                    </div>
-                                    <span
-                                        class="text-xs text-yellow-500/80 mt-3 block group-hover:text-yellow-400">點擊查看詳情
-                                        <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
-                                </button>
-
-                                <!-- Card 3 -->
-                                <button
-                                    class="timeline-btn text-left focus:outline-none cursor-pointer bg-stone-800/70 hover:bg-stone-800 border border-stone-700/60 hover:border-yellow-500/50 rounded-xl p-4 min-w-[280px] max-w-[320px] shrink-0 shadow-md transition-all flex flex-col justify-between group"
-                                    data-title="注意事項 - 03. 延期徵訓申請"
-                                    data-content="接到徵集令後，應妥為做入營準備，如公務上之交代或私事之處理，凡合於常備役體位服替代役役男延期徵訓事故表所定各項延期徵訓事故原因者，得由本人或戶長填具申請書，報由區公所核轉市政府核辦。">
-                                    <div>
-                                        <div class="flex items-center justify-between mb-2">
-                                            <span
-                                                class="w-6 h-6 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold flex items-center justify-center border border-yellow-500/30">03</span>
-                                            <span
-                                                class="text-xs font-semibold text-stone-400 group-hover:text-yellow-400 transition-colors">延期徵訓申請</span>
-                                        </div>
-                                        <p class="text-sm text-stone-300 leading-relaxed line-clamp-3">
-                                            接到徵集令後，應妥為做入營準備，如合於延期徵訓事故原因者，得由本人或戶長填具申請書核辦。</p>
-                                    </div>
-                                    <span
-                                        class="text-xs text-yellow-500/80 mt-3 block group-hover:text-yellow-400">點擊查看詳情
-                                        <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
-                                </button>
-
-                                <!-- Card 4 -->
-                                <button
-                                    class="timeline-btn text-left focus:outline-none cursor-pointer bg-stone-800/70 hover:bg-stone-800 border border-stone-700/60 hover:border-yellow-500/50 rounded-xl p-4 min-w-[280px] max-w-[320px] shrink-0 shadow-md transition-all flex flex-col justify-between group"
-                                    data-title="注意事項 - 04. 報到應備文件"
-                                    data-content="報到時應攜帶徵集令、國民身分證、私章、戶口名簿影本、郵局存摺正面影本、最高學歷畢業證書、特殊專長及國家考試及格證書與技術師（士）證照等資料，並隨身穿著季節便服一套。">
-                                    <div>
-                                        <div class="flex items-center justify-between mb-2">
-                                            <span
-                                                class="w-6 h-6 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold flex items-center justify-center border border-yellow-500/30">04</span>
-                                            <span
-                                                class="text-xs font-semibold text-stone-400 group-hover:text-yellow-400 transition-colors">報到應備文件</span>
-                                        </div>
-                                        <p class="text-sm text-stone-300 leading-relaxed line-clamp-3">
-                                            報到時應攜帶徵集令、身分證、印章、戶口名簿影本、郵局存摺影本及畢業證書證照等資料。</p>
-                                    </div>
-                                    <span
-                                        class="text-xs text-yellow-500/80 mt-3 block group-hover:text-yellow-400">點擊查看詳情
-                                        <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
-                                </button>
-
-                                <!-- Card 5 -->
-                                <button
-                                    class="timeline-btn text-left focus:outline-none cursor-pointer bg-stone-800/70 hover:bg-stone-800 border border-stone-700/60 hover:border-yellow-500/50 rounded-xl p-4 min-w-[280px] max-w-[320px] shrink-0 shadow-md transition-all flex flex-col justify-between group"
-                                    data-title="注意事項 - 05. 準時集合規範"
-                                    data-content="務希準時到達集合地點集合，逾時應自行入營報到，乘座車輛船隻須遵守交通秩序並接受領隊人員之指導。">
-                                    <div>
-                                        <div class="flex items-center justify-between mb-2">
-                                            <span
-                                                class="w-6 h-6 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold flex items-center justify-center border border-yellow-500/30">05</span>
-                                            <span
-                                                class="text-xs font-semibold text-stone-400 group-hover:text-yellow-400 transition-colors">準時集合規範</span>
-                                        </div>
-                                        <p class="text-sm text-stone-300 leading-relaxed line-clamp-3">
-                                            務希準時到達集合地點集合，逾時應自行入營報到，乘坐交通工具須遵守秩序並接受指導。</p>
-                                    </div>
-                                    <span
-                                        class="text-xs text-yellow-500/80 mt-3 block group-hover:text-yellow-400">點擊查看詳情
-                                        <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
-                                </button>
-
-                                <!-- Card 6 -->
-                                <button
-                                    class="timeline-btn text-left focus:outline-none cursor-pointer bg-stone-800/70 hover:bg-stone-800 border border-stone-700/60 hover:border-yellow-500/50 rounded-xl p-4 min-w-[280px] max-w-[320px] shrink-0 shadow-md transition-all flex flex-col justify-between group"
-                                    data-title="注意事項 - 06. 親友搭乘限制" data-content="輸入入營之車輛船隻，有一定容量、送行家屬及親友不得隨同搭乘。">
-                                    <div>
-                                        <div class="flex items-center justify-between mb-2">
-                                            <span
-                                                class="w-6 h-6 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold flex items-center justify-center border border-yellow-500/30">06</span>
-                                            <span
-                                                class="text-xs font-semibold text-stone-400 group-hover:text-yellow-400 transition-colors">親友搭乘限制</span>
-                                        </div>
-                                        <p class="text-sm text-stone-300 leading-relaxed line-clamp-3">
-                                            輸送入營之車輛船隻有容量限制，送行家屬及親友不得隨同搭乘。</p>
-                                    </div>
-                                    <span
-                                        class="text-xs text-yellow-500/80 mt-3 block group-hover:text-yellow-400">點擊查看詳情
-                                        <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
-                                </button>
-
-                                <!-- Card 7 -->
-                                <button
-                                    class="timeline-btn text-left focus:outline-none cursor-pointer bg-stone-800/70 hover:bg-stone-800 border border-stone-700/60 hover:border-yellow-500/50 rounded-xl p-4 min-w-[280px] max-w-[320px] shrink-0 shadow-md transition-all flex flex-col justify-between group"
-                                    data-title="注意事項 - 07. 妨害兵役處罰" data-content="逾期不到應徵役男，依妨害兵役治罪條例移送法院。">
-                                    <div>
-                                        <div class="flex items-center justify-between mb-2">
-                                            <span
-                                                class="w-6 h-6 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold flex items-center justify-center border border-yellow-500/30">07</span>
-                                            <span
-                                                class="text-xs font-semibold text-stone-400 group-hover:text-yellow-400 transition-colors">妨害兵役處罰</span>
-                                        </div>
-                                        <p class="text-sm text-stone-300 leading-relaxed line-clamp-3">
-                                            無故逾期不到應徵役男，將依妨害兵役治罪條例移送法院依法辦理。</p>
-                                    </div>
-                                    <span
-                                        class="text-xs text-yellow-500/80 mt-3 block group-hover:text-yellow-400">點擊查看詳情
-                                        <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
-                                </button>
-
-                                <!-- Card 8 -->
-                                <button
-                                    class="timeline-btn text-left focus:outline-none cursor-pointer bg-stone-800/70 hover:bg-stone-800 border border-stone-700/60 hover:border-yellow-500/50 rounded-xl p-4 min-w-[280px] max-w-[320px] shrink-0 shadow-md transition-all flex flex-col justify-between group"
-                                    data-title="注意事項 - 08. 保留職缺申請"
-                                    data-content="應徵人員如係機關學校，公私營事業機構，及人民團體（含公司）等之職工，請於接到徵集令三天內到原服務單位辦理保留底缺。">
-                                    <div>
-                                        <div class="flex items-center justify-between mb-2">
-                                            <span
-                                                class="w-6 h-6 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold flex items-center justify-center border border-yellow-500/30">08</span>
-                                            <span
-                                                class="text-xs font-semibold text-stone-400 group-hover:text-yellow-400 transition-colors">保留職缺申請</span>
-                                        </div>
-                                        <p class="text-sm text-stone-300 leading-relaxed line-clamp-3">
-                                            應徵人員如係各機構、學校或公司職工，請於接到徵集令三天內至原單位辦理保留底缺。</p>
-                                    </div>
-                                    <span
-                                        class="text-xs text-yellow-500/80 mt-3 block group-hover:text-yellow-400">點擊查看詳情
-                                        <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
-                                </button>
-
-                                <!-- Card 9 -->
-                                <button
-                                    class="timeline-btn text-left focus:outline-none cursor-pointer bg-stone-800/70 hover:bg-stone-800 border border-stone-700/60 hover:border-yellow-500/50 rounded-xl p-4 min-w-[280px] max-w-[320px] shrink-0 shadow-md transition-all flex flex-col justify-between group"
-                                    data-title="注意事項 - 09. 災害防救應變"
-                                    data-content="入營當天如遇重大災害（颱風、地震、水災等）致影響交通或有重大安全顧慮時，請密切注意各傳播媒體之報導，如宣布所屬縣市公務機關停止上班時，原訂入營日期取消，更動後之入營日期另候通知或逕向戶籍所在地區公所兵役單位洽詢。">
-                                    <div>
-                                        <div class="flex items-center justify-between mb-2">
-                                            <span
-                                                class="w-6 h-6 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold flex items-center justify-center border border-yellow-500/30">09</span>
-                                            <span
-                                                class="text-xs font-semibold text-stone-400 group-hover:text-yellow-400 transition-colors">災害防救應變</span>
-                                        </div>
-                                        <p class="text-sm text-stone-300 leading-relaxed line-clamp-3">
-                                            入營當天如遇重大天災致縣市停止上班時，原訂入營日期取消，更動日期另行通知。</p>
-                                    </div>
-                                    <span
-                                        class="text-xs text-yellow-500/80 mt-3 block group-hover:text-yellow-400">點擊查看詳情
-                                        <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
-                                </button>
-
-                                <!-- Card 10 -->
-                                <button
-                                    class="timeline-btn text-left focus:outline-none cursor-pointer bg-stone-800/70 hover:bg-stone-800 border border-stone-700/60 hover:border-yellow-500/50 rounded-xl p-4 min-w-[280px] max-w-[320px] shrink-0 shadow-md transition-all flex flex-col justify-between group"
-                                    data-title="注意事項 - 10. 郵局開戶發薪" data-content="請於入營前完成向郵局辦理開戶手續，以利入伍後薪餉發放。">
-                                    <div>
-                                        <div class="flex items-center justify-between mb-2">
-                                            <span
-                                                class="w-6 h-6 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold flex items-center justify-center border border-yellow-500/30">10</span>
-                                            <span
-                                                class="text-xs font-semibold text-stone-400 group-hover:text-yellow-400 transition-colors">郵局開戶發薪</span>
-                                        </div>
-                                        <p class="text-sm text-stone-300 leading-relaxed line-clamp-3">
-                                            請於入營前完成向郵局辦理開戶手續，以利入伍後順利辦理薪餉撥存發放。</p>
-                                    </div>
-                                    <span
-                                        class="text-xs text-yellow-500/80 mt-3 block group-hover:text-yellow-400">點擊查看詳情
-                                        <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
-                                </button>
-
-                                <!-- Card 11 -->
-                                <button
-                                    class="timeline-btn text-left focus:outline-none cursor-pointer bg-stone-800/70 hover:bg-stone-800 border border-stone-700/60 hover:border-yellow-500/50 rounded-xl p-4 min-w-[280px] max-w-[320px] shrink-0 shadow-md transition-all flex flex-col justify-between group"
-                                    data-title="注意事項 - 11. 健保與折抵役期"
-                                    data-content="凡應徵入營役男，可憑徵集令影本，向原投保單位辦理全民健保轉出手續（轉出日期為入營日期），原健保卡不必繳回，可繼續使用，並隨徵集令附「替代役役男參加全民健康保險須知」分送替代役役男；另為辦理軍訓課程折算役期作業，高級中等學校畢業者，檢據畢（結）業證書；高級中等學校未畢（肄）業及大專以上畢業者，應先向就讀學校查詢申請手續，辦理全民國防教育軍事訓練課程成績單證明並將相關證明文件（影本一份抽存）於入營後繳交。">
-                                    <div>
-                                        <div class="flex items-center justify-between mb-2">
-                                            <span
-                                                class="w-6 h-6 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold flex items-center justify-center border border-yellow-500/30">11</span>
-                                            <span
-                                                class="text-xs font-semibold text-stone-400 group-hover:text-yellow-400 transition-colors">健保與折抵役期</span>
-                                        </div>
-                                        <p class="text-sm text-stone-300 leading-relaxed line-clamp-3">
-                                            請憑徵集令辦理健保轉出，並備妥畢業證書或軍事訓練課程成績單辦理役期折算。</p>
-                                    </div>
-                                    <span
-                                        class="text-xs text-yellow-500/80 mt-3 block group-hover:text-yellow-400">點擊查看詳情
-                                        <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
-                                </button>
-
-                                <!-- Card 12 -->
-                                <button
-                                    class="timeline-btn text-left focus:outline-none cursor-pointer bg-stone-800/70 hover:bg-stone-800 border border-stone-700/60 hover:border-yellow-500/50 rounded-xl p-4 min-w-[280px] max-w-[320px] shrink-0 shadow-md transition-all flex flex-col justify-between group"
-                                    data-title="注意事項 - 12. 體位重測申請"
-                                    data-content="役男身高、體重不符合服役標準者，得向直轄市、縣（市）政府或鄉（鎮、市、區）公所役政單位提出，俾於入營前專案予以重新測量或洽送醫院鑑定改判體位。">
-                                    <div>
-                                        <div class="flex items-center justify-between mb-2">
-                                            <span
-                                                class="w-6 h-6 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold flex items-center justify-center border border-yellow-500/30">12</span>
-                                            <span
-                                                class="text-xs font-semibold text-stone-400 group-hover:text-yellow-400 transition-colors">體位重測申請</span>
-                                        </div>
-                                        <p class="text-sm text-stone-300 leading-relaxed line-clamp-3">
-                                            身高體重不符標準者，得向役政單位提出申請，於入營前重新測量或複檢改判。</p>
-                                    </div>
-                                    <span
-                                        class="text-xs text-yellow-500/80 mt-3 block group-hover:text-yellow-400">點擊查看詳情
-                                        <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
-                                </button>
-                            </div>
-                        </div>
-
-                    <!-- Service Journey Timeline Stepper Section -->
-                    <div class="bg-stone-900 p-6 rounded-lg shadow-lg flex flex-col justify-center border border-stone-800/80">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                            <div>
-                                <div class="flex items-center gap-2">
-                                    <h3 class="font-bold text-white flex items-center gap-2 text-xl">
-                                        <i class="fa-solid fa-route text-green-500"></i>
-                                        <span>服役歷程進度條</span>
-                                    </h3>
-                                    <span id="journey-rank-badge"
-                                        class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-700/60 font-bold flex items-center gap-1 cursor-pointer transition-all hover:scale-105"
-                                        title="點擊查看榮譽成就">
-                                        <i class="fa-solid fa-award"></i> 役男整備中
-                                    </span>
+                                    <p class="text-sm text-stone-300 leading-relaxed line-clamp-3">
+                                        凡應徵役男接到徵集令時，應在徵集令（第一聯）回執上記入收到日期並簽章或按指模。</p>
                                 </div>
-                                <p class="text-xs text-stone-400 mt-1">
-                                    從收到兵單、新訓操課到退伍歸鄉，完成各階段任務自動向前推進役期進度！
-                                </p>
-                            </div>
+                                <span class="text-xs text-yellow-500/80 mt-3 block group-hover:text-yellow-400">點擊查看詳情
+                                    <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
+                            </button>
 
-                            <div class="flex items-center gap-3 self-end sm:self-auto">
-                                <div class="text-right">
-                                    <div class="text-xs text-stone-400">總歷程推進度</div>
-                                    <div class="font-tech font-bold text-lg text-green-400" id="journey-progress-percent">0%</div>
+                            <!-- Card 2 -->
+                            <button
+                                class="timeline-btn text-left focus:outline-none cursor-pointer bg-stone-800/70 hover:bg-stone-800 border border-stone-700/60 hover:border-yellow-500/50 rounded-xl p-4 min-w-[280px] max-w-[320px] shrink-0 shadow-md transition-all flex flex-col justify-between group"
+                                data-title="注意事項 - 02. 代收通報"
+                                data-content="如徵集令由徵兵處理通報人代收其應辦手續按前項規定辦理，並應儘速通報應徵役男，依照規定時間地點前往報到入營。">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span
+                                            class="w-6 h-6 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold flex items-center justify-center border border-yellow-500/30">02</span>
+                                        <span
+                                            class="text-xs font-semibold text-stone-400 group-hover:text-yellow-400 transition-colors">代收通報</span>
+                                    </div>
+                                    <p class="text-sm text-stone-300 leading-relaxed line-clamp-3">
+                                        如徵集令由徵兵處理通報人代收其應辦手續按前項規定辦理，並應儘速通報應徵役男，依照規定時間地點前往報到入營。</p>
                                 </div>
-                            </div>
-                        </div>
+                                <span class="text-xs text-yellow-500/80 mt-3 block group-hover:text-yellow-400">點擊查看詳情
+                                    <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
+                            </button>
 
-                        <!-- Global Master Progress Track -->
-                        <div class="w-full bg-stone-950 rounded-full h-3 mb-6 p-0.5 border border-stone-800 overflow-hidden relative shadow-inner">
-                            <div id="journey-progress-bar"
-                                class="bg-gradient-to-r from-emerald-600 via-amber-500 to-rose-600 h-full rounded-full transition-all duration-700 ease-out shadow-[0_0_12px_rgba(16,185,129,0.7)]"
-                                style="width: 0%;">
-                            </div>
-                        </div>
+                            <!-- Card 3 -->
+                            <button
+                                class="timeline-btn text-left focus:outline-none cursor-pointer bg-stone-800/70 hover:bg-stone-800 border border-stone-700/60 hover:border-yellow-500/50 rounded-xl p-4 min-w-[280px] max-w-[320px] shrink-0 shadow-md transition-all flex flex-col justify-between group"
+                                data-title="注意事項 - 03. 延期徵訓申請"
+                                data-content="接到徵集令後，應妥為做入營準備，如公務上之交代或私事之處理，凡合於常備役體位服替代役役男延期徵訓事故表所定各項延期徵訓事故原因者，得由本人或戶長填具申請書，報由區公所核轉市政府核辦。">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span
+                                            class="w-6 h-6 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold flex items-center justify-center border border-yellow-500/30">03</span>
+                                        <span
+                                            class="text-xs font-semibold text-stone-400 group-hover:text-yellow-400 transition-colors">延期徵訓申請</span>
+                                    </div>
+                                    <p class="text-sm text-stone-300 leading-relaxed line-clamp-3">
+                                        接到徵集令後，應妥為做入營準備，如合於延期徵訓事故原因者，得由本人或戶長填具申請書核辦。</p>
+                                </div>
+                                <span class="text-xs text-yellow-500/80 mt-3 block group-hover:text-yellow-400">點擊查看詳情
+                                    <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
+                            </button>
 
-                        <!-- 3 Stages Interactive Stepper (Desktop & Mobile Grid) -->
-                        <div id="journey-nodes-container"
-                            class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
-                            <!-- JS Dynamically Injected Stage Cards -->
+                            <!-- Card 4 -->
+                            <button
+                                class="timeline-btn text-left focus:outline-none cursor-pointer bg-stone-800/70 hover:bg-stone-800 border border-stone-700/60 hover:border-yellow-500/50 rounded-xl p-4 min-w-[280px] max-w-[320px] shrink-0 shadow-md transition-all flex flex-col justify-between group"
+                                data-title="注意事項 - 04. 報到應備文件"
+                                data-content="報到時應攜帶徵集令、國民身分證、私章、戶口名簿影本、郵局存摺正面影本、最高學歷畢業證書、特殊專長及國家考試及格證書與技術師（士）證照等資料，並隨身穿著季節便服一套。">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span
+                                            class="w-6 h-6 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold flex items-center justify-center border border-yellow-500/30">04</span>
+                                        <span
+                                            class="text-xs font-semibold text-stone-400 group-hover:text-yellow-400 transition-colors">報到應備文件</span>
+                                    </div>
+                                    <p class="text-sm text-stone-300 leading-relaxed line-clamp-3">
+                                        報到時應攜帶徵集令、身分證、印章、戶口名簿影本、郵局存摺影本及畢業證書證照等資料。</p>
+                                </div>
+                                <span class="text-xs text-yellow-500/80 mt-3 block group-hover:text-yellow-400">點擊查看詳情
+                                    <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
+                            </button>
+
+                            <!-- Card 5 -->
+                            <button
+                                class="timeline-btn text-left focus:outline-none cursor-pointer bg-stone-800/70 hover:bg-stone-800 border border-stone-700/60 hover:border-yellow-500/50 rounded-xl p-4 min-w-[280px] max-w-[320px] shrink-0 shadow-md transition-all flex flex-col justify-between group"
+                                data-title="注意事項 - 05. 準時集合規範"
+                                data-content="務希準時到達集合地點集合，逾時應自行入營報到，乘座車輛船隻須遵守交通秩序並接受領隊人員之指導。">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span
+                                            class="w-6 h-6 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold flex items-center justify-center border border-yellow-500/30">05</span>
+                                        <span
+                                            class="text-xs font-semibold text-stone-400 group-hover:text-yellow-400 transition-colors">準時集合規範</span>
+                                    </div>
+                                    <p class="text-sm text-stone-300 leading-relaxed line-clamp-3">
+                                        務希準時到達集合地點集合，逾時應自行入營報到，乘坐交通工具須遵守秩序並接受指導。</p>
+                                </div>
+                                <span class="text-xs text-yellow-500/80 mt-3 block group-hover:text-yellow-400">點擊查看詳情
+                                    <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
+                            </button>
+
+                            <!-- Card 6 -->
+                            <button
+                                class="timeline-btn text-left focus:outline-none cursor-pointer bg-stone-800/70 hover:bg-stone-800 border border-stone-700/60 hover:border-yellow-500/50 rounded-xl p-4 min-w-[280px] max-w-[320px] shrink-0 shadow-md transition-all flex flex-col justify-between group"
+                                data-title="注意事項 - 06. 親友搭乘限制" data-content="輸入入營之車輛船隻，有一定容量、送行家屬及親友不得隨同搭乘。">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span
+                                            class="w-6 h-6 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold flex items-center justify-center border border-yellow-500/30">06</span>
+                                        <span
+                                            class="text-xs font-semibold text-stone-400 group-hover:text-yellow-400 transition-colors">親友搭乘限制</span>
+                                    </div>
+                                    <p class="text-sm text-stone-300 leading-relaxed line-clamp-3">
+                                        輸送入營之車輛船隻有容量限制，送行家屬及親友不得隨同搭乘。</p>
+                                </div>
+                                <span class="text-xs text-yellow-500/80 mt-3 block group-hover:text-yellow-400">點擊查看詳情
+                                    <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
+                            </button>
+
+                            <!-- Card 7 -->
+                            <button
+                                class="timeline-btn text-left focus:outline-none cursor-pointer bg-stone-800/70 hover:bg-stone-800 border border-stone-700/60 hover:border-yellow-500/50 rounded-xl p-4 min-w-[280px] max-w-[320px] shrink-0 shadow-md transition-all flex flex-col justify-between group"
+                                data-title="注意事項 - 07. 妨害兵役處罰" data-content="逾期不到應徵役男，依妨害兵役治罪條例移送法院。">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span
+                                            class="w-6 h-6 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold flex items-center justify-center border border-yellow-500/30">07</span>
+                                        <span
+                                            class="text-xs font-semibold text-stone-400 group-hover:text-yellow-400 transition-colors">妨害兵役處罰</span>
+                                    </div>
+                                    <p class="text-sm text-stone-300 leading-relaxed line-clamp-3">
+                                        無故逾期不到應徵役男，將依妨害兵役治罪條例移送法院依法辦理。</p>
+                                </div>
+                                <span class="text-xs text-yellow-500/80 mt-3 block group-hover:text-yellow-400">點擊查看詳情
+                                    <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
+                            </button>
+
+                            <!-- Card 8 -->
+                            <button
+                                class="timeline-btn text-left focus:outline-none cursor-pointer bg-stone-800/70 hover:bg-stone-800 border border-stone-700/60 hover:border-yellow-500/50 rounded-xl p-4 min-w-[280px] max-w-[320px] shrink-0 shadow-md transition-all flex flex-col justify-between group"
+                                data-title="注意事項 - 08. 保留職缺申請"
+                                data-content="應徵人員如係機關學校，公私營事業機構，及人民團體（含公司）等之職工，請於接到徵集令三天內到原服務單位辦理保留底缺。">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span
+                                            class="w-6 h-6 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold flex items-center justify-center border border-yellow-500/30">08</span>
+                                        <span
+                                            class="text-xs font-semibold text-stone-400 group-hover:text-yellow-400 transition-colors">保留職缺申請</span>
+                                    </div>
+                                    <p class="text-sm text-stone-300 leading-relaxed line-clamp-3">
+                                        應徵人員如係各機構、學校或公司職工，請於接到徵集令三天內至原單位辦理保留底缺。</p>
+                                </div>
+                                <span class="text-xs text-yellow-500/80 mt-3 block group-hover:text-yellow-400">點擊查看詳情
+                                    <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
+                            </button>
+
+                            <!-- Card 9 -->
+                            <button
+                                class="timeline-btn text-left focus:outline-none cursor-pointer bg-stone-800/70 hover:bg-stone-800 border border-stone-700/60 hover:border-yellow-500/50 rounded-xl p-4 min-w-[280px] max-w-[320px] shrink-0 shadow-md transition-all flex flex-col justify-between group"
+                                data-title="注意事項 - 09. 災害防救應變"
+                                data-content="入營當天如遇重大災害（颱風、地震、水災等）致影響交通或有重大安全顧慮時，請密切注意各傳播媒體之報導，如宣布所屬縣市公務機關停止上班時，原訂入營日期取消，更動後之入營日期另候通知或逕向戶籍所在地區公所兵役單位洽詢。">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span
+                                            class="w-6 h-6 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold flex items-center justify-center border border-yellow-500/30">09</span>
+                                        <span
+                                            class="text-xs font-semibold text-stone-400 group-hover:text-yellow-400 transition-colors">災害防救應變</span>
+                                    </div>
+                                    <p class="text-sm text-stone-300 leading-relaxed line-clamp-3">
+                                        入營當天如遇重大天災致縣市停止上班時，原訂入營日期取消，更動日期另行通知。</p>
+                                </div>
+                                <span class="text-xs text-yellow-500/80 mt-3 block group-hover:text-yellow-400">點擊查看詳情
+                                    <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
+                            </button>
+
+                            <!-- Card 10 -->
+                            <button
+                                class="timeline-btn text-left focus:outline-none cursor-pointer bg-stone-800/70 hover:bg-stone-800 border border-stone-700/60 hover:border-yellow-500/50 rounded-xl p-4 min-w-[280px] max-w-[320px] shrink-0 shadow-md transition-all flex flex-col justify-between group"
+                                data-title="注意事項 - 10. 郵局開戶發薪" data-content="請於入營前完成向郵局辦理開戶手續，以利入伍後薪餉發放。">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span
+                                            class="w-6 h-6 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold flex items-center justify-center border border-yellow-500/30">10</span>
+                                        <span
+                                            class="text-xs font-semibold text-stone-400 group-hover:text-yellow-400 transition-colors">郵局開戶發薪</span>
+                                    </div>
+                                    <p class="text-sm text-stone-300 leading-relaxed line-clamp-3">
+                                        請於入營前完成向郵局辦理開戶手續，以利入伍後順利辦理薪餉撥存發放。</p>
+                                </div>
+                                <span class="text-xs text-yellow-500/80 mt-3 block group-hover:text-yellow-400">點擊查看詳情
+                                    <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
+                            </button>
+
+                            <!-- Card 11 -->
+                            <button
+                                class="timeline-btn text-left focus:outline-none cursor-pointer bg-stone-800/70 hover:bg-stone-800 border border-stone-700/60 hover:border-yellow-500/50 rounded-xl p-4 min-w-[280px] max-w-[320px] shrink-0 shadow-md transition-all flex flex-col justify-between group"
+                                data-title="注意事項 - 11. 健保與折抵役期"
+                                data-content="凡應徵入營役男，可憑徵集令影本，向原投保單位辦理全民健保轉出手續（轉出日期為入營日期），原健保卡不必繳回，可繼續使用，並隨徵集令附「替代役役男參加全民健康保險須知」分送替代役役男；另為辦理軍訓課程折算役期作業，高級中等學校畢業者，檢據畢（結）業證書；高級中等學校未畢（肄）業及大專以上畢業者，應先向就讀學校查詢申請手續，辦理全民國防教育軍事訓練課程成績單證明並將相關證明文件（影本一份抽存）於入營後繳交。">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span
+                                            class="w-6 h-6 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold flex items-center justify-center border border-yellow-500/30">11</span>
+                                        <span
+                                            class="text-xs font-semibold text-stone-400 group-hover:text-yellow-400 transition-colors">健保與折抵役期</span>
+                                    </div>
+                                    <p class="text-sm text-stone-300 leading-relaxed line-clamp-3">
+                                        請憑徵集令辦理健保轉出，並備妥畢業證書或軍事訓練課程成績單辦理役期折算。</p>
+                                </div>
+                                <span class="text-xs text-yellow-500/80 mt-3 block group-hover:text-yellow-400">點擊查看詳情
+                                    <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
+                            </button>
+
+                            <!-- Card 12 -->
+                            <button
+                                class="timeline-btn text-left focus:outline-none cursor-pointer bg-stone-800/70 hover:bg-stone-800 border border-stone-700/60 hover:border-yellow-500/50 rounded-xl p-4 min-w-[280px] max-w-[320px] shrink-0 shadow-md transition-all flex flex-col justify-between group"
+                                data-title="注意事項 - 12. 體位重測申請"
+                                data-content="役男身高、體重不符合服役標準者，得向直轄市、縣（市）政府或鄉（鎮、市、區）公所役政單位提出，俾於入營前專案予以重新測量或洽送醫院鑑定改判體位。">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span
+                                            class="w-6 h-6 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold flex items-center justify-center border border-yellow-500/30">12</span>
+                                        <span
+                                            class="text-xs font-semibold text-stone-400 group-hover:text-yellow-400 transition-colors">體位重測申請</span>
+                                    </div>
+                                    <p class="text-sm text-stone-300 leading-relaxed line-clamp-3">
+                                        身高體重不符標準者，得向役政單位提出申請，於入營前重新測量或複檢改判。</p>
+                                </div>
+                                <span class="text-xs text-yellow-500/80 mt-3 block group-hover:text-yellow-400">點擊查看詳情
+                                    <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
+                            </button>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-                        <!-- Left Column (Status & Profile) - Span 3 -->
+                        <!-- Left Column (Tasks & Progress) - Span 9 -->
+                        <div class="lg:col-span-9 flex flex-col">
+
+                            <!-- Tasks Card with Unified Progress Bar -->
+                            <div id="tasks-card"
+                                class="bg-stone-900 p-6 rounded-lg shadow-lg opacity-50 pointer-events-none grayscale relative h-full flex flex-col border border-stone-800/80">
+                                <div id="tasks-lock-overlay"
+                                    class="absolute inset-0 flex items-center justify-center z-10">
+                                    <div
+                                        class="bg-black/80 px-4 py-2 rounded flex items-center gap-2 text-white text-sm">
+                                        <i class="fa-solid fa-lock text-[14px]"></i> 需登入檢視
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+                                    <div>
+                                        <h3 class="font-bold text-white flex items-center gap-2 text-lg">
+                                            <i class="fa-solid fa-route text-green-500"></i>
+                                            <span id="tasks-title">服役歷程階段任務</span>
+                                        </h3>
+                                        <p class="text-xs text-stone-400 mt-0.5" id="tasks-subtitle">
+                                            從收到兵單、新訓操課到退伍歸鄉，完成各階段任務自動向前推進役期進度！
+                                        </p>
+                                    </div>
+
+                                    <div class="flex items-center gap-2">
+                                        <span id="tasks-count"
+                                            class="text-xs px-2.5 py-1 rounded bg-stone-800 text-stone-300 border border-stone-700 font-mono">
+                                            已完成 0 / 8 項
+                                        </span>
+                                        <span
+                                            class="text-xs px-2.5 py-1 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-700/60 font-tech font-bold"
+                                            id="journey-progress-percent">
+                                            0%
+                                        </span>
+                                        <button id="btn-reset-journey-tasks"
+                                            class="text-xs text-stone-500 hover:text-stone-300 transition-colors px-2 py-1 hover:bg-stone-800 rounded"
+                                            title="重置任務進度">
+                                            <i class="fa-solid fa-rotate-left"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Unified Master Progress Track -->
+                                <div
+                                    class="w-full bg-stone-950 rounded-full h-2.5 p-0.5 border border-stone-800 overflow-hidden relative shadow-inner mb-4">
+                                    <div id="journey-progress-bar"
+                                        class="bg-gradient-to-r from-emerald-600 via-amber-500 to-rose-600 h-full rounded-full transition-all duration-700 ease-out shadow-[0_0_12px_rgba(16,185,129,0.7)]"
+                                        style="width: 0%;">
+                                    </div>
+                                </div>
+
+                                <!-- Stage Filter Tabs -->
+                                <div id="tasks-stage-filter-container"
+                                    class="flex gap-2 overflow-x-auto pb-2 mb-4 custom-scrollbar text-xs">
+                                    <button
+                                        class="journey-stage-tab px-3 py-1.5 rounded-lg border font-bold transition-all shrink-0 bg-green-900/40 text-green-300 border-green-700/60 shadow-sm"
+                                        data-stage="all">
+                                        <i class="fa-solid fa-layer-group mr-1"></i>全部階段
+                                    </button>
+                                    <button
+                                        class="journey-stage-tab px-3 py-1.5 rounded-lg border font-medium transition-all shrink-0 bg-stone-800/80 text-stone-400 border-stone-700/60 hover:text-stone-200"
+                                        data-stage="stage_1">
+                                        一、兵役整備
+                                    </button>
+                                    <button
+                                        class="journey-stage-tab px-3 py-1.5 rounded-lg border font-medium transition-all shrink-0 bg-stone-800/80 text-stone-400 border-stone-700/60 hover:text-stone-200"
+                                        data-stage="stage_2">
+                                        二、入營適應
+                                    </button>
+                                    <button
+                                        class="journey-stage-tab px-3 py-1.5 rounded-lg border font-medium transition-all shrink-0 bg-stone-800/80 text-stone-400 border-stone-700/60 hover:text-stone-200"
+                                        data-stage="stage_3">
+                                        三、入營服役
+                                    </button>
+                                </div>
+
+                                <div id="tasks-list"
+                                    class="space-y-3 flex-1 overflow-y-auto max-h-[480px] pr-1 custom-scrollbar">
+                                    <!-- Dynamically Populated Tasks -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column (Status, Location, Game) - Span 3 -->
                         <div class="lg:col-span-3 space-y-6">
 
                             <!-- Widget: Status Report -->
@@ -1117,7 +1122,8 @@
                                 class="hidden bg-stone-900 border-l-4 border-green-700 p-5 rounded-lg shadow-lg">
                                 <div class="flex justify-between items-start mb-4">
                                     <h3 class="font-bold text-lg text-white">兵役推估報告</h3>
-                                    <span id="status-icon" class="text-3xl">🪖</span>
+                                    <span id="status-icon" class="text-2xl text-green-500"><i
+                                            class="fa-solid fa-shield-halved"></i></span>
                                 </div>
                                 <p id="status-type" class="text-green-600 font-bold text-2xl mb-2">常備役</p>
                                 <p class="text-stone-400 text-sm mb-4">判定依據：<span id="status-reason">體位正常</span></p>
@@ -1134,7 +1140,7 @@
                                 class="hidden bg-stone-900 border-l-4 border-blue-600 p-5 rounded-lg shadow-lg">
                                 <div class="flex justify-between items-start mb-4">
                                     <h3 class="font-bold text-lg text-white">新訓地點</h3>
-                                    <span class="text-3xl">📍</span>
+                                    <span class="text-2xl text-blue-500"><i class="fa-solid fa-location-dot"></i></span>
                                 </div>
                                 <p id="location-display" class="text-blue-500 font-bold text-2xl mb-2">成功嶺</p>
                                 <div class="bg-stone-800 p-3 rounded text-sm text-stone-300">
@@ -1159,93 +1165,19 @@
                                 </button>
                             </div>
 
-                        </div>
-
-                        <!-- Middle Column (Tasks) - Span 9 (Extended) -->
-                        <div class="lg:col-span-9 flex flex-col">
-
-                            <!-- Tasks Card -->
-                            <div id="tasks-card"
-                                class="bg-stone-900 p-6 rounded-lg shadow-lg opacity-50 pointer-events-none grayscale relative h-full flex flex-col border border-stone-800/80">
-                                <div id="tasks-lock-overlay"
-                                    class="absolute inset-0 flex items-center justify-center z-10">
-                                    <div
-                                        class="bg-black/80 px-4 py-2 rounded flex items-center gap-2 text-white text-sm">
-                                        <i class="fa-solid fa-lock text-[14px]"></i> 需登入檢視
-                                    </div>
-                                </div>
-
-                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-stone-800">
-                                    <div>
-                                        <h3 class="font-bold text-white flex items-center gap-2 text-lg">
-                                            <i class="fa-solid fa-list-check text-[20px] text-green-500"></i>
-                                            <span id="tasks-title">服役歷程階段任務</span>
-                                        </h3>
-                                        <p class="text-xs text-stone-400 mt-0.5" id="tasks-subtitle">
-                                            勾選任務自動推動服役進度條，也可前往對應模組同步完成
-                                        </p>
-                                    </div>
-
-                                    <div class="flex items-center gap-2">
-                                        <span id="tasks-count"
-                                            class="text-xs px-2.5 py-1 rounded bg-stone-800 text-stone-300 border border-stone-700 font-mono">
-                                            已完成 0 / 8 項
-                                        </span>
-                                        <button id="btn-reset-journey-tasks"
-                                            class="text-xs text-stone-500 hover:text-stone-300 transition-colors px-2 py-1 hover:bg-stone-800 rounded"
-                                            title="重置任務進度">
-                                            <i class="fa-solid fa-rotate-left"></i>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Stage Filter Tabs -->
-                                <div id="tasks-stage-filter-container"
-                                    class="flex gap-2 overflow-x-auto pb-2 mb-4 custom-scrollbar text-xs">
-                                    <button class="journey-stage-tab px-3 py-1.5 rounded-lg border font-bold transition-all shrink-0 bg-green-900/40 text-green-300 border-green-700/60 shadow-sm"
-                                        data-stage="all">
-                                        <i class="fa-solid fa-layer-group mr-1"></i>全部階段
-                                    </button>
-                                    <button class="journey-stage-tab px-3 py-1.5 rounded-lg border font-medium transition-all shrink-0 bg-stone-800/80 text-stone-400 border-stone-700/60 hover:text-stone-200"
-                                        data-stage="stage_1">
-                                        一、兵役整備
-                                    </button>
-                                    <button class="journey-stage-tab px-3 py-1.5 rounded-lg border font-medium transition-all shrink-0 bg-stone-800/80 text-stone-400 border-stone-700/60 hover:text-stone-200"
-                                        data-stage="stage_2">
-                                        二、入營適應
-                                    </button>
-                                    <button class="journey-stage-tab px-3 py-1.5 rounded-lg border font-medium transition-all shrink-0 bg-stone-800/80 text-stone-400 border-stone-700/60 hover:text-stone-200"
-                                        data-stage="stage_3">
-                                        三、入營服役
-                                    </button>
-                                </div>
-
-                                <div id="tasks-list" class="space-y-3 flex-1 overflow-y-auto max-h-[480px] pr-1 custom-scrollbar">
-                                    <!-- Dynamically Populated Tasks -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Right Column (Games & Analysis) - Span 12 (New Row) -->
-                    <div class="lg:col-span-12 space-y-6">
-                        <!-- Entertainment Links (Grid 2 cols for desktop) -->
-                        <div class="grid grid-cols-1 gap-4">
+                            <!-- Widget: Game Link (模擬籤筒) -->
                             <div id="link-game"
-                                class="bg-gradient-to-br from-orange-900 to-red-900 p-6 rounded-lg shadow-lg relative overflow-hidden cursor-pointer h-40 flex flex-col justify-between group hover:shadow-xl transition-all">
-                                <div
-                                    class="absolute right-[-10px] top-[-10px] text-white opacity-10 group-hover:scale-110 transition-transform duration-500">
-                                    <i class="fa-solid fa-gamepad text-[100px]"></i>
-                                </div>
+                                class="bg-gradient-to-br from-orange-900 to-red-900 p-5 rounded-lg shadow-lg relative overflow-hidden cursor-pointer h-36 flex flex-col justify-between group hover:shadow-xl transition-all">
                                 <div>
-                                    <h3 class="font-bold text-white text-xl z-10 mb-1">模擬籤筒</h3>
-                                    <p class="text-stone-300 text-sm z-10">試試你的手氣</p>
+                                    <h3 class="font-bold text-white text-lg z-10 mb-0.5">模擬籤筒</h3>
+                                    <p class="text-stone-300 text-xs z-10">試試你的手氣</p>
                                 </div>
                                 <div
-                                    class="bg-white/10 backdrop-blur-sm text-white text-xs font-bold px-3 py-1.5 rounded-full w-fit flex items-center gap-1 group-hover:bg-white/20 transition-colors">
-                                    <i class="fa-solid fa-gamepad text-[14px]"></i> START GAME
+                                    class="bg-white/10 backdrop-blur-sm text-white text-xs font-bold px-3 py-1.5 rounded-full w-fit flex items-center justify-center group-hover:bg-white/20 transition-colors">
+                                    START GAME
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -1402,14 +1334,22 @@
                 <!-- TAB: INVENTORY -->
                 <div id="view-inventory" class="view-section hidden expanded-desktop-format mx-auto">
                     <div class="bg-stone-900 p-6 rounded-lg shadow-lg flex flex-col h-full overflow-y-auto">
-                        <div class="flex justify-between items-center mb-6 border-b border-stone-800 pb-4">
+                        <div
+                            class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6 border-b border-stone-800 pb-4">
                             <h3 class="font-bold text-white flex items-center gap-2 text-xl">
                                 <i class="fa-solid fa-suitcase text-amber-600"></i> 入伍背包檢查表
                             </h3>
-                            <div
-                                class="text-sm text-stone-400 bg-stone-950/80 px-4 py-1.5 rounded-full border border-stone-850">
-                                準備進度：<span id="inventory-progress-text" class="text-green-400 font-bold">0 / 0
-                                    (0%)</span>
+                            <div class="flex items-center gap-2">
+                                <div
+                                    class="text-sm text-stone-400 bg-stone-950/80 px-4 py-1.5 rounded-full border border-stone-850">
+                                    準備進度：<span id="inventory-progress-text" class="text-green-400 font-bold">0 / 0
+                                        (0%)</span>
+                                </div>
+                                <button id="btn-reset-inventory"
+                                    class="text-xs text-stone-500 hover:text-stone-300 transition-colors px-2.5 py-1.5 hover:bg-stone-800 rounded border border-stone-800"
+                                    title="重置背包清單">
+                                    <i class="fa-solid fa-rotate-left"></i>
+                                </button>
                             </div>
                         </div>
 

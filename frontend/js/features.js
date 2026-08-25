@@ -3,7 +3,7 @@
  * 包含：背包、聊天室、課表、影片、說明文件、日曆、倒數
  */
 
-import { state, INITIAL_JOURNEY_STAGES } from './state.js';
+import { state, INITIAL_JOURNEY_STAGES, INITIAL_BACKPACK } from './state.js';
 import { dom, switchTab } from './ui.js';
 import { api } from './api.js';
 
@@ -221,7 +221,53 @@ const DOCS_DATA = {
 };
 
 // --- Inventory ---
+// --- Inventory ---
+export function initBackpack() {
+    try {
+        const saved = localStorage.getItem('simSoldier_inventory');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            state.backpack = INITIAL_BACKPACK.map(item => {
+                const savedItem = Array.isArray(parsed) ? parsed.find(p => p.id === item.id) : null;
+                return {
+                    ...item,
+                    acquired: savedItem ? !!savedItem.acquired : false
+                };
+            });
+        } else {
+            state.backpack = JSON.parse(JSON.stringify(INITIAL_BACKPACK));
+        }
+    } catch (e) {
+        console.error('Error loading inventory from localStorage:', e);
+        state.backpack = JSON.parse(JSON.stringify(INITIAL_BACKPACK));
+    }
+}
+
+export function saveBackpackProgress() {
+    try {
+        if (!state.backpack) return;
+        const toSave = state.backpack.map(i => ({ id: i.id, acquired: !!i.acquired }));
+        localStorage.setItem('simSoldier_inventory', JSON.stringify(toSave));
+    } catch (e) {
+        console.error('Error saving inventory progress:', e);
+    }
+}
+
+export function resetInventory() {
+    if (confirm('確定要清空並重置入伍背包檢查表嗎？')) {
+        if (state.backpack) {
+            state.backpack.forEach(i => i.acquired = false);
+        }
+        saveBackpackProgress();
+        renderInventory();
+        syncJourneyAutoProgress();
+    }
+}
+
 export function renderInventory() {
+    if (!state.backpack || state.backpack.length === 0) {
+        initBackpack();
+    }
     const container = dom.inventoryCategoriesContainer;
     if (!container) return;
     container.innerHTML = '';
@@ -330,6 +376,7 @@ function toggleItem(id) {
     const item = state.backpack.find(i => i.id === id);
     if (item) {
         item.acquired = !item.acquired;
+        saveBackpackProgress();
         renderInventory();
         syncJourneyAutoProgress();
     }
@@ -477,18 +524,6 @@ export function toggleTrainingDay(dayId, cardElement, btnElement) {
         if (btnElement) {
             btnElement.className = "btn-confirm-training text-xs bg-red-600 hover:bg-red-500 text-white px-3 py-1.5 rounded transition-colors flex items-center gap-1";
             btnElement.innerHTML = '<i class="fa-solid fa-xmark"></i> 取消';
-        }
-
-        // Confetti effect (using global confetti lib)
-        if (window.confetti) {
-            confetti({
-                particleCount: 30, spread: 50,
-                origin: {
-                    x: btnElement ? btnElement.getBoundingClientRect().left / window.innerWidth : 0.5,
-                    y: btnElement ? btnElement.getBoundingClientRect().top / window.innerHeight : 0.5
-                },
-                colors: ['#22c55e', '#ffffff']
-            });
         }
     }
     updateTrainingProgress();
@@ -687,6 +722,15 @@ export function updateCountdown() {
 
     if (isDischargeCountdown) {
         dom.countdownTitle.textContent = diffDays <= 0 ? "已退伍" : "離營倒數";
+        if (diffDays <= 0) {
+            const t3_4 = findTaskById('t3_4');
+            if (t3_4 && !t3_4.completed) {
+                t3_4.completed = true;
+                saveJourneyProgress();
+                renderJourneySystem();
+                openServiceCompletedModal();
+            }
+        }
     } else {
         dom.countdownTitle.textContent = diffDays <= 0 && !state.userData.tempCountdown ? "入營日" : "距離入營";
     }
@@ -1012,24 +1056,13 @@ export function setupJourneyEventListeners() {
         };
     }
 
-    // Discharge Celebration Modal Close
-    if (dom.btnCloseDischargeModal) {
-        dom.btnCloseDischargeModal.onclick = closeDischargeCelebrationModal;
+    // Service Completed Modal Close
+    if (dom.btnCloseServiceCompletedModal) {
+        dom.btnCloseServiceCompletedModal.onclick = closeServiceCompletedModal;
     }
-    if (dom.modalDischargeCelebration) {
-        dom.modalDischargeCelebration.onclick = (e) => {
-            if (e.target === dom.modalDischargeCelebration) closeDischargeCelebrationModal();
-        };
-    }
-
-    // Clicking Rank Badge when 100%
-    if (dom.journeyRankBadge) {
-        dom.journeyRankBadge.onclick = () => {
-            let totalTasks = 0, completedTasks = 0;
-            state.journeyStages.forEach(s => s.tasks.forEach(t => { totalTasks++; if (t.completed) completedTasks++; }));
-            if (completedTasks === totalTasks && totalTasks > 0) {
-                openDischargeCelebrationModal();
-            }
+    if (dom.modalServiceCompleted) {
+        dom.modalServiceCompleted.onclick = (e) => {
+            if (e.target === dom.modalServiceCompleted) closeServiceCompletedModal();
         };
     }
 
@@ -1041,6 +1074,13 @@ export function setupJourneyEventListeners() {
             toggleJourneyTask('t1_4', true);
         }
     });
+
+    // Auto complete task t1_6 on locationSelected
+    window.addEventListener('locationSelected', () => {
+        toggleJourneyTask('t1_6', true);
+    });
+
+    window.toggleJourneyTask = toggleJourneyTask;
 }
 
 let activeDetailTaskId = null;
@@ -1093,6 +1133,7 @@ export function openTaskDetailModal(taskId) {
                 shooting: '前往射擊口訣',
                 quiz: '前往天兵課堂',
                 chat: targetTask.id === 't1_2' ? '諮詢體檢地點' : '諮詢 AI 教官',
+                locations: '前往新訓地點',
                 delay: '前往延役專區',
                 docs: '查看法規與折抵',
                 game: '前往模擬籤筒',
@@ -1141,12 +1182,31 @@ function updateDetailModalStatusUI(task) {
     }
 
     if (dom.btnToggleTaskDetailStatus) {
-        if (task.completed) {
+        if (task.isAutoOnly) {
+            if (task.completed) {
+                dom.btnToggleTaskDetailStatus.className = 'px-4 py-2 rounded-xl text-xs font-bold border flex items-center gap-1.5 bg-emerald-950/40 text-emerald-300 border-emerald-800 cursor-not-allowed';
+                dom.btnToggleTaskDetailStatus.innerHTML = '<i class="fa-solid fa-circle-check"></i> <span>離營倒數已歸零（已達成）</span>';
+            } else {
+                dom.btnToggleTaskDetailStatus.className = 'px-4 py-2 rounded-xl text-xs font-bold border flex items-center gap-1.5 bg-stone-800/70 text-stone-400 border-stone-700 cursor-not-allowed';
+                dom.btnToggleTaskDetailStatus.innerHTML = '<i class="fa-regular fa-clock"></i> <span>待離營倒數歸零時達成</span>';
+            }
+            dom.btnToggleTaskDetailStatus.onclick = null;
+        } else if (task.completed) {
             dom.btnToggleTaskDetailStatus.className = 'px-4 py-2 rounded-xl text-xs font-bold border transition-colors flex items-center gap-1.5 bg-red-950/60 text-red-300 border-red-800 hover:bg-red-900/80';
             dom.btnToggleTaskDetailStatus.innerHTML = '<i class="fa-solid fa-rotate-left"></i> <span>取消完成狀態</span>';
+            dom.btnToggleTaskDetailStatus.onclick = () => {
+                toggleJourneyTask(task.id);
+                const updated = findTaskById(task.id);
+                if (updated) updateDetailModalStatusUI(updated);
+            };
         } else {
             dom.btnToggleTaskDetailStatus.className = 'px-4 py-2 rounded-xl text-xs font-bold border transition-colors flex items-center gap-1.5 bg-emerald-900/70 text-emerald-200 border-emerald-700 hover:bg-emerald-800';
             dom.btnToggleTaskDetailStatus.innerHTML = '<i class="fa-solid fa-check"></i> <span>標記為已完成</span>';
+            dom.btnToggleTaskDetailStatus.onclick = () => {
+                toggleJourneyTask(task.id);
+                const updated = findTaskById(task.id);
+                if (updated) updateDetailModalStatusUI(updated);
+            };
         }
     }
 }
@@ -1159,33 +1219,19 @@ export function closeTaskDetailModal() {
     activeDetailTaskId = null;
 }
 
-export function openDischargeCelebrationModal() {
-    const modal = document.getElementById('modal-discharge-celebration') || dom.modalDischargeCelebration;
-    const nameEl = document.getElementById('discharge-user-name') || dom.dischargeUserName;
-    const rateEl = document.getElementById('discharge-rate-text');
+export function openServiceCompletedModal() {
+    const modal = document.getElementById('modal-service-completed') || dom.modalServiceCompleted;
+    const nameEl = document.getElementById('completed-modal-username') || dom.completedModalUsername;
     if (modal) {
         if (nameEl && state.userData && state.userData.name) {
             nameEl.textContent = state.userData.name;
         }
-        if (rateEl) {
-            let totalTasks = 0, completedTasks = 0;
-            state.journeyStages.forEach(s => s.tasks.forEach(t => { totalTasks++; if (t.completed) completedTasks++; }));
-            rateEl.textContent = `${completedTasks} / ${totalTasks} (100%)`;
-        }
         modal.classList.remove('hidden');
-
-        if (window.confetti) {
-            window.confetti({
-                particleCount: 120,
-                spread: 90,
-                origin: { y: 0.5 }
-            });
-        }
     }
 }
 
-export function closeDischargeCelebrationModal() {
-    const modal = document.getElementById('modal-discharge-celebration') || dom.modalDischargeCelebration;
+export function closeServiceCompletedModal() {
+    const modal = document.getElementById('modal-service-completed') || dom.modalServiceCompleted;
     if (modal) {
         modal.classList.add('hidden');
     }
@@ -1214,7 +1260,7 @@ export function saveJourneyProgress() {
     }
 }
 
-export function toggleJourneyTask(taskId, manualState = null) {
+export function toggleJourneyTask(taskId, manualState = null, force = false) {
     if (!state.journeyStages || state.journeyStages.length === 0) return;
 
     let targetTask = null;
@@ -1230,6 +1276,7 @@ export function toggleJourneyTask(taskId, manualState = null) {
     }
 
     if (!targetTask) return;
+    if (targetTask.isAutoOnly && !force) return;
 
     const previousState = targetTask.completed;
     targetTask.completed = manualState !== null ? manualState : !targetTask.completed;
@@ -1237,30 +1284,16 @@ export function toggleJourneyTask(taskId, manualState = null) {
     saveJourneyProgress();
     renderJourneySystem();
 
-    // Trigger celebration if newly completed
-    if (!previousState && targetTask.completed) {
-        let totalTasks = 0, completedTasks = 0;
-        state.journeyStages.forEach(s => s.tasks.forEach(t => { totalTasks++; if (t.completed) completedTasks++; }));
-
-        if (completedTasks === totalTasks && totalTasks > 0) {
-            // Full 100% Discharge Celebration!
-            openDischargeCelebrationModal();
-        } else if (targetStage) {
-            const isStageAllDone = targetStage.tasks.every(t => t.completed);
-            if (isStageAllDone && window.confetti) {
-                window.confetti({
-                    particleCount: 60,
-                    spread: 70,
-                    origin: { y: 0.6 }
-                });
-            }
-        }
+    // Trigger Service Completion Modal if t3_4 is newly completed
+    if (!previousState && targetTask.completed && targetTask.id === 't3_4') {
+        openServiceCompletedModal();
     }
 }
 
 export function syncJourneyAutoProgress(shouldRender = true) {
     if (!state.journeyStages || state.journeyStages.length === 0) return;
     let hasChanges = false;
+    let triggerCompletedModal = false;
 
     // Check Backpack: if 8 required items or >= 8 items acquired, auto mark t1_5
     if (state.backpack && state.backpack.length > 0) {
@@ -1284,9 +1317,32 @@ export function syncJourneyAutoProgress(shouldRender = true) {
         }
     }
 
+    // Check Discharge / Departure Countdown for t3_4
+    if (state.userData && state.userData.date) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const enlistmentDate = new Date(state.userData.date);
+        enlistmentDate.setHours(0, 0, 0, 0);
+        if (today > enlistmentDate) {
+            const dischargeDate = new Date(enlistmentDate);
+            dischargeDate.setMonth(dischargeDate.getMonth() + 4);
+            const diffTime = dischargeDate - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            if (diffDays <= 0) {
+                const t3_4 = findTaskById('t3_4');
+                if (t3_4 && !t3_4.completed) {
+                    t3_4.completed = true;
+                    hasChanges = true;
+                    triggerCompletedModal = true;
+                }
+            }
+        }
+    }
+
     if (hasChanges) {
         saveJourneyProgress();
         if (shouldRender) renderJourneySystem();
+        if (triggerCompletedModal) openServiceCompletedModal();
     }
 }
 
@@ -1318,7 +1374,6 @@ export function renderJourneySystem() {
     // 1. Dynamic Element Lookup for 100% Reliability
     const progressBar = document.getElementById('journey-progress-bar') || dom.journeyProgressBar;
     const progressPercent = document.getElementById('journey-progress-percent') || dom.journeyProgressPercent;
-    const rankBadge = document.getElementById('journey-rank-badge') || dom.journeyRankBadge;
     const tasksCount = document.getElementById('tasks-count') || dom.tasksCount;
     const dailyTaskBar = document.getElementById('daily-task-bar') || dom.dailyTaskBar;
     const dailyTaskPercent = document.getElementById('daily-task-percent') || dom.dailyTaskPercent;
@@ -1338,125 +1393,15 @@ export function renderJourneySystem() {
         dailyTaskPercent.textContent = `${percent}%`;
     }
 
-    // 2. Determine Military Rank Title Badge
-    let rankTitle = '役男整備中';
-    let rankBadgeClass = 'bg-stone-800 text-stone-300 border-stone-600';
-    let rankIcon = 'fa-file-signature';
-
-    if (percent === 0) {
-        rankTitle = '役男整備中';
-        rankBadgeClass = 'bg-stone-800 text-stone-300 border-stone-600';
-        rankIcon = 'fa-file-signature';
-    } else if (percent > 0 && percent < 30) {
-        rankTitle = '準入營新兵';
-        rankBadgeClass = 'bg-emerald-950/80 text-emerald-300 border-emerald-700/60';
-        rankIcon = 'fa-shield-halved';
-    } else if (percent >= 30 && percent < 60) {
-        rankTitle = '新訓適應勇士';
-        rankBadgeClass = 'bg-amber-950/80 text-amber-300 border-amber-700/60';
-        rankIcon = 'fa-person-military-rifle';
-    } else if (percent >= 60 && percent < 90) {
-        rankTitle = '戰備一等兵';
-        rankBadgeClass = 'bg-blue-950/80 text-blue-300 border-blue-700/60';
-        rankIcon = 'fa-award';
-    } else if (percent >= 90 && percent < 100) {
-        rankTitle = '待退榮譽學長';
-        rankBadgeClass = 'bg-purple-950/80 text-purple-300 border-purple-700/60';
-        rankIcon = 'fa-star';
-    } else {
-        rankTitle = '光榮退伍傳奇';
-        rankBadgeClass = 'bg-gradient-to-r from-amber-600 to-yellow-500 text-stone-950 border-yellow-300 font-black animate-pulse';
-        rankIcon = 'fa-medal';
-    }
-
-    if (rankBadge) {
-        rankBadge.className = `text-xs px-2.5 py-0.5 rounded-full border font-bold flex items-center gap-1.5 transition-all ${rankBadgeClass}`;
-        rankBadge.innerHTML = `<i class="fa-solid ${rankIcon}"></i> ${rankTitle}`;
-    }
-
     if (tasksCount) {
         tasksCount.textContent = `已完成 ${completedTasks} / ${totalTasks} 項 (${percent}%)`;
     }
 
-    // 3. Render 4 Stage Nodes Cards
-    renderJourneyNodes();
-
-    // 4. Render Stage Tasks List
+    // 3. Render Stage Tasks List
     renderJourneyTasksList();
 
-    // 5. Update Active Stage Filter Buttons UI
+    // 4. Update Active Stage Filter Buttons UI
     updateStageFilterTabsUI();
-}
-
-function renderJourneyNodes() {
-    const container = document.getElementById('journey-nodes-container') || dom.journeyNodesContainer;
-    if (!container) return;
-    container.innerHTML = '';
-
-    state.journeyStages.forEach(stage => {
-        const stageTotal = stage.tasks.length;
-        const stageCompleted = stage.tasks.filter(t => t.completed).length;
-        const stagePercent = stageTotal === 0 ? 0 : Math.round((stageCompleted / stageTotal) * 100);
-        const isDone = stageCompleted === stageTotal && stageTotal > 0;
-        const isSelected = state.activeJourneyStage === stage.id;
-
-        const card = document.createElement('div');
-        card.className = `p-4 rounded-2xl border transition-all duration-300 cursor-pointer flex flex-col justify-between group relative overflow-hidden ${
-            isSelected
-                ? 'bg-stone-800/90 border-green-500/80 ring-2 ring-green-500/30 shadow-[0_0_20px_rgba(34,197,94,0.15)]'
-                : isDone
-                ? 'bg-emerald-950/20 border-emerald-800/60 hover:bg-stone-800/60'
-                : 'bg-stone-950/60 border-stone-800 hover:border-stone-700 hover:bg-stone-800/40'
-        }`;
-
-        card.onclick = () => {
-            setJourneyActiveStage(stage.id);
-            const tasksCard = document.getElementById('tasks-card') || dom.tasksCard;
-            if (tasksCard) {
-                tasksCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
-        };
-
-        let badgeHtml = '';
-        if (isDone) {
-            badgeHtml = `<span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-900/80 text-emerald-300 border border-emerald-700/60 flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> 已達成</span>`;
-        } else if (stageCompleted > 0) {
-            badgeHtml = `<span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-950/80 text-amber-300 border border-amber-700/60 flex items-center gap-1"><i class="fa-solid fa-spinner fa-spin"></i> 進行中</span>`;
-        } else {
-            badgeHtml = `<span class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-stone-800 text-stone-400 border border-stone-700 flex items-center gap-1"><i class="fa-regular fa-circle"></i> 待整備</span>`;
-        }
-
-        card.innerHTML = `
-            <div>
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-mono font-bold text-stone-400">STAGE 0${stage.number}</span>
-                    ${badgeHtml}
-                </div>
-                <div class="flex items-center gap-2.5 mb-1.5">
-                    <div class="w-8 h-8 rounded-lg bg-stone-800 border border-stone-700/80 flex items-center justify-center text-sm ${isDone ? 'text-emerald-400' : 'text-stone-300'} group-hover:scale-110 transition-transform">
-                        <i class="fa-solid ${stage.icon}"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-base text-white group-hover:text-green-400 transition-colors">${stage.title}</h4>
-                        <div class="text-[11px] text-stone-400">${stage.period}</div>
-                    </div>
-                </div>
-                <p class="text-xs text-stone-400 leading-relaxed mt-2 line-clamp-2">${stage.description}</p>
-            </div>
-
-            <div class="mt-4 pt-3 border-t border-stone-800/80">
-                <div class="flex justify-between items-center text-xs mb-1.5">
-                    <span class="text-stone-400">階段進度</span>
-                    <span class="font-mono font-bold ${isDone ? 'text-emerald-400' : 'text-stone-300'}">${stageCompleted} / ${stageTotal} (${stagePercent}%)</span>
-                </div>
-                <div class="w-full bg-stone-900 rounded-full h-1.5 overflow-hidden">
-                    <div class="h-full rounded-full transition-all duration-500 ${isDone ? 'bg-emerald-500' : 'bg-green-600'}" style="width: ${stagePercent}%"></div>
-                </div>
-            </div>
-        `;
-
-        container.appendChild(card);
-    });
 }
 
 function renderJourneyTasksList() {
@@ -1492,11 +1437,10 @@ function renderJourneyTasksList() {
         // Tasks in this stage
         stage.tasks.forEach(task => {
             const taskEl = document.createElement('div');
-            taskEl.className = `flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border transition-all duration-200 group ${
-                task.completed
+            taskEl.className = `flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border transition-all duration-200 group ${task.completed
                     ? 'bg-emerald-950/15 border-emerald-800/40 hover:bg-emerald-950/25'
                     : 'bg-stone-800/50 border-stone-700/60 hover:bg-stone-800/80 hover:border-stone-600'
-            }`;
+                }`;
 
             // Type badge color mapping
             const typeBadgeColors = {
@@ -1522,6 +1466,7 @@ function renderJourneyTasksList() {
                     shooting: '前往射擊口訣',
                     quiz: '前往天兵課堂',
                     chat: task.id === 't1_2' ? '諮詢體檢地點' : '諮詢 AI 教官',
+                    locations: '前往新訓地點',
                     delay: '前往延役專區',
                     docs: '查看法規與折抵',
                     game: '前往模擬籤筒',
@@ -1545,10 +1490,14 @@ function renderJourneyTasksList() {
                 `;
             }
 
+            const isAutoOnly = !!task.isAutoOnly;
+            const checkboxHtml = isAutoOnly
+                ? `<input type="checkbox" class="task-journey-checkbox w-5 h-5 mt-0.5 accent-green-600 rounded cursor-not-allowed opacity-60 shrink-0" ${task.completed ? 'checked' : ''} disabled data-task-id="${task.id}">`
+                : `<input type="checkbox" class="task-journey-checkbox w-5 h-5 mt-0.5 accent-green-600 rounded cursor-pointer shrink-0" ${task.completed ? 'checked' : ''} data-task-id="${task.id}">`;
+
             taskEl.innerHTML = `
                 <div class="flex items-start gap-3 flex-1 cursor-pointer task-content-area">
-                    <input type="checkbox" class="task-journey-checkbox w-5 h-5 mt-0.5 accent-green-600 rounded cursor-pointer shrink-0"
-                        ${task.completed ? 'checked' : ''} data-task-id="${task.id}">
+                    ${checkboxHtml}
                     <div class="flex-1">
                         <div class="flex flex-wrap items-center gap-2 mb-1">
                             <span class="text-[10px] px-2 py-0.5 rounded border font-bold ${badgeClass}">
@@ -1571,7 +1520,7 @@ function renderJourneyTasksList() {
 
             // Bind checkbox change
             const checkbox = taskEl.querySelector('.task-journey-checkbox');
-            if (checkbox) {
+            if (checkbox && !isAutoOnly) {
                 checkbox.addEventListener('change', () => {
                     toggleJourneyTask(task.id, checkbox.checked);
                 });

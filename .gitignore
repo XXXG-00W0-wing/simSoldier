@@ -9,9 +9,6 @@ __pycache__/
 .venv/
 venv/
 
-# Database
-backend/data/
-*.log
 
 # Frontend/Node
 node_modules/

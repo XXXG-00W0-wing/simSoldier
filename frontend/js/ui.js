@@ -30,6 +30,7 @@ export const dom = {
 
     // --- Inventory ---
     inventoryCategoriesContainer: document.getElementById('inventory-categories-container'),
+    btnResetInventory: document.getElementById('btn-reset-inventory'),
 
     // --- Chat ---
     chatInput: document.getElementById('chat-input'),
@@ -58,9 +59,7 @@ export const dom = {
     // --- Journey Stepper & Tasks ---
     journeyProgressBar: document.getElementById('journey-progress-bar'),
     journeyProgressPercent: document.getElementById('journey-progress-percent'),
-    journeyRankBadge: document.getElementById('journey-rank-badge'),
     journeyOverallCount: document.getElementById('journey-overall-count'),
-    journeyNodesContainer: document.getElementById('journey-nodes-container'),
     tasksList: document.getElementById('tasks-list'),
     tasksTitle: document.getElementById('tasks-title'),
     tasksSubtitle: document.getElementById('tasks-subtitle'),
@@ -86,10 +85,10 @@ export const dom = {
     btnTaskDetailAction: document.getElementById('btn-task-detail-action'),
     btnCloseTaskDetail: document.getElementById('btn-close-task-detail'),
 
-    // --- Discharge Celebration Modal ---
-    modalDischargeCelebration: document.getElementById('modal-discharge-celebration'),
-    dischargeUserName: document.getElementById('discharge-user-name'),
-    btnCloseDischargeModal: document.getElementById('btn-close-discharge-modal'),
+    // --- Service Completed Modal ---
+    modalServiceCompleted: document.getElementById('modal-service-completed'),
+    completedModalUsername: document.getElementById('completed-modal-username'),
+    btnCloseServiceCompletedModal: document.getElementById('btn-close-service-completed-modal'),
 
     // --- Tasks (Daily) ---
     dailyTaskBar: document.getElementById('daily-task-bar'), // Need to check HTML if this exists

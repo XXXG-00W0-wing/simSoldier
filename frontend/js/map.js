@@ -18,6 +18,13 @@ const mapLocations = {
 let leafletMap = null;
 let markers = {};
 
+function triggerLocationTaskComplete() {
+    if (typeof window.toggleJourneyTask === 'function') {
+        window.toggleJourneyTask('t1_6', true);
+    }
+    window.dispatchEvent(new CustomEvent('locationSelected'));
+}
+
 function initMap() {
     // 預設中心點 (台灣中心)
     leafletMap = L.map('map').setView([23.973875, 120.982024], 7);
@@ -44,6 +51,9 @@ function initMap() {
 
         const marker = L.marker([loc.lat, loc.lng]).addTo(leafletMap)
             .bindPopup(popupContent);
+        marker.on('click', () => {
+            triggerLocationTaskComplete();
+        });
         markers[key] = marker;
     });
 
@@ -67,6 +77,7 @@ function initMap() {
             // 避免點擊位置按鈕時觸發卡片的展開/收合
             navBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
+                triggerLocationTaskComplete();
             });
 
             // 將按鈕加在 h4 的父元素(flex container) 內
@@ -74,6 +85,7 @@ function initMap() {
         }
 
         card.addEventListener('click', () => {
+            triggerLocationTaskComplete();
             const title = card.querySelector('h4').innerText.trim();
             if (mapLocations[title]) {
                 const loc = mapLocations[title];
@@ -117,6 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.selectLocation = function (name) {
+        triggerLocationTaskComplete();
         if (window.switchTab) {
             window.switchTab('locations');
         }
@@ -143,6 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const branchFilter = document.getElementById('branch-filter');
     if (branchFilter) {
         branchFilter.addEventListener('change', (e) => {
+            triggerLocationTaskComplete();
             const selectedBranch = e.target.value;
             const locationCards = document.querySelectorAll('#view-locations .group');
 

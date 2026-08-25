@@ -30,7 +30,7 @@ async function init() {
         const user = await api.getMe(); // Load User Data
 
         // Init Backpack
-        state.backpack = JSON.parse(JSON.stringify(INITIAL_BACKPACK));
+        features.initBackpack();
 
         if (user) {
             if (!user.profile) {
@@ -403,6 +403,11 @@ function setupEventListeners() {
         btn.addEventListener('click', () => features.openDocsModal(btn.dataset.doc));
     });
     dom.btnCloseDocs.addEventListener('click', () => dom.modalDocs.classList.add('hidden'));
+
+    // Inventory Reset
+    if (dom.btnResetInventory) {
+        dom.btnResetInventory.addEventListener('click', features.resetInventory);
+    }
 
     // Daily Tasks
     dom.taskCheckboxes.forEach(cb => cb.addEventListener('change', features.updateDailyTaskProgress));
