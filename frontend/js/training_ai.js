@@ -508,6 +508,120 @@ function detectLegRaise(lm) {
     repStateMachine(delta > 0.35, delta < 0.1);
 }
 
+// ── Jumping Jacks ────────────────────────────────────────────────────────────
+function detectJumpingJacks(lm) {
+    const lW = lm[15], rW = lm[16];
+    const lA = lm[27], rA = lm[28];
+    const lS = lm[11], rS = lm[12];
+    if (lW.visibility < 0.5 || rW.visibility < 0.5 || lA.visibility < 0.5 || rA.visibility < 0.5) return;
+    if (ui.rule1) ui.rule1.className = 'transition-colors text-green-400';
+
+    // Hands above shoulders (Y is smaller) and feet apart (distance large)
+    const handsUp = lW.y < lS.y && rW.y < rS.y;
+    // Normalized distance between ankles
+    const feetDist = Math.abs(lA.x - rA.x);
+    const feetApart = feetDist > 0.15;
+    
+    const handsDown = lW.y > lS.y && rW.y > rS.y;
+    const feetTogether = feetDist < 0.1;
+    
+    repStateMachine(handsUp && feetApart, handsDown && feetTogether);
+}
+
+// ── Lunges ───────────────────────────────────────────────────────────────────
+function detectLunges(lm) {
+    const lH = lm[23], lK = lm[25], lA = lm[27];
+    const rH = lm[24], rK = lm[26], rA = lm[28];
+    const sideOk = (lH.visibility > 0.5 && lK.visibility > 0.5 && lA.visibility > 0.5) ||
+                   (rH.visibility > 0.5 && rK.visibility > 0.5 && rA.visibility > 0.5);
+    if (!sideOk) return;
+    if (ui.rule1) ui.rule1.className = 'transition-colors text-green-400';
+
+    const lAngle = angle3(lH, lK, lA);
+    const rAngle = angle3(rH, rK, rA);
+    
+    const isUp = lAngle > 150 && rAngle > 150;
+    const isDown = (lAngle < 110 && rAngle < 120) || (rAngle < 110 && lAngle < 120);
+
+    repStateMachine(isDown, isUp);
+}
+
+// ── Plank ────────────────────────────────────────────────────────────────────
+function detectPlank(lm) {
+    const lS = lm[11], lH = lm[23], lA = lm[27];
+    const rS = lm[12], rH = lm[24], rA = lm[28];
+    
+    const useLeft = (lS.visibility + lH.visibility + lA.visibility) > (rS.visibility + rH.visibility + rA.visibility);
+    const [S, H, A] = useLeft ? [lS, lH, lA] : [rS, rH, rA];
+    
+    if (S.visibility < 0.5 || H.visibility < 0.5 || A.visibility < 0.5) {
+        timeStateMachine(false);
+        return;
+    }
+    if (ui.rule1) ui.rule1.className = 'transition-colors text-green-400';
+
+    const bodyAngle = angle3(S, H, A);
+    const isHolding = bodyAngle > 155 && bodyAngle < 190;
+    
+    timeStateMachine(isHolding);
+}
+
+// ── Bicep Curls ──────────────────────────────────────────────────────────────
+function detectBicepCurls(lm) {
+    const lS = lm[11], lE = lm[13], lW = lm[15];
+    const rS = lm[12], rE = lm[14], rW = lm[16];
+    
+    const useLeft = (lS.visibility + lE.visibility + lW.visibility) > (rS.visibility + rE.visibility + rW.visibility);
+    const [S, E, W] = useLeft ? [lS, lE, lW] : [rS, rE, rW];
+    
+    if (S.visibility < 0.5 || E.visibility < 0.5 || W.visibility < 0.5) return;
+    if (ui.rule1) ui.rule1.className = 'transition-colors text-green-400';
+
+    const elbowAngle = angle3(S, E, W);
+    
+    const isUp = elbowAngle > 140; 
+    const isDown = elbowAngle < 60; 
+    
+    repStateMachine(isDown, isUp);
+}
+
+// ── Lateral Raise ────────────────────────────────────────────────────────────
+function detectLateralRaise(lm) {
+    const lS = lm[11], lE = lm[13], lH = lm[23];
+    const rS = lm[12], rE = lm[14], rH = lm[24];
+    
+    if (lS.visibility < 0.5 || lE.visibility < 0.5 || lH.visibility < 0.5 || 
+        rS.visibility < 0.5 || rE.visibility < 0.5 || rH.visibility < 0.5) return;
+    if (ui.rule1) ui.rule1.className = 'transition-colors text-green-400';
+
+    const lAngle = angle3(lH, lS, lE);
+    const rAngle = angle3(rH, rS, rE);
+    
+    const isDown = lAngle > 75 && rAngle > 75; 
+    const isUp = lAngle < 35 && rAngle < 35; 
+    
+    repStateMachine(isDown, isUp);
+}
+
+// ── Crunches ─────────────────────────────────────────────────────────────────
+function detectCrunches(lm) {
+    const lS = lm[11], lH = lm[23], lK = lm[25];
+    const rS = lm[12], rH = lm[24], rK = lm[26];
+    
+    const useLeft = (lS.visibility + lH.visibility + lK.visibility) > (rS.visibility + rH.visibility + rK.visibility);
+    const [S, H, K] = useLeft ? [lS, lH, lK] : [rS, rH, rK];
+    
+    if (S.visibility < 0.5 || H.visibility < 0.5 || K.visibility < 0.5) return;
+    if (ui.rule1) ui.rule1.className = 'transition-colors text-green-400';
+
+    const torsoAngle = angle3(S, H, K);
+    
+    const isDown = torsoAngle < 75; 
+    const isUp = torsoAngle > 110; 
+    
+    repStateMachine(isDown, isUp);
+}
+
 // ── Completion logic ─────────────────────────────────────────────────────────
 function checkCompletion() {
     const ex = currentExercise();

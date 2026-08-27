@@ -485,7 +485,11 @@ export function initChatGreeting() {
         if (state.userData.date) {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            const targetDate = new Date(state.userData.date);
+            
+            let [y, m, d] = state.userData.date.split(/[-/]/).map(Number);
+            if (y < 1911 && y > 0) y += 1911; // 處理民國年轉換
+            const targetDate = new Date(y, m - 1, d);
+            
             targetDate.setHours(0, 0, 0, 0);
 
             const diffDays = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
@@ -664,7 +668,11 @@ export function renderCalendar() {
     if (!state.userData || !state.userData.date) return;
 
     const today = new Date();
-    const targetDate = new Date(state.userData.date);
+    
+    let [y, m, d] = state.userData.date.split(/[-/]/).map(Number);
+    if (y < 1911 && y > 0) y += 1911; // 處理民國年轉換
+    const targetDate = new Date(y, m - 1, d);
+    
     const year = today.getFullYear();
     const month = today.getMonth();
 
@@ -695,7 +703,10 @@ export function updateCountdown() {
     // Reset time part for accurate date comparison
     today.setHours(0, 0, 0, 0);
 
-    const enlistmentDate = new Date(state.userData.date);
+    let [y, m, d] = state.userData.date.split(/[-/]/).map(Number);
+    if (y < 1911 && y > 0) y += 1911; // 處理民國年轉換
+
+    const enlistmentDate = new Date(y, m - 1, d);
     enlistmentDate.setHours(0, 0, 0, 0);
 
     let targetDate = enlistmentDate;

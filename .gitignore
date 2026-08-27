@@ -10,8 +10,12 @@ __pycache__/
 venv/
 
 
+# Logs
+*.log
+
 # Frontend/Node
 node_modules/
 .DS_Store
 
 api.md
+backend_error.txt
