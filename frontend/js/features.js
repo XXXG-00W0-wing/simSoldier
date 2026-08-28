@@ -1013,30 +1013,13 @@ export function initJourneySystem() {
 
 /**
  * 依據身分情境自動推進任務進度
- * 當選擇「正在入營」(enlisted) 時，自動將「兵役整備期」(stage_1) 與「入營前適應期」(stage_2) 的任務標示為完成
+ * (根據使用者要求，初始狀態不自動打勾任何任務，故保留空函式或移除邏輯)
  * @param {string} scenarioKey - 身分情境
  * @param {boolean} shouldRender - 是否立即重新渲染 UI
  */
 export function applyScenarioTaskProgression(scenarioKey = state.userScenario, shouldRender = true) {
-    if (!state.journeyStages || state.journeyStages.length === 0) return;
-
-    if (scenarioKey === 'enlisted') {
-        let hasChanges = false;
-        state.journeyStages.forEach(stage => {
-            if (stage.id === 'stage_1' || stage.id === 'stage_2') {
-                stage.tasks.forEach(task => {
-                    if (!task.completed) {
-                        task.completed = true;
-                        hasChanges = true;
-                    }
-                });
-            }
-        });
-        if (hasChanges) {
-            saveJourneyProgress();
-            if (shouldRender) renderJourneySystem();
-        }
-    }
+    // 依使用者要求，服役歷程階段任務的初始狀態皆為 0%，不再依據身分自動打勾
+    return;
 }
 
 export function setupJourneyEventListeners() {

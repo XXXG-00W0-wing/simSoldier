@@ -36,220 +36,289 @@
         </div>
     </div>
 
-    <div class="w-full max-w-md bg-stone-900 p-8 rounded-lg shadow-2xl border border-stone-700 relative z-10 mx-4">
+    <!-- Main App Container -->
+    <div
+        class="relative z-10 flex flex-col md:flex-row items-center justify-center w-full max-w-5xl mx-auto h-full px-4 overflow-hidden">
 
-        <!-- Header -->
-        <div class="text-center mb-8">
-            <div
-                class="w-16 h-16 bg-stone-800 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-900/50 shadow-lg relative group">
-                <i
-                    class="fa-solid fa-person-military-rifle text-3xl text-green-500 group-hover:scale-110 transition-transform"></i>
-                <div class="absolute inset-0 rounded-full border border-green-500/20 animate-pulse"></div>
+        <!-- Left Panel (Icon) -->
+        <div id="icon-panel"
+            class="flex-1 flex flex-col justify-center items-center w-full transition-all duration-300 cursor-pointer group"
+            onclick="enterLogin()">
+            <div id="icon-circle"
+                class="flex items-center justify-center transition-all duration-300 transform group-hover:scale-110 drop-shadow-[0_0_20px_rgba(21,128,61,0.4)]">
+                <i id="main-icon"
+                    class="fa-solid fa-person-rifle text-[9rem] md:text-[16rem] transition-all duration-300 text-green-700 opacity-0 transition-opacity duration-1000"></i>
             </div>
-            <h1 class="text-3xl font-bold text-white mb-2 tracking-wider">SimSoldier</h1>
-            <p class="text-stone-500 font-tech text-sm tracking-widest">MILITARY SIMULATION SYS.</p>
+            <p id="start-text"
+                class="mt-8 text-stone-400 font-tech tracking-[0.2em] text-2xl md:text-3xl animate-pulse transition-all duration-300">
+                CLICK TO START</p>
         </div>
 
-        <!-- Tabs -->
-        <div class="flex mb-8 bg-stone-950 rounded-lg p-1 border border-stone-800">
-            <button id="tab-login"
-                class="flex-1 py-2 rounded-md text-sm font-bold transition-all bg-green-900/30 text-green-400 border border-green-900/50 shadow-inner"
-                onclick="switchTab('login')">
-                登入
-            </button>
-            <button id="tab-register"
-                class="flex-1 py-2 rounded-md text-sm font-bold text-stone-500 hover:text-stone-300 transition-all"
-                onclick="switchTab('register')">
-                註冊
-            </button>
-        </div>
+        <!-- Right Panel (Login Form) -->
+        <div id="login-panel"
+            class="w-full md:w-0 md:flex-none h-0 md:h-auto overflow-hidden opacity-0 transition-all duration-300 flex justify-center items-center pointer-events-none">
+            <div id="login-box-inner"
+                class="w-full min-w-[320px] md:min-w-[400px] max-w-md bg-stone-900 p-8 rounded-lg shadow-2xl border border-stone-700 mx-4 transform translate-y-10 md:translate-y-0 md:translate-x-10 transition-all duration-300">
 
-        <!-- Forms -->
-        <div id="form-container" class="max-h-[60vh] overflow-y-auto pr-2 pb-18 md:pb-2 custom-scrollbar">
-            <!-- Login Form -->
-            <form id="form-login" class="space-y-6 animate-fade-in" onsubmit="handleLogin(event)">
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold text-stone-400 uppercase tracking-wider">Username /
-                        使用者名稱</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-user absolute left-3 top-1/2 -translate-y-1/2 text-stone-500 text-sm"></i>
-                        <input type="text" id="login-username" required autocomplete="username"
-                            class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all placeholder-stone-700 text-sm"
-                            placeholder="請輸入使用者名稱">
-                    </div>
+                <!-- Header -->
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl font-bold text-white mb-2 tracking-wider">SimSoldier</h1>
+                    <p class="text-stone-500 font-tech text-sm tracking-widest">MILITARY SIMULATION SYS.</p>
                 </div>
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold text-stone-400 uppercase tracking-wider">Password / 密碼</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-stone-500 text-sm"></i>
-                        <input type="password" id="login-password" required autocomplete="current-password"
-                            class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all placeholder-stone-700 text-sm"
-                            placeholder="請輸入密碼">
-                    </div>
-                </div>
-                <button type="submit"
-                    class="w-full bg-green-700 hover:bg-green-600 text-white font-bold py-3 rounded-md transition-all duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-green-900/20 text-sm tracking-wide">
-                    <i class="fa-solid fa-right-to-bracket mr-2"></i> 登入系統
-                </button>
-            </form>
 
-            <!-- Register Form -->
-            <form id="form-register" class="space-y-6 hidden animate-fade-in" onsubmit="handleRegister(event)">
-
-                <!-- STEP 1: Account Info -->
-                <div id="reg-step-1" class="space-y-6 animate-slide-in">
-                    <div class="space-y-2">
-                        <label class="block text-xs font-bold text-stone-400 uppercase tracking-wider">NEW USERNAME /
-                            使用者名稱</label>
-                        <div class="relative">
-                            <i
-                                class="fa-solid fa-user-plus absolute left-3 top-1/2 -translate-y-1/2 text-stone-500 text-sm"></i>
-                            <input type="text" id="reg-username" required autocomplete="username"
-                                class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all placeholder-stone-700 text-sm"
-                                placeholder="設定您的使用者名稱">
-                        </div>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="block text-xs font-bold text-stone-400 uppercase tracking-wider">New Password /
-                            設定密碼</label>
-                        <div class="relative">
-                            <i
-                                class="fa-solid fa-key absolute left-3 top-1/2 -translate-y-1/2 text-stone-500 text-sm"></i>
-                            <input type="password" id="reg-password" required autocomplete="new-password"
-                                class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all placeholder-stone-700 text-sm"
-                                placeholder="設定您的密碼">
-                        </div>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="block text-xs font-bold text-stone-400 uppercase tracking-wider">Confirm Password
-                            /
-                            確認密碼</label>
-                        <div class="relative">
-                            <i
-                                class="fa-solid fa-check-double absolute left-3 top-1/2 -translate-y-1/2 text-stone-500 text-sm"></i>
-                            <input type="password" id="reg-password-confirm" required autocomplete="new-password"
-                                class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all placeholder-stone-700 text-sm"
-                                placeholder="再次輸入密碼">
-                        </div>
-                    </div>
-
-                    <button type="button" onclick="nextStep()"
-                        class="w-full bg-stone-700 hover:bg-stone-600 text-white font-bold py-3 rounded-md transition-all duration-200 transform hover:scale-[1.02] shadow-lg text-sm tracking-wide">
-                        下一步 <i class="fa-solid fa-arrow-right ml-2"></i>
+                <!-- Tabs -->
+                <div class="flex mb-8 bg-stone-950 rounded-lg p-1 border border-stone-800">
+                    <button id="tab-login"
+                        class="flex-1 py-2 rounded-md text-sm font-bold transition-all bg-green-900/30 text-green-400 border border-green-900/50 shadow-inner"
+                        onclick="switchTab('login')">
+                        登入
+                    </button>
+                    <button id="tab-register"
+                        class="flex-1 py-2 rounded-md text-sm font-bold text-stone-500 hover:text-stone-300 transition-all"
+                        onclick="switchTab('register')">
+                        註冊
                     </button>
                 </div>
 
-                <!-- STEP 2: Profile Info -->
-                <div id="reg-step-2" class="space-y-6 hidden animate-slide-in">
-                    <div class="space-y-2">
-                        <label class="block text-xs font-bold text-stone-400 uppercase tracking-wider">姓名</label>
-                        <div class="relative">
-                            <i
-                                class="fa-solid fa-signature absolute left-3 top-1/2 -translate-y-1/2 text-stone-500 text-sm"></i>
-                            <input type="text" id="reg-realname" required
-                                class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all placeholder-stone-700 text-sm"
-                                placeholder="請輸入真實姓名">
-                        </div>
-                    </div>
-
-                    <div class="space-y-2">
-                        <label class="block text-xs font-bold text-stone-400 uppercase tracking-wider">Camp Entry Date /
-                            入營日期</label>
-                        <div class="flex gap-2 relative group-date-picker">
-                            <!-- Helper: Hidden Date Picker -->
-                            <input type="date" class="hidden-picker absolute opacity-0 pointer-events-none"
-                                id="picker-reg-date">
-
-                            <div class="relative flex-[2]">
-                                <input type="tel" id="reg-date-y" maxlength="4" placeholder="YYYY"
-                                    class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 px-2 text-white text-center focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all text-sm font-tech date-input"
-                                    data-next="reg-date-m">
-                            </div>
-                            <div class="relative flex-1">
-                                <input type="tel" id="reg-date-m" maxlength="2" placeholder="MM"
-                                    class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 px-2 text-white text-center focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all text-sm font-tech date-input"
-                                    data-next="reg-date-d" data-prev="reg-date-y">
-                            </div>
-                            <div class="relative flex-1">
-                                <input type="tel" id="reg-date-d" maxlength="2" placeholder="DD"
-                                    class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 px-2 text-white text-center focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all text-sm font-tech date-input"
-                                    data-prev="reg-date-m">
-                            </div>
-
-                            <!-- Picker Trigger Button -->
-                            <button type="button"
-                                class="px-3 bg-stone-800 border border-stone-700 rounded-md hover:bg-stone-700 transition"
-                                onclick="document.getElementById('picker-reg-date').showPicker()">
-                                <i class="fa-solid fa-calendar-days text-stone-400"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="space-y-2">
-                        <label class="block text-xs font-bold text-stone-400 uppercase tracking-wider">Birthday /
-                            生日</label>
-                        <div class="flex gap-2 relative group-date-picker">
-                            <!-- Helper: Hidden Date Picker -->
-                            <input type="date" class="hidden-picker absolute opacity-0 pointer-events-none"
-                                id="picker-reg-birthday">
-
-                            <div class="relative flex-[2]">
-                                <input type="tel" id="reg-birthday-y" maxlength="4" placeholder="YYYY"
-                                    class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 px-2 text-white text-center focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all text-sm font-tech date-input"
-                                    data-next="reg-birthday-m">
-                            </div>
-                            <div class="relative flex-1">
-                                <input type="tel" id="reg-birthday-m" maxlength="2" placeholder="MM"
-                                    class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 px-2 text-white text-center focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all text-sm font-tech date-input"
-                                    data-next="reg-birthday-d" data-prev="reg-birthday-y">
-                            </div>
-                            <div class="relative flex-1">
-                                <input type="tel" id="reg-birthday-d" maxlength="2" placeholder="DD"
-                                    class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 px-2 text-white text-center focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all text-sm font-tech date-input"
-                                    data-prev="reg-birthday-m">
-                            </div>
-
-                            <!-- Picker Trigger Button -->
-                            <button type="button"
-                                class="px-3 bg-stone-800 border border-stone-700 rounded-md hover:bg-stone-700 transition"
-                                onclick="document.getElementById('picker-reg-birthday').showPicker()">
-                                <i class="fa-solid fa-calendar-alt text-stone-400"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4">
+                <!-- Forms -->
+                <div id="form-container" class="max-h-[60vh] overflow-y-auto pr-2 pb-18 md:pb-2 custom-scrollbar">
+                    <!-- Login Form -->
+                    <form id="form-login" class="space-y-6 animate-fade-in" onsubmit="handleLogin(event)">
                         <div class="space-y-2">
-                            <label class="block text-xs font-bold text-stone-400 uppercase tracking-wider">Height / 身高
-                                (cm)</label>
-                            <input type="number" id="reg-height" required value="175"
-                                class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 px-3 text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all text-sm font-tech text-center">
+                            <label class="block text-xs font-bold text-stone-400 uppercase tracking-wider">Username /
+                                使用者名稱</label>
+                            <div class="relative">
+                                <i
+                                    class="fa-solid fa-user absolute left-3 top-1/2 -translate-y-1/2 text-stone-500 text-sm"></i>
+                                <input type="text" id="login-username" required autocomplete="username"
+                                    class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all placeholder-stone-700 text-sm"
+                                    placeholder="請輸入使用者名稱">
+                            </div>
                         </div>
                         <div class="space-y-2">
-                            <label class="block text-xs font-bold text-stone-400 uppercase tracking-wider">Weight / 體重
-                                (kg)</label>
-                            <input type="number" id="reg-weight" required value="70"
-                                class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 px-3 text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all text-sm font-tech text-center">
+                            <label class="block text-xs font-bold text-stone-400 uppercase tracking-wider">Password /
+                                密碼</label>
+                            <div class="relative">
+                                <i
+                                    class="fa-solid fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-stone-500 text-sm"></i>
+                                <input type="password" id="login-password" required autocomplete="current-password"
+                                    class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all placeholder-stone-700 text-sm"
+                                    placeholder="請輸入密碼">
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="flex gap-2">
-                        <button type="button" onclick="prevStep()"
-                            class="flex-1 bg-stone-800 hover:bg-stone-700 text-white font-bold py-3 rounded-md transition-all duration-200 text-sm tracking-wide border border-stone-700">
-                            <i class="fa-solid fa-arrow-left mr-2"></i> 上一步
-                        </button>
                         <button type="submit"
-                            class="flex-[2] bg-green-700 hover:bg-green-600 text-white font-bold py-3 rounded-md transition-all duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-green-900/20 text-sm tracking-wide">
-                            <i class="fa-solid fa-user-plus mr-2"></i> 完成註冊
+                            class="w-full bg-green-700 hover:bg-green-600 text-white font-bold py-3 rounded-md transition-all duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-green-900/20 text-sm tracking-wide">
+                            <i class="fa-solid fa-right-to-bracket mr-2"></i> 登入系統
                         </button>
-                    </div>
+                    </form>
+
+                    <!-- Register Form -->
+                    <form id="form-register" class="space-y-6 hidden animate-fade-in" onsubmit="handleRegister(event)">
+
+                        <!-- STEP 1: Account Info -->
+                        <div id="reg-step-1" class="space-y-6 animate-slide-in">
+                            <div class="space-y-2">
+                                <label class="block text-xs font-bold text-stone-400 uppercase tracking-wider">NEW
+                                    USERNAME /
+                                    使用者名稱</label>
+                                <div class="relative">
+                                    <i
+                                        class="fa-solid fa-user-plus absolute left-3 top-1/2 -translate-y-1/2 text-stone-500 text-sm"></i>
+                                    <input type="text" id="reg-username" required autocomplete="username"
+                                        class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all placeholder-stone-700 text-sm"
+                                        placeholder="設定您的使用者名稱">
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-xs font-bold text-stone-400 uppercase tracking-wider">New
+                                    Password /
+                                    設定密碼</label>
+                                <div class="relative">
+                                    <i
+                                        class="fa-solid fa-key absolute left-3 top-1/2 -translate-y-1/2 text-stone-500 text-sm"></i>
+                                    <input type="password" id="reg-password" required autocomplete="new-password"
+                                        class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all placeholder-stone-700 text-sm"
+                                        placeholder="設定您的密碼">
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-xs font-bold text-stone-400 uppercase tracking-wider">Confirm
+                                    Password
+                                    /
+                                    確認密碼</label>
+                                <div class="relative">
+                                    <i
+                                        class="fa-solid fa-check-double absolute left-3 top-1/2 -translate-y-1/2 text-stone-500 text-sm"></i>
+                                    <input type="password" id="reg-password-confirm" required
+                                        autocomplete="new-password"
+                                        class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all placeholder-stone-700 text-sm"
+                                        placeholder="再次輸入密碼">
+                                </div>
+                            </div>
+
+                            <button type="button" onclick="nextStep()"
+                                class="w-full bg-stone-700 hover:bg-stone-600 text-white font-bold py-3 rounded-md transition-all duration-200 transform hover:scale-[1.02] shadow-lg text-sm tracking-wide">
+                                下一步 <i class="fa-solid fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+
+                        <!-- STEP 2: Profile Info -->
+                        <div id="reg-step-2" class="space-y-6 hidden animate-slide-in">
+                            <div class="space-y-2">
+                                <label
+                                    class="block text-xs font-bold text-stone-400 uppercase tracking-wider">姓名</label>
+                                <div class="relative">
+                                    <i
+                                        class="fa-solid fa-signature absolute left-3 top-1/2 -translate-y-1/2 text-stone-500 text-sm"></i>
+                                    <input type="text" id="reg-realname" required
+                                        class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all placeholder-stone-700 text-sm"
+                                        placeholder="請輸入真實姓名">
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="block text-xs font-bold text-stone-400 uppercase tracking-wider">Camp
+                                    Entry Date /
+                                    入營日期</label>
+                                <div class="flex gap-2 relative group-date-picker">
+                                    <!-- Helper: Hidden Date Picker -->
+                                    <input type="date" class="hidden-picker absolute opacity-0 pointer-events-none"
+                                        id="picker-reg-date">
+
+                                    <div class="relative flex-[2]">
+                                        <input type="tel" id="reg-date-y" maxlength="4" placeholder="YYYY"
+                                            class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 px-2 text-white text-center focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all text-sm font-tech date-input"
+                                            data-next="reg-date-m">
+                                    </div>
+                                    <div class="relative flex-1">
+                                        <input type="tel" id="reg-date-m" maxlength="2" placeholder="MM"
+                                            class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 px-2 text-white text-center focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all text-sm font-tech date-input"
+                                            data-next="reg-date-d" data-prev="reg-date-y">
+                                    </div>
+                                    <div class="relative flex-1">
+                                        <input type="tel" id="reg-date-d" maxlength="2" placeholder="DD"
+                                            class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 px-2 text-white text-center focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all text-sm font-tech date-input"
+                                            data-prev="reg-date-m">
+                                    </div>
+
+                                    <!-- Picker Trigger Button -->
+                                    <button type="button"
+                                        class="px-3 bg-stone-800 border border-stone-700 rounded-md hover:bg-stone-700 transition"
+                                        onclick="document.getElementById('picker-reg-date').showPicker()">
+                                        <i class="fa-solid fa-calendar-days text-stone-400"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="block text-xs font-bold text-stone-400 uppercase tracking-wider">Birthday
+                                    /
+                                    生日</label>
+                                <div class="flex gap-2 relative group-date-picker">
+                                    <!-- Helper: Hidden Date Picker -->
+                                    <input type="date" class="hidden-picker absolute opacity-0 pointer-events-none"
+                                        id="picker-reg-birthday">
+
+                                    <div class="relative flex-[2]">
+                                        <input type="tel" id="reg-birthday-y" maxlength="4" placeholder="YYYY"
+                                            class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 px-2 text-white text-center focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all text-sm font-tech date-input"
+                                            data-next="reg-birthday-m">
+                                    </div>
+                                    <div class="relative flex-1">
+                                        <input type="tel" id="reg-birthday-m" maxlength="2" placeholder="MM"
+                                            class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 px-2 text-white text-center focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all text-sm font-tech date-input"
+                                            data-next="reg-birthday-d" data-prev="reg-birthday-y">
+                                    </div>
+                                    <div class="relative flex-1">
+                                        <input type="tel" id="reg-birthday-d" maxlength="2" placeholder="DD"
+                                            class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 px-2 text-white text-center focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all text-sm font-tech date-input"
+                                            data-prev="reg-birthday-m">
+                                    </div>
+
+                                    <!-- Picker Trigger Button -->
+                                    <button type="button"
+                                        class="px-3 bg-stone-800 border border-stone-700 rounded-md hover:bg-stone-700 transition"
+                                        onclick="document.getElementById('picker-reg-birthday').showPicker()">
+                                        <i class="fa-solid fa-calendar-alt text-stone-400"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <label
+                                        class="block text-xs font-bold text-stone-400 uppercase tracking-wider">Height /
+                                        身高
+                                        (cm)</label>
+                                    <input type="number" id="reg-height" required value="175"
+                                        class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 px-3 text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all text-sm font-tech text-center">
+                                </div>
+                                <div class="space-y-2">
+                                    <label
+                                        class="block text-xs font-bold text-stone-400 uppercase tracking-wider">Weight /
+                                        體重
+                                        (kg)</label>
+                                    <input type="number" id="reg-weight" required value="70"
+                                        class="w-full bg-stone-950 border border-stone-800 rounded-md py-2.5 px-3 text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all text-sm font-tech text-center">
+                                </div>
+                            </div>
+
+                            <div class="flex gap-2">
+                                <button type="button" onclick="prevStep()"
+                                    class="flex-1 bg-stone-800 hover:bg-stone-700 text-white font-bold py-3 rounded-md transition-all duration-200 text-sm tracking-wide border border-stone-700">
+                                    <i class="fa-solid fa-arrow-left mr-2"></i> 上一步
+                                </button>
+                                <button type="submit"
+                                    class="flex-[2] bg-green-700 hover:bg-green-600 text-white font-bold py-3 rounded-md transition-all duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-green-900/20 text-sm tracking-wide">
+                                    <i class="fa-solid fa-user-plus mr-2"></i> 完成註冊
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            </form>
+
+
+
+            </div>
         </div>
-
-
-
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const mainIcon = document.getElementById('main-icon');
+                if (mainIcon) {
+                    mainIcon.classList.remove('opacity-0');
+                    mainIcon.classList.add('opacity-100');
+                }
+            }, 100);
+        });
+
+        window.enterLogin = function () {
+            const iconPanel = document.getElementById('icon-panel');
+            const loginPanel = document.getElementById('login-panel');
+            const loginBoxInner = document.getElementById('login-box-inner');
+            const iconCircle = document.getElementById('icon-circle');
+            const mainIcon = document.getElementById('main-icon');
+            const startText = document.getElementById('start-text');
+
+            // Show Login Panel
+            loginPanel.classList.remove('md:w-0', 'md:flex-none', 'h-0', 'opacity-0', 'pointer-events-none');
+            loginPanel.classList.add('flex-1', 'opacity-100', 'pointer-events-auto', 'mt-8', 'md:mt-0');
+
+            // Slide in animation for the inner box
+            loginBoxInner.classList.remove('translate-y-10', 'md:translate-x-10');
+            loginBoxInner.classList.add('translate-y-0', 'translate-x-0');
+
+            // Hide start text
+            startText.classList.add('opacity-0', 'h-0', 'mt-0');
+            startText.classList.remove('mt-8');
+
+            // Clean up interaction
+            iconPanel.onclick = null;
+            iconPanel.classList.remove('cursor-pointer', 'group');
+        };
+    </script>
 
     <script type="module">
         import { initAuthPage } from './js/auth.js';

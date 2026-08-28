@@ -199,21 +199,38 @@ body *:not(i) {
     height: 6px;
     width: 6px;
 }
+
 .custom-scrollbar::-webkit-scrollbar-track {
     background: rgba(28, 25, 23, 0.6);
     border-radius: 9999px;
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb {
     background: rgba(120, 113, 108, 0.4);
     border-radius: 9999px;
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: rgba(234, 179, 8, 0.7);
 }
 
 /* --- Global Focus Reset --- */
-*:focus, *:focus-visible {
+*:focus,
+*:focus-visible {
     outline: none !important;
+}
+
+/* --- Theme Override --- */
+html.light-mode {
+    filter: invert(1) hue-rotate(180deg);
+}
+
+html.light-mode img,
+html.light-mode video,
+html.light-mode iframe,
+html.light-mode canvas,
+html.light-mode .preserve-colors {
+    filter: invert(1) hue-rotate(180deg);
 }
 
 /* --- Rhapsody & Shooting Fullscreen Landscape Override --- */
@@ -236,7 +253,7 @@ body *:not(i) {
     .expanded-desktop-format {
         /* 可各自獨立調整的邊界距離設定 */
         --expanded-gap-top: 50px;
-        --expanded-gap-bottom: 150px;
+        --expanded-gap-bottom: 50px;
         --expanded-gap-left: 150px;
         --expanded-gap-right: 150px;
 
@@ -253,9 +270,15 @@ body *:not(i) {
 
 /* --- Scenario Triage Animations --- */
 @keyframes spinSlow {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
+
 .animate-spin-slow {
     animation: spinSlow 12s linear infinite;
 }

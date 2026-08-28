@@ -7,119 +7,122 @@
     <title>載入中...</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
         .font-tech {
             font-family: 'Share Tech Mono', monospace;
         }
 
-        .loading-bar {
-            width: 0%;
-            transition: width 0.1s linear;
+        body {
+            background-color: #0c0a09;
+            /* stone-950 */
+            margin: 0;
+            overflow: hidden;
         }
 
-        .fade-out {
-            opacity: 0;
-            transition: opacity 0.5s ease-out;
+        #pull-layer {
+            background-image: radial-gradient(#1c1917 1px, transparent 1px);
+            background-size: 30px 30px;
         }
     </style>
 </head>
 
-<body id="body"
-    class="bg-stone-950 h-screen flex flex-col items-center justify-center text-stone-300 transition-opacity duration-500">
+<body class="h-screen w-full relative">
 
-    <!-- SPLASH SCREEN CONTAINER -->
-    <div id="splash-screen"
-        class="fixed inset-0 flex flex-col items-center justify-center transition-opacity duration-700 z-50 bg-stone-950">
-        <div class="relative">
-            <i class="fa-solid fa-person-rifle text-[120px] text-green-600 animate-bounce"></i>
-            <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 w-32 h-4 bg-black/50 blur-xl rounded-full"></div>
-        </div>
-        <h1 class="text-4xl font-bold text-white mt-8 font-tech tracking-[0.5em] animate-pulse">SIMSOLDIER</h1>
-        <p class="text-stone-500 mt-2 font-mono text-xs tracking-widest">VIRTUAL MILITARY TRAINING SYSTEM</p>
+    <!-- Fake Next Page Background (Revealed when pulled down) -->
+    <div class="absolute inset-0 z-0 bg-stone-950 flex flex-col items-center justify-center">
     </div>
 
-    <!-- LOADING BAR CONTAINER -->
-    <div id="loader-content" class="w-64 space-y-4 text-center hidden">
-        <!-- Spinner -->
-        <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500 mb-4"></div>
+    <!-- The Pull Layer (The loading screen) -->
+    <div id="pull-layer"
+        class="absolute inset-0 z-10 bg-stone-900 border-t-8 border-green-700 flex flex-col items-center justify-center transition-transform duration-[1000ms] ease-in shadow-2xl">
 
-        <h2 class="text-xl font-bold tracking-widest animate-pulse">全力載入ING!!</h2>
+        <!-- Loading UI -->
+        <div class="relative z-20 flex flex-col items-center mt-32">
+            <h1 class="text-4xl font-bold text-white font-tech tracking-[0.5em] animate-pulse">SIMSOLDIER</h1>
+            <p class="text-stone-500 mt-2 font-mono text-xs tracking-widest">Loading...</p>
 
-        <!-- Progress Bar Container -->
-        <div class="w-full bg-stone-900 rounded-full h-2.5 border border-stone-800 overflow-hidden">
-            <div id="progress"
-                class="bg-green-600 h-2.5 rounded-full loading-bar shadow-[0_0_10px_rgba(34,197,94,0.5)]"></div>
+            <div class="w-64 bg-stone-950 rounded-full h-3 border border-stone-800 overflow-hidden mt-8 shadow-inner">
+                <div id="progress"
+                    class="bg-green-600 h-full rounded-full shadow-[0_0_10px_rgba(34,197,94,0.5)] transition-all duration-[50ms] ease-linear w-0">
+                </div>
+            </div>
+            <p id="progress-text" class="text-xs font-tech text-stone-500 mt-2">0%</p>
         </div>
 
-        <p class="text-xs font-tech text-stone-500 mt-2">載入中...</p>
+        <!-- Paratrooper (Attached to Pull Layer) -->
+        <div id="paratrooper"
+            class="absolute top-[8%] left-[50%] -translate-x-1/2 flex flex-col items-center opacity-0 transition-all duration-[700ms] ease-out z-30">
+            <i
+                class="fa-solid fa-parachute-box text-6xl text-green-500 drop-shadow-[0_0_10px_rgba(34,197,94,0.3)] animate-pulse"></i>
+            <div class="h-10 w-0.5 bg-stone-500"></div>
+            <i class="fa-solid fa-person-military-rifle text-5xl text-stone-300"></i>
+        </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <!-- Airplane (Independent Layer) -->
+    <div class="absolute inset-0 z-40 pointer-events-none">
+        <!-- Make it fly slightly angled -->
+        <div id="airplane"
+            class="absolute top-[8%] left-[-20%] text-stone-400 text-7xl transition-all duration-[1200ms] ease-linear transform rotate-[15deg]">
+            <i class="fa-solid fa-plane"></i>
+        </div>
+    </div>
+
     <script>
-        // Get destination from URL params
         const urlParams = new URLSearchParams(window.location.search);
         const dest = urlParams.get('dest') || 'index.html';
 
-        const splash = document.getElementById('splash-screen');
-        const loader = document.getElementById('loader-content');
-        const progressBar = document.getElementById('progress');
-        const body = document.getElementById('body');
+        const airplane = document.getElementById('airplane');
+        const paratrooper = document.getElementById('paratrooper');
+        const pullLayer = document.getElementById('pull-layer');
+        const progress = document.getElementById('progress');
+        const progressText = document.getElementById('progress-text');
 
-        // Logic: Check Session Storage
-        const hasSeenSplash = sessionStorage.getItem('simSoldier_splash_seen');
+        // Fast fake loading progress
+        let loadPct = 0;
+        const loadInterval = setInterval(() => {
+            loadPct += 2;
+            if (loadPct > 99) loadPct = 99;
+            progress.style.width = loadPct + '%';
+            progressText.innerText = loadPct + '%';
+        }, 30);
 
-        if (hasSeenSplash) {
-            // === SCENARIO 1: RETURNING USER ===
-            // 1. Force remove splash immediately
-            splash.style.display = 'none';
+        // Sequence Timings
+        setTimeout(() => {
+            // 1. Airplane flies to center
+            airplane.style.left = '50%';
+            airplane.style.transform = 'translateX(-50%) rotate(0deg)';
+        }, 100);
 
-            // 2. Show loader immediately
-            loader.classList.remove('hidden');
+        setTimeout(() => {
+            // 2. Airplane flies out
+            airplane.style.left = '120%';
+            airplane.style.transform = 'translateX(0) rotate(-15deg)';
 
-            // 3. Start Loading Bar
-            startLoading();
+            // 3. Paratrooper drops down slightly onto the UI
+            paratrooper.style.opacity = '1';
+            paratrooper.style.top = '35%';
 
-        } else {
-            // === SCENARIO 2: FIRST VISIT ===
-            // 1. Set flag so next time we skip
-            sessionStorage.setItem('simSoldier_splash_seen', 'true');
+            // Speed up loading
+            loadPct = 100;
+            progress.style.width = '100%';
+            progressText.innerText = '100%';
+            clearInterval(loadInterval);
 
-            // 2. Play Splash Animation (1.5s total)
-            setTimeout(() => {
-                // Fade out splash
-                splash.style.opacity = '0';
+        }, 1300); // 1.2s after airplane start
 
-                setTimeout(() => {
-                    // Hide splash completely
-                    splash.style.display = 'none';
+        setTimeout(() => {
+            // 4. Paratrooper "pulls" the screen down
+            pullLayer.style.transform = 'translateY(100vh)';
+        }, 2200); // Wait for paratrooper to fall a bit
 
-                    // Show loader
-                    loader.classList.remove('hidden');
+        setTimeout(() => {
+            // 5. Redirect
+            window.location.href = dest;
+        }, 3200); // Wait for pull down animation to finish
 
-                    // Start Loading Bar
-                    startLoading();
-                }, 700); // 0.7s fade out
-            }, 1200); // 1.2s display time
-        }
-
-        function startLoading() {
-            let width = 0;
-            // Update every 10ms -> fast loading
-            const interval = setInterval(() => {
-                if (width >= 100) {
-                    clearInterval(interval);
-                    // Fade out body before redirect
-                    body.classList.add('fade-out');
-                    setTimeout(() => {
-                        window.location.href = dest;
-                    }, 500);
-                } else {
-                    width++;
-                    progressBar.style.width = width + '%';
-                }
-            }, 10);
-        }
     </script>
 </body>
 

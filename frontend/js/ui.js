@@ -102,12 +102,8 @@ export const dom = {
     sidebarRole: document.getElementById('sidebar-role'),
     btnLoginSidebar: document.getElementById('btn-login-sidebar'),
 
-    headerGuestTools: document.getElementById('header-guest-tools'),
-    headerUserTools: document.getElementById('header-user-tools'),
-    btnLoginHeader: document.getElementById('btn-login-header'),
-    btnEditProfile: document.getElementById('btn-edit-profile'),
-    headerNameMobile: document.getElementById('header-name-mobile'),
-    headerStatusMobile: document.getElementById('header-status-mobile'),
+    headerGuestTools: document.getElementById('header-guest-tools'), // keep this to avoid undefined in main.js
+    headerUserTools: document.getElementById('header-user-tools'), // keep this to avoid undefined in main.js
 
     // --- Onboarding Modal ---
     modalOnboarding: document.getElementById('modal-onboarding'),
@@ -175,16 +171,21 @@ export const dom = {
     calendarGrid: document.getElementById('calendar-grid'),
     calendarMonthYear: document.getElementById('calendar-month-year'),
 
-    // --- Settings Menu ---
+    // --- Settings Menu (Old references kept for safety) ---
     btnSettingsSidebar: document.getElementById('btn-settings-sidebar'),
     settingsMenuSidebar: document.getElementById('settings-menu-sidebar'),
-    // --- Settings Menu & Scenario ---
-    btnSettingsSidebar: document.getElementById('btn-settings-sidebar'),
-    settingsMenuSidebar: document.getElementById('settings-menu-sidebar'),
+    btnSettingsScenarioSwitch: document.getElementById('btn-settings-scenario-switch'),
     btnEditProfileSidebar: document.getElementById('btn-edit-profile-sidebar'),
     btnGameBackpackSidebar: document.getElementById('btn-game-backpack-sidebar'),
     btnDeleteAccountSidebar: document.getElementById('btn-delete-account-sidebar'),
     btnLogoutSidebar: document.getElementById('btn-logout-sidebar'),
+
+    // --- Settings Menu (New robust references) ---
+    btnEditProfileNew: document.getElementById('btn-edit-profile-new'),
+    btnScenarioSwitchNew: document.getElementById('btn-scenario-switch-new'),
+    btnGameBackpackNew: document.getElementById('btn-game-backpack-new'),
+    btnDeleteAccountNew: document.getElementById('btn-delete-account-new'),
+    btnLogoutNew: document.getElementById('btn-logout-new'),
 
     // --- Scenario Triage Modal & Elements ---
     modalScenarioSelect: document.getElementById('modal-scenario-select'),
@@ -198,9 +199,7 @@ export const dom = {
     btnReselectScenario: document.getElementById('btn-reselect-scenario'),
     btnConfirmScenario: document.getElementById('btn-confirm-scenario'),
     sidebarScenarioTag: document.getElementById('sidebar-scenario-tag'),
-    btnSidebarSwitchScenario: document.getElementById('btn-sidebar-switch-scenario'),
-    btnHeaderScenarioSwitch: document.getElementById('btn-header-scenario-switch'),
-    headerScenarioText: document.getElementById('header-scenario-text')
+    btnSidebarSwitchScenario: document.getElementById('btn-sidebar-switch-scenario')
 };
 
 // --- Scenario Config & Dict ---
@@ -364,10 +363,10 @@ export function renderSidebarNav(scenarioKey = 'preparing') {
         dom.sidebarScenarioTag.innerHTML = `<i class="fa-solid ${config.icon}"></i> <span>${config.title}</span>`;
     }
 
-    if (dom.headerScenarioText) {
-        dom.headerScenarioText.className = `font-bold flex items-center gap-1 text-[11px] md:text-xs ${config.colorClass}`;
-        dom.headerScenarioText.innerHTML = `<i class="fa-solid ${config.icon}"></i> 情境: ${config.title}`;
-    }
+    // if (dom.headerScenarioText) {
+    //     dom.headerScenarioText.className = `font-bold flex items-center gap-1 text-[11px] md:text-xs ${config.colorClass}`;
+    //     dom.headerScenarioText.innerHTML = `<i class="fa-solid ${config.icon}"></i> 情境: ${config.title}`;
+    // }
 
     // Refresh active tab highlighting
     if (state.activeTab) {

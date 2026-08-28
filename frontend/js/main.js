@@ -129,50 +129,50 @@ function updateUIForUser() {
     const { name } = state.userData;
 
     // Sidebar
-    dom.userInfoSidebar.classList.remove('hidden');
-    dom.btnLoginSidebar.classList.add('hidden');
-    dom.sidebarName.textContent = name;
-    dom.sidebarRole.textContent = state.serviceStatus.type;
+    if (dom.userInfoSidebar) dom.userInfoSidebar.classList.remove('hidden');
+    if (dom.btnLoginSidebar) dom.btnLoginSidebar.classList.add('hidden');
+    if (dom.sidebarName) dom.sidebarName.textContent = name;
+    if (dom.sidebarRole) dom.sidebarRole.textContent = state.serviceStatus.type;
 
     // Header
-    dom.headerGuestTools.classList.add('hidden');
-    dom.headerUserTools.classList.remove('hidden');
-    dom.headerNameMobile.textContent = name;
-    dom.headerStatusMobile.textContent = state.serviceStatus.type;
+    if (dom.headerGuestTools) dom.headerGuestTools.classList.add('hidden');
+    if (dom.headerUserTools) dom.headerUserTools.classList.remove('hidden');
+    if (dom.headerNameMobile) dom.headerNameMobile.textContent = name;
+    if (dom.headerStatusMobile) dom.headerStatusMobile.textContent = state.serviceStatus.type;
 
     // Home Widgets
-    dom.widgetGuest.classList.add('hidden');
-    dom.widgetStatus.classList.remove('hidden');
-    dom.statusType.textContent = state.serviceStatus.type;
-    dom.statusReason.textContent = state.serviceStatus.reason;
-    dom.statusInstruction.textContent = state.serviceStatus.nextStep;
-    dom.statusIcon.textContent = state.serviceStatus.icon;
+    if (dom.widgetGuest) dom.widgetGuest.classList.add('hidden');
+    if (dom.widgetStatus) dom.widgetStatus.classList.remove('hidden');
+    if (dom.statusType) dom.statusType.textContent = state.serviceStatus.type;
+    if (dom.statusReason) dom.statusReason.textContent = state.serviceStatus.reason;
+    if (dom.statusInstruction) dom.statusInstruction.textContent = state.serviceStatus.nextStep;
+    if (dom.statusIcon) dom.statusIcon.textContent = state.serviceStatus.icon;
 
     // Countdown / Exempt Logic
-    dom.countdownContentGuest.classList.add('hidden');
+    if (dom.countdownContentGuest) dom.countdownContentGuest.classList.add('hidden');
     if (state.serviceStatus.type === '免役') {
-        dom.countdownContentUser.classList.add('hidden');
-        dom.countdownContentExempt.classList.remove('hidden');
+        if (dom.countdownContentUser) dom.countdownContentUser.classList.add('hidden');
+        if (dom.countdownContentExempt) dom.countdownContentExempt.classList.remove('hidden');
     } else {
-        dom.countdownContentUser.classList.remove('hidden');
-        dom.countdownContentExempt.classList.add('hidden');
+        if (dom.countdownContentUser) dom.countdownContentUser.classList.remove('hidden');
+        if (dom.countdownContentExempt) dom.countdownContentExempt.classList.add('hidden');
         features.updateCountdown();
 
         if (state.userData.location) {
-            dom.locationDisplay.textContent = state.userData.location;
-            dom.widgetLocation.classList.remove('hidden');
+            if (dom.locationDisplay) dom.locationDisplay.textContent = state.userData.location;
+            if (dom.widgetLocation) dom.widgetLocation.classList.remove('hidden');
         } else {
-            dom.widgetLocation.classList.add('hidden');
+            if (dom.widgetLocation) dom.widgetLocation.classList.add('hidden');
         }
     }
 
     // Calendar
     features.renderCalendar();
-    dom.calendarPanel.classList.remove('hidden');
+    if (dom.calendarPanel) dom.calendarPanel.classList.remove('hidden');
 
     // Tasks Unlock
-    dom.tasksCard.classList.remove('opacity-50', 'pointer-events-none', 'grayscale');
-    dom.tasksLockOverlay.classList.add('hidden');
+    if (dom.tasksCard) dom.tasksCard.classList.remove('opacity-50', 'pointer-events-none', 'grayscale');
+    if (dom.tasksLockOverlay) dom.tasksLockOverlay.classList.add('hidden');
     features.renderJourneySystem();
 
     // Notice Visibility & Task Progression based on Scenario
@@ -284,8 +284,18 @@ function setupEventListeners() {
     if (dom.btnSidebarSwitchScenario) {
         dom.btnSidebarSwitchScenario.addEventListener('click', () => openScenarioModal(true));
     }
-    if (dom.btnHeaderScenarioSwitch) {
-        dom.btnHeaderScenarioSwitch.addEventListener('click', () => openScenarioModal(true));
+    if (dom.btnSettingsScenarioSwitch) {
+        dom.btnSettingsScenarioSwitch.addEventListener('click', () => {
+            if (dom.settingsMenuSidebar) dom.settingsMenuSidebar.classList.add('hidden');
+            openScenarioModal(true);
+        });
+    }
+    if (dom.btnScenarioSwitchNew) {
+        dom.btnScenarioSwitchNew.addEventListener('click', () => {
+            const menu = document.getElementById('settings-menu-new');
+            if (menu) menu.classList.add('hidden');
+            openScenarioModal(true);
+        });
     }
 
     // Onboarding / Profile Edit Modal
@@ -320,11 +330,11 @@ function setupEventListeners() {
         }
     };
 
-    dom.btnLoginSidebar.addEventListener('click', openModal);
-    dom.btnLoginHeader.addEventListener('click', openModal);
-    dom.btnEditProfile.addEventListener('click', openModal);
-    dom.btnUnlockGuest.addEventListener('click', openModal);
-    dom.btnSetupDate.addEventListener('click', openModal);
+    if (dom.btnLoginSidebar) dom.btnLoginSidebar.addEventListener('click', openModal);
+    if (dom.btnLoginHeader) dom.btnLoginHeader.addEventListener('click', openModal);
+    if (dom.btnEditProfile) dom.btnEditProfile.addEventListener('click', openModal);
+    if (dom.btnUnlockGuest) dom.btnUnlockGuest.addEventListener('click', openModal);
+    if (dom.btnSetupDate) dom.btnSetupDate.addEventListener('click', openModal);
 
     // Sidebar Settings
     if (dom.btnSettingsSidebar) {
@@ -333,7 +343,7 @@ function setupEventListeners() {
             dom.settingsMenuSidebar.classList.toggle('hidden');
         });
         document.addEventListener('click', (e) => {
-            if (!dom.settingsMenuSidebar.contains(e.target) && e.target !== dom.btnSettingsSidebar) {
+            if (dom.settingsMenuSidebar && !dom.settingsMenuSidebar.contains(e.target) && !dom.btnSettingsSidebar.contains(e.target)) {
                 dom.settingsMenuSidebar.classList.add('hidden');
             }
         });
@@ -341,39 +351,64 @@ function setupEventListeners() {
 
     if (dom.btnEditProfileSidebar) {
         dom.btnEditProfileSidebar.addEventListener('click', () => {
-            dom.settingsMenuSidebar.classList.add('hidden');
+            if (dom.settingsMenuSidebar) dom.settingsMenuSidebar.classList.add('hidden');
+            openModal();
+        });
+    }
+    if (dom.btnEditProfileNew) {
+        dom.btnEditProfileNew.addEventListener('click', () => {
+            const menu = document.getElementById('settings-menu-new');
+            if (menu) menu.classList.add('hidden');
             openModal();
         });
     }
 
     if (dom.btnGameBackpackSidebar) {
         dom.btnGameBackpackSidebar.addEventListener('click', () => {
-            dom.settingsMenuSidebar.classList.add('hidden');
+            if (dom.settingsMenuSidebar) dom.settingsMenuSidebar.classList.add('hidden');
+            alert('小遊戲背包功能開發中！');
+        });
+    }
+    if (dom.btnGameBackpackNew) {
+        dom.btnGameBackpackNew.addEventListener('click', () => {
+            const menu = document.getElementById('settings-menu-new');
+            if (menu) menu.classList.add('hidden');
             alert('小遊戲背包功能開發中！');
         });
     }
 
     if (dom.btnDeleteAccountSidebar) {
         dom.btnDeleteAccountSidebar.addEventListener('click', () => {
-            dom.settingsMenuSidebar.classList.add('hidden');
+            if (dom.settingsMenuSidebar) dom.settingsMenuSidebar.classList.add('hidden');
             if (confirm('確定要永久刪除帳號嗎？此動作無法復原！')) {
                 const currentUser = sessionStorage.getItem('simSoldier_currentUser');
-                localStorage.removeItem('simSoldier_user_' + currentUser); // Wait, keys were just in one object?
-                // The API logic saves all users in ONE key 'simSoldier_users'.
-                // So strict delete requires reading that object.
-                // For now just clear session is safer, or impl delete in API.
+                localStorage.removeItem('simSoldier_user_' + currentUser);
+                api.logout();
+            }
+        });
+    }
+    if (dom.btnDeleteAccountNew) {
+        dom.btnDeleteAccountNew.addEventListener('click', () => {
+            const menu = document.getElementById('settings-menu-new');
+            if (menu) menu.classList.add('hidden');
+            if (confirm('確定要永久刪除帳號嗎？此動作無法復原！')) {
+                const currentUser = sessionStorage.getItem('simSoldier_currentUser');
+                localStorage.removeItem('simSoldier_user_' + currentUser);
                 api.logout();
             }
         });
     }
 
     if (dom.btnLogoutSidebar) dom.btnLogoutSidebar.addEventListener('click', showLogoutModal);
+    if (dom.btnLogoutNew) dom.btnLogoutNew.addEventListener('click', showLogoutModal);
     document.querySelectorAll('.btn-logout').forEach(btn => btn.addEventListener('click', showLogoutModal));
 
     // Logout Modal Logic
     function showLogoutModal() {
         if (dom.settingsMenuSidebar) dom.settingsMenuSidebar.classList.add('hidden');
-        dom.modalLogout.classList.remove('hidden');
+        const menuNew = document.getElementById('settings-menu-new');
+        if (menuNew) menuNew.classList.add('hidden');
+        if (dom.modalLogout) dom.modalLogout.classList.remove('hidden');
     }
 
     if (dom.btnConfirmLogout) {
@@ -390,19 +425,19 @@ function setupEventListeners() {
     }
 
     // Chat
-    dom.chatForm.addEventListener('submit', features.handleChatSubmit);
+    if (dom.chatForm) dom.chatForm.addEventListener('submit', features.handleChatSubmit);
 
     // Video
     document.querySelectorAll('.video-item').forEach(item => {
         item.addEventListener('click', () => features.playVideo(item.dataset));
     });
-    dom.btnClosePlayer.addEventListener('click', features.closeVideo);
+    if (dom.btnClosePlayer) dom.btnClosePlayer.addEventListener('click', features.closeVideo);
 
     // Docs
     document.querySelectorAll('.btn-doc').forEach(btn => {
         btn.addEventListener('click', () => features.openDocsModal(btn.dataset.doc));
     });
-    dom.btnCloseDocs.addEventListener('click', () => dom.modalDocs.classList.add('hidden'));
+    if (dom.btnCloseDocs) dom.btnCloseDocs.addEventListener('click', () => dom.modalDocs.classList.add('hidden'));
 
     // Inventory Reset
     if (dom.btnResetInventory) {
@@ -410,10 +445,12 @@ function setupEventListeners() {
     }
 
     // Daily Tasks
-    dom.taskCheckboxes.forEach(cb => cb.addEventListener('change', features.updateDailyTaskProgress));
+    if (dom.taskCheckboxes) {
+        dom.taskCheckboxes.forEach(cb => cb.addEventListener('change', features.updateDailyTaskProgress));
+    }
 
     // Game Links & Control
-    dom.linkGame.addEventListener('click', () => switchTab('game'));
+    if (dom.linkGame) dom.linkGame.addEventListener('click', () => switchTab('game'));
     // dom.linkVideo.addEventListener('click', () => switchTab('video')); // Removed since element is deleted
     // Draw Rules Modal Logic
     const btnShowDrawRules = document.getElementById('btn-show-draw-rules');
@@ -436,12 +473,12 @@ function setupEventListeners() {
             dom.btnStartGame.disabled = !e.target.checked;
         });
 
-        dom.btnStartGame.addEventListener('click', () => {
+        if (dom.btnStartGame) dom.btnStartGame.addEventListener('click', () => {
             drawRulesModal.classList.add('hidden');
             game.startGame();
         });
     } else {
-        dom.btnStartGame.addEventListener('click', game.startGame);
+        if (dom.btnStartGame) dom.btnStartGame.addEventListener('click', game.startGame);
     }
 
     // Village Draw Rules Modal Logic
@@ -472,33 +509,37 @@ function setupEventListeners() {
         });
     }
 
-    dom.btnQuitGame.addEventListener('click', game.quitGame);
-    dom.btnRetryGame.addEventListener('click', game.startGame);
-    dom.btnBackHome.addEventListener('click', () => {
+    if (dom.btnQuitGame) dom.btnQuitGame.addEventListener('click', game.quitGame);
+    if (dom.btnRetryGame) dom.btnRetryGame.addEventListener('click', game.startGame);
+    if (dom.btnBackHome) dom.btnBackHome.addEventListener('click', () => {
         switchTab('home');
         game.quitGame(); // Ensure stopped
     });
 
     // Fake Countdown
-    dom.btnFakeCountdown.addEventListener('click', () => {
-        dom.countdownContentExempt.classList.add('hidden');
-        dom.countdownContentUser.classList.remove('hidden');
-        dom.countdownTitle.textContent = "體驗倒數 (模擬)";
-        dom.btnEndFake.classList.remove('hidden');
-        state.userData.tempCountdown = true;
-        features.updateCountdown();
-    });
+    if (dom.btnFakeCountdown) {
+        dom.btnFakeCountdown.addEventListener('click', () => {
+            if (dom.countdownContentExempt) dom.countdownContentExempt.classList.add('hidden');
+            if (dom.countdownContentUser) dom.countdownContentUser.classList.remove('hidden');
+            if (dom.countdownTitle) dom.countdownTitle.textContent = "體驗倒數 (模擬)";
+            if (dom.btnEndFake) dom.btnEndFake.classList.remove('hidden');
+            state.userData.tempCountdown = true;
+            features.updateCountdown();
+        });
+    }
 
-    dom.btnEndFake.addEventListener('click', () => {
-        dom.countdownContentExempt.classList.remove('hidden');
-        dom.countdownContentUser.classList.add('hidden');
-        dom.countdownTitle.textContent = "距離入伍";
-        dom.btnEndFake.classList.add('hidden');
-        state.userData.tempCountdown = false;
-    });
+    if (dom.btnEndFake) {
+        dom.btnEndFake.addEventListener('click', () => {
+            if (dom.countdownContentExempt) dom.countdownContentExempt.classList.remove('hidden');
+            if (dom.countdownContentUser) dom.countdownContentUser.classList.add('hidden');
+            if (dom.countdownTitle) dom.countdownTitle.textContent = "距離入伍";
+            dom.btnEndFake.classList.add('hidden');
+            state.userData.tempCountdown = false;
+        });
+    }
 
     // Training Cards Delegate
-    const trainingGrid = dom.trainingContent.querySelector('.grid'); // Need to find parent
+    const trainingGrid = dom.trainingContent ? dom.trainingContent.querySelector('.grid') : null; // Need to find parent
     if (trainingGrid) {
         // We attached to individual cards in script.js, let's do safe query
         dom.trainingContent.querySelectorAll('.grid > div').forEach((card, index) => {
