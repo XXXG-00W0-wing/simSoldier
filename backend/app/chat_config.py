@@ -47,10 +47,10 @@ IMAGE_DB = {
 }
 
 
-def lookup_image_for_question(question: str):
-    if not question:
+def lookup_image_for_question(text: str):
+    if not text:
         return None
-    lower_text = question.lower()
+    lower_text = text.lower()
     for key, asset in IMAGE_DB.items():
         if key in lower_text:
             return asset
@@ -119,7 +119,7 @@ def get_mentioned_offices(question: str):
 
 
 def append_image_to_response(text: str, question: str):
-    image_asset = lookup_image_for_question(question)
+    image_asset = lookup_image_for_question(text)
     if image_asset:
         html_block = build_image_html(image_asset)
         text = f"{text.strip()}\n\n參考示意圖：{html_block}"
@@ -129,7 +129,7 @@ def append_image_to_response(text: str, question: str):
         button_html = (
             f'<div class="mt-3">'
             f'<button onclick="selectLocation(\'{specific_camp}\')" class="bg-green-700 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition-colors text-sm shadow-md flex items-center gap-2">'
-            f'前往新訓地點：{specific_camp}'
+            f'<i class="fa-solid fa-map-location-dot"></i> 前往新訓地點：{specific_camp}'
             f'</button>'
             f'</div>'
         )
@@ -138,7 +138,7 @@ def append_image_to_response(text: str, question: str):
         button_html = (
             '<div class="mt-3">'
             '<button onclick="switchTab(\'locations\')" class="bg-green-700 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition-colors text-sm shadow-md flex items-center gap-2">'
-            '前往新訓地點頁面'
+            '<i class="fa-solid fa-map-location-dot"></i> 前往新訓地點頁面'
             '</button>'
             '</div>'
         )
@@ -148,7 +148,7 @@ def append_image_to_response(text: str, question: str):
         delay_button = (
             '<div class="mt-3">'
             '<button onclick="switchTab(\'delay\')" class="bg-blue-700 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors text-sm shadow-md flex items-center gap-2">'
-            '前往延役專區'
+            '<i class="fa-solid fa-calendar-minus"></i> 前往延役專區'
             '</button>'
             '</div>'
         )
@@ -159,7 +159,7 @@ def append_image_to_response(text: str, question: str):
             '<div class="mt-3">'
             '<a href="https://servap3.docms.gov.taipei/bingo/bingo/S23_Info04" target="_blank" '
             'class="bg-rose-700 hover:bg-rose-600 text-white font-bold py-2 px-4 rounded transition-colors text-sm shadow-md inline-flex items-center gap-2">'
-            '前往體檢與複檢資訊'
+            '<i class="fa-solid fa-file-medical"></i> 前往體檢與複檢資訊'
             '</a>'
             '</div>'
         )
@@ -169,11 +169,11 @@ def append_image_to_response(text: str, question: str):
         checklist_html = (
             '<div class="mt-4 p-4 bg-stone-900 border border-stone-700 rounded-lg shadow-lg text-sm text-stone-200">'
             '<h4 class="font-bold text-yellow-500 mb-3 flex items-center gap-1.5">'
-            '體檢當日應備文件與查檢表'
+            '<i class="fa-solid fa-clipboard-list text-base"></i> 體檢當日應備文件與查檢表'
             '</h4>'
             '<div class="space-y-3">'
             '<div>'
-            '<p class="font-bold text-stone-100 flex items-center gap-1">1. 必備核心文件</p>'
+            '<p class="font-bold text-stone-100 flex items-center gap-1"><i class="fa-solid fa-square-check text-green-500"></i> 1. 必備核心文件</p>'
             '<ul class="list-disc list-inside pl-4 space-y-1 text-stone-300">'
             '<li>國民身分證正本（驗證身分專用，健保卡或駕照通常不可替代）。</li>'
             '<li>徵兵檢查通知單正本（報到時需繳回）。</li>'
@@ -181,7 +181,7 @@ def append_image_to_response(text: str, question: str):
             '</ul>'
             '</div>'
             '<div>'
-            '<p class="font-bold text-stone-100 flex items-center gap-1">2. 補充證明文件（攸關體位判定、免役或改判）</p>'
+            '<p class="font-bold text-stone-100 flex items-center gap-1"><i class="fa-solid fa-file-circle-plus text-blue-500"></i> 2. 補充證明文件（攸關體位判定、免役或改判）</p>'
             '<ul class="list-disc list-inside pl-4 space-y-1 text-stone-300">'
             '<li>重大傷病卡、身心障礙證明。</li>'
             '<li>公私立大醫院開立的「特定疾病診斷證明書」。</li>'
@@ -189,7 +189,7 @@ def append_image_to_response(text: str, question: str):
             '</ul>'
             '</div>'
             '<div>'
-            '<p class="font-bold text-stone-100 flex items-center gap-1">3. 當日穿著與個人準備建議</p>'
+            '<p class="font-bold text-stone-100 flex items-center gap-1"><i class="fa-solid fa-shirt text-purple-500"></i> 3. 當日穿著與個人準備建議</p>'
             '<ul class="list-disc list-inside pl-4 space-y-1 text-stone-300">'
             '<li>身穿容易穿脫的衣物與鞋子（體檢需更換隔離袍，且會頻繁穿脫鞋子測量身高體重）。</li>'
             '<li>配戴隱形眼鏡者，當天請改戴「有度數的眼鏡」（因為需要測量「裸視」與「矯正視力」，戴隱形眼鏡會耽誤拔除與檢測時間）。</li>'
@@ -203,7 +203,7 @@ def append_image_to_response(text: str, question: str):
 
         gps_trigger_html = (
             '<div id="hospital-gps-auto-trigger" class="mt-3 p-3 bg-blue-900/30 border border-blue-700 rounded-lg text-sm text-blue-200 flex items-center gap-2">'
-            '正在讀取您的 GPS 位置以尋找最近的體檢醫院...'
+            '<i class="fa-solid fa-spinner fa-spin"></i> 正在讀取您的 GPS 位置以尋找最近的體檢醫院...'
             '</div>'
         )
         text = f"{text.strip()}\n\n{gps_trigger_html}"
@@ -212,7 +212,7 @@ def append_image_to_response(text: str, question: str):
         backpack_button = (
             '<div class="mt-3">'
             '<button onclick="switchTab(\'inventory\')" class="bg-amber-700 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded transition-colors text-sm shadow-md flex items-center gap-2">'
-            '前往入伍背包查看身家調查資訊'
+            '<i class="fa-solid fa-suitcase"></i> 前往入伍背包查看身家調查資訊'
             '</button>'
             '</div>'
         )
