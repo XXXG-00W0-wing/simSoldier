@@ -39,11 +39,13 @@
         class="absolute inset-0 z-10 bg-stone-900 border-t-8 border-green-700 flex flex-col items-center justify-center transition-transform duration-[1000ms] ease-in shadow-2xl">
 
         <!-- Loading UI -->
-        <div class="relative z-20 flex flex-col items-center mt-32">
-            <h1 class="text-4xl font-bold text-white font-tech tracking-[0.5em] animate-pulse">SIMSOLDIER</h1>
+        <div id="loading-ui" class="relative z-20 flex flex-col items-center mt-20 sm:mt-28 md:mt-32 px-4">
+            <h1 id="loading-title"
+                class="text-2xl sm:text-4xl font-bold text-white font-tech tracking-[0.3em] sm:tracking-[0.5em] pl-[0.3em] sm:pl-[0.5em] text-center select-none animate-pulse whitespace-nowrap">
+                SIMSOLDIER</h1>
             <p class="text-stone-500 mt-2 font-mono text-xs tracking-widest">Loading...</p>
 
-            <div class="w-64 bg-stone-950 rounded-full h-3 border border-stone-800 overflow-hidden mt-8 shadow-inner">
+            <div class="w-56 sm:w-64 bg-stone-950 rounded-full h-3 border border-stone-800 overflow-hidden mt-6 sm:mt-8 shadow-inner">
                 <div id="progress"
                     class="bg-green-600 h-full rounded-full shadow-[0_0_10px_rgba(34,197,94,0.5)] transition-all duration-[50ms] ease-linear w-0">
                 </div>
@@ -53,11 +55,11 @@
 
         <!-- Paratrooper (Attached to Pull Layer) -->
         <div id="paratrooper"
-            class="absolute top-[8%] left-[50%] -translate-x-1/2 flex flex-col items-center opacity-0 transition-all duration-[700ms] ease-out z-30">
+            class="absolute top-[8%] left-[50%] -translate-x-1/2 flex flex-col items-center opacity-0 transition-all duration-[700ms] ease-out z-30 pointer-events-none">
             <i
-                class="fa-solid fa-parachute-box text-6xl text-green-500 drop-shadow-[0_0_10px_rgba(34,197,94,0.3)] animate-pulse"></i>
-            <div class="h-10 w-0.5 bg-stone-500"></div>
-            <i class="fa-solid fa-person-military-rifle text-5xl text-stone-300"></i>
+                class="fa-solid fa-parachute-box text-5xl sm:text-6xl text-green-500 drop-shadow-[0_0_10px_rgba(34,197,94,0.3)] animate-pulse"></i>
+            <div class="h-6 sm:h-10 w-0.5 bg-stone-500"></div>
+            <i class="fa-solid fa-person-military-rifle text-4xl sm:text-5xl text-stone-300"></i>
         </div>
     </div>
 
@@ -65,7 +67,7 @@
     <div class="absolute inset-0 z-40 pointer-events-none">
         <!-- Make it fly slightly angled -->
         <div id="airplane"
-            class="absolute top-[8%] left-[-20%] text-stone-400 text-7xl transition-all duration-[1200ms] ease-linear transform rotate-[15deg]">
+            class="absolute top-[8%] left-[-20%] text-stone-400 text-5xl sm:text-7xl transition-all duration-[1200ms] ease-linear transform rotate-[15deg]">
             <i class="fa-solid fa-plane"></i>
         </div>
     </div>
@@ -79,6 +81,22 @@
         const pullLayer = document.getElementById('pull-layer');
         const progress = document.getElementById('progress');
         const progressText = document.getElementById('progress-text');
+        const loadingTitle = document.getElementById('loading-title');
+
+        // Dynamically compute safe drop target position right above the title
+        function getParatrooperTargetTop() {
+            if (!loadingTitle || !pullLayer || !paratrooper) return null;
+
+            const titleRect = loadingTitle.getBoundingClientRect();
+            const pullRect = pullLayer.getBoundingClientRect();
+            const trooperHeight = paratrooper.offsetHeight || 120;
+            const gap = window.innerHeight < 650 ? 14 : 24;
+
+            // Target top relative to pullLayer so the paratrooper stops cleanly above SIMSOLDIER
+            const targetTop = (titleRect.top - pullRect.top) - trooperHeight - gap;
+            const minTop = Math.max(20, window.innerHeight * 0.08);
+            return Math.max(minTop, targetTop);
+        }
 
         // Fast fake loading progress
         let loadPct = 0;
@@ -101,9 +119,12 @@
             airplane.style.left = '120%';
             airplane.style.transform = 'translateX(0) rotate(-15deg)';
 
-            // 3. Paratrooper drops down slightly onto the UI
+            // 3. Paratrooper drops down safely above the UI without overlapping the title
             paratrooper.style.opacity = '1';
-            paratrooper.style.top = '35%';
+            const targetTop = getParatrooperTargetTop();
+            if (targetTop !== null) {
+                paratrooper.style.top = `${targetTop}px`;
+            }
 
             // Speed up loading
             loadPct = 100;
@@ -112,6 +133,16 @@
             clearInterval(loadInterval);
 
         }, 1300); // 1.2s after airplane start
+
+        // Keep paratrooper position accurate if window is resized or orientation changed
+        window.addEventListener('resize', () => {
+            if (paratrooper.style.opacity === '1') {
+                const targetTop = getParatrooperTargetTop();
+                if (targetTop !== null) {
+                    paratrooper.style.top = `${targetTop}px`;
+                }
+            }
+        });
 
         setTimeout(() => {
             // 4. Paratrooper "pulls" the screen down
