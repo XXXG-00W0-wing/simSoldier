@@ -605,7 +605,7 @@
         let isHistoryOpen = false;
         let currentNodeId = null;
         // Load story data from story.json
-        fetch('https://raw.githubusercontent.com/XXXG-00W0-wing/simSoldier_Story/refs/heads/main/story.json')
+        fetch('story.json')
             .then(response => response.json())
             .then(data => {
                 textNodes = data;

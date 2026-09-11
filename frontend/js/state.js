@@ -104,7 +104,7 @@ export const INITIAL_JOURNEY_STAGES = [
         tasks: [
             { 
                 id: 't2_1', 
-                title: '今日課表練習與作息調適', 
+                title: '體能測驗練習與作息調適', 
                 type: 'training', 
                 typeName: '操課任務', 
                 completed: false, 
@@ -134,13 +134,13 @@ export const INITIAL_JOURNEY_STAGES = [
             },
             { 
                 id: 't2_4', 
-                title: '遊玩「大兵狂想曲」軍旅小遊戲', 
+                title: '遊玩「模擬軍旅」軍旅小遊戲', 
                 type: 'game', 
                 typeName: '遊戲任務', 
                 completed: false, 
                 linkTab: 'rhapsody', 
-                note: '體驗大兵狂想曲闖關小遊戲，在歡樂互動中提前適應部隊節奏', 
-                detail: '「大兵狂想曲」是專為役男設計的趣味互動闖關遊戲，融合軍旅生活情境與幽默互動。透過遊戲體驗提前適應軍中紀律與生活步調！\n\n點擊「前往大兵狂想曲」即可進入遊戲開始遊玩。'
+                note: '體驗模擬軍旅闖關小遊戲，在歡樂互動中提前適應部隊節奏', 
+                detail: '「模擬軍旅」是專為役男設計的趣味互動闖關遊戲，融合軍旅生活情境與幽默互動。透過遊戲體驗提前適應軍中紀律與生活步調！\n\n點擊「前往模擬軍旅」即可進入遊戲開始遊玩。'
             }
         ]
     },

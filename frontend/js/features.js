@@ -1123,7 +1123,7 @@ export function openTaskDetailModal(taskId) {
             dom.btnTaskDetailAction.classList.remove('hidden');
             const tabNames = {
                 inventory: '前往入伍背包',
-                training: '前往今日課表',
+                training: '前往體能測驗',
                 shooting: '前往射擊口訣',
                 quiz: '前往天兵課堂',
                 chat: targetTask.id === 't1_2' ? '諮詢體檢地點' : '諮詢 AI 教官',
@@ -1131,7 +1131,7 @@ export function openTaskDetailModal(taskId) {
                 delay: '前往延役專區',
                 docs: '查看法規與折抵',
                 game: '前往模擬籤筒',
-                rhapsody: '前往大兵狂想曲'
+                rhapsody: '前往模擬軍旅'
             };
             dom.btnTaskDetailAction.innerHTML = `<span>${tabNames[targetTask.linkTab] || '前往查看'}</span> <i class="fa-solid fa-arrow-right text-[10px] ml-1"></i>`;
             dom.btnTaskDetailAction.onclick = () => {
@@ -1456,7 +1456,7 @@ function renderJourneyTasksList() {
             if (task.linkTab) {
                 const tabNames = {
                     inventory: '前往入伍背包',
-                    training: '前往今日課表',
+                    training: '前往體能測驗',
                     shooting: '前往射擊口訣',
                     quiz: '前往天兵課堂',
                     chat: task.id === 't1_2' ? '諮詢體檢地點' : '諮詢 AI 教官',
@@ -1464,7 +1464,7 @@ function renderJourneyTasksList() {
                     delay: '前往延役專區',
                     docs: '查看法規與折抵',
                     game: '前往模擬籤筒',
-                    rhapsody: '前往大兵狂想曲'
+                    rhapsody: '前往模擬軍旅'
                 };
                 const label = tabNames[task.linkTab] || '前往查看';
                 actionBtnHtml = `

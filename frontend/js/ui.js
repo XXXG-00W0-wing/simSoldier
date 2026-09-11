@@ -240,8 +240,8 @@ export const SCENARIO_CONFIG = {
         colorClass: 'text-amber-400',
         badgeBg: 'bg-amber-950/80 text-amber-300 border-amber-800',
         guidanceTitle: '正在入營客製指南',
-        guidanceDesc: '系統已為您將「戰情儀表板」、「今日課表」與「教官聊天室」設為營內優先焦點！',
-        guidanceText: '勇士好！已為您將日常營內必備功能擺至側邊欄最頂端。操課與自由時間可隨時打開【今日課表】查看進度，或透過【射擊口訣】複習單兵要領！',
+        guidanceDesc: '系統已為您將「戰情儀表板」、「體能測驗」與「教官聊天室」設為營內優先焦點！',
+        guidanceText: '勇士好！已為您將日常營內必備功能擺至側邊欄最頂端。操課與自由時間可隨時打開【體能測驗】查看進度，或透過【射擊口訣】複習單兵要領！',
         defaultTab: 'home',
         blocks: [
             {
@@ -293,13 +293,13 @@ export const SCENARIO_CONFIG = {
 
 export const NAV_ITEMS_DICT = {
     home: { id: 'home', title: '戰情儀表板', icon: 'fa-chart-line' },
-    training: { id: 'training', title: '今日課表', icon: 'fa-dumbbell' },
+    training: { id: 'training', title: '體能測驗', icon: 'fa-dumbbell' },
     inventory: { id: 'inventory', title: '入伍背包', icon: 'fa-briefcase' },
     chat: { id: 'chat', title: '教官聊天室', icon: 'fa-comments' },
     docs: { id: 'docs', title: '行政中心', icon: 'fa-bars' },
     locations: { id: 'locations', title: '新訓地點', icon: 'fa-map-location-dot' },
     delay: { id: 'delay', title: '延役專區', icon: 'fa-calendar-minus' },
-    rhapsody: { id: 'rhapsody', title: '大兵狂想曲', icon: 'fa-music' },
+    rhapsody: { id: 'rhapsody', title: '模擬軍旅', icon: 'fa-gamepad' },
     quiz: { id: 'quiz', title: '天兵課堂', icon: 'fa-graduation-cap' },
     shooting: { id: 'shooting', title: '射擊口訣', icon: 'fa-crosshairs' }
 };

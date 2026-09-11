@@ -1,0 +1,1736 @@
+[
+  {
+    "id": 1,
+    "speaker": "",
+    "text": "下腹部一陣尖銳的抽痛，像是有人拿著錐子在裡面攪動。",
+    "image": "img/LN_BG1.png",
+    "character": "",
+    "nextText": 2
+  },
+  {
+    "id": 2,
+    "speaker": "",
+    "text": "這種醒來的方式既不浪漫也不壯烈，甚至有點猥瑣。",
+    "image": "img/LN_BG1.png",
+    "character": "",
+    "nextText": 3
+  },
+  {
+    "id": 3,
+    "speaker": "",
+    "text": "趴在桌上睡了不知道多久，半張臉被壓得發麻，口水在手臂上乾掉後留下一層緊繃的薄膜。",
+    "image": "img/LN_BG1.png",
+    "character": "",
+    "nextText": 4
+  },
+  {
+    "id": 4,
+    "speaker": "主角",
+    "text": "「哀」",
+    "image": "img/LN_BG1.png",
+    "character": "img/LN_CH1.png",
+    "nextText": 5
+  },
+  {
+    "id": 5,
+    "speaker": "",
+    "text": "猛地從書桌上撐起身體，動作太大，手肘似乎撞倒了桌邊空的寶特瓶。",
+    "image": "img/LN_BG1.png",
+    "character": "",
+    "nextText": 6
+  },
+  {
+    "id": 6,
+    "speaker": "",
+    "text": "但現在這些顯得不慎重要。",
+    "image": "img/LN_BG1.png",
+    "character": "",
+    "nextText": 7
+  },
+  {
+    "id": 7,
+    "speaker": "",
+    "text": "推開房門躡手腳地走過父母的房門，隔著木門，還是能隱約聽到父親沉重的鼾聲。",
+    "image": "img/LN_BG1.png",
+    "character": "",
+    "nextText": 8
+  },
+  {
+    "id": 8,
+    "speaker": "",
+    "text": "進了廁所，很順手的按了開關。",
+    "image": "img/LN_BG2.png",
+    "character": "",
+    "nextText": 9
+  },
+  {
+    "id": 9,
+    "speaker": "",
+    "text": "尿液撞擊馬桶水的聲音在寂靜的深夜裡大得嚇人。",
+    "image": "img/LN_BG2.png",
+    "character": "",
+    "nextText": 10
+  },
+  {
+    "id": 10,
+    "speaker": "",
+    "text": "走到洗手台前，下意識的撥了下頭髮。",
+    "image": "img/LN_BG2.png",
+    "character": "",
+    "nextText": 11
+  },
+  {
+    "id": 11,
+    "speaker": "主角",
+    "text": "「啊」",
+    "image": "img/LN_BG2.png",
+    "character": "img/LN_CH2.png",
+    "nextText": 12
+  },
+  {
+    "id": 12,
+    "speaker": "",
+    "text": "抬頭看向鏡子。",
+    "image": "img/LN_BG2.png",
+    "character": "",
+    "nextText": 13
+  },
+  {
+    "id": 13,
+    "speaker": "",
+    "text": "鏡子裡的那顆平頭，不是平常的樣子，是下午三點半之後的那個我。",
+    "image": "img/LN_BG2.png",
+    "character": "",
+    "nextText": 14
+  },
+  {
+    "id": 14,
+    "speaker": "",
+    "text": "回到房間躺回床上，閉上眼睛，試著在那種規律的鼾聲中，最後一次抓住這個平凡得要命的自由。",
+    "image": "img/LN_BG1.png",
+    "character": "",
+    "nextText": 15
+  },
+  {
+    "id": 15,
+    "speaker": "",
+    "text": "大廳地板依舊磨得發亮，黑白相間的格子地磚向四周延展開來。",
+    "image": "img/FD_TPstation.png",
+    "character": "",
+    "nextText": 16
+  },
+  {
+    "id": 16,
+    "speaker": "",
+    "text": "抬頭望去，那個巨大的時刻表正發出細微的機械聲，跳動著南下北上的班次。",
+    "image": "img/FD_TPstation.png",
+    "character": "",
+    "nextText": 17
+  },
+  {
+    "id": 17,
+    "speaker": "",
+    "text": "這地方熟得不能再熟。",
+    "image": "img/FD_TPstation.png",
+    "character": "",
+    "nextText": 18
+  },
+  {
+    "id": 18,
+    "speaker": "",
+    "text": "大二那年去台中看表演、去年跟死黨去花蓮溯溪，回憶的起點都是從這裡開始的。",
+    "image": "img/FD_TPstation.png",
+    "character": "",
+    "nextText": 19
+  },
+  {
+    "id": 19,
+    "speaker": "",
+    "text": "明明是熟悉的地方揹著熟悉的背包看著熟悉的時刻表，但今天卻沒有以往的興奮感。",
+    "image": "img/FD_TPstation.png",
+    "character": "",
+    "nextText": 20
+  },
+  {
+    "id": 20,
+    "speaker": "老媽",
+    "text": "「你的冰美式還要喝嗎?」",
+    "image": "img/FD_TPstation.png",
+    "character": "",
+    "nextText": 21
+  },
+  {
+    "id": 21,
+    "speaker": "主角",
+    "text": "「再喝一口」",
+    "image": "img/FD_TPstation.png",
+    "character": "img/LN_CH2.png",
+    "nextText": 22
+  },
+  {
+    "id": 22,
+    "speaker": "老媽",
+    "text": "「你們幾點集合」",
+    "image": "img/FD_TPstation.png",
+    "character": "",
+    "nextText": 23
+  },
+  {
+    "id": 23,
+    "speaker": "主角",
+    "text": "「八點半」",
+    "image": "img/FD_TPstation.png",
+    "character": "img/LN_CH2.png",
+    "nextText": 24
+  },
+  {
+    "id": 24,
+    "speaker": "老媽",
+    "text": "「時間不早了，趕快過去吧，別遲到了」",
+    "image": "img/FD_TPstation.png",
+    "character": "",
+    "nextText": 25
+  },
+  {
+    "id": 25,
+    "speaker": "",
+    "text": "向老媽揮了揮手。",
+    "image": "img/FD_TPstation.png",
+    "character": "",
+    "nextText": 26
+  },
+  {
+    "id": 26,
+    "speaker": "",
+    "text": "穿越拖著行李箱的旅客、有說有笑的情侶、趕著開會的上班族。",
+    "image": "img/FD_TPstation.png",
+    "character": "",
+    "nextText": 27
+  },
+  {
+    "id": 27,
+    "speaker": "",
+    "text": "當然偶爾也有一些頂著三分頭的男生。",
+    "image": "img/FD_TPstation.png",
+    "character": "",
+    "nextText": 28
+  },
+  {
+    "id": 28,
+    "speaker": "",
+    "text": "想必我們的目的地是相同的",
+    "image": "img/FD_TPstation.png",
+    "character": "",
+    "nextText": 29
+  },
+  {
+    "id": 29,
+    "speaker": "",
+    "text": "從手扶梯下來到達月台",
+    "image": "img/FD_PPtrain.png",
+    "character": "",
+    "nextText": 30
+  },
+  {
+    "id": 30,
+    "speaker": "帶隊官",
+    "text": "「這邊！步三連的來這邊坐好！」",
+    "image": "img/FD_PPtrain.png",
+    "character": "img/Leader.png",
+    "nextText": 31
+  },
+  {
+    "id": 31,
+    "speaker": "",
+    "text": "公所的帶隊官揮著小旗子，語氣並不兇，給人一種駕輕就熟的感覺。",
+    "image": "img/FD_PPtrain.png",
+    "character": "",
+    "nextText": 32
+  },
+  {
+    "id": 32,
+    "speaker": "帶隊官",
+    "text": "「叫什麼名字」",
+    "image": "img/FD_PPtrain.png",
+    "character": "img/Leader.png",
+    "nextText": 33
+  },
+  {
+    "id": 33,
+    "speaker": "主角",
+    "text": "「張麻子」",
+    "image": "img/FD_PPtrain.png",
+    "character": "img/LN_CH2.png",
+    "nextText": 34
+  },
+  {
+    "id": 34,
+    "speaker": "",
+    "text": "他核對身分以後就揮揮手示意我到旁邊坐著。",
+    "image": "img/FD_PPtrain.png",
+    "character": "",
+    "nextText": 35
+  },
+  {
+    "id": 35,
+    "speaker": "",
+    "text": "旁邊的同梯轉頭看了我一眼。",
+    "image": "img/FD_PPtrain.png",
+    "character": "",
+    "nextText": 36
+  },
+  {
+    "id": 36,
+    "speaker": "",
+    "text": "他的平頭理得很徹底，甚至看得到頭皮上的青筋。",
+    "image": "img/FD_PPtrain.png",
+    "character": "",
+    "nextText": 37
+  },
+  {
+    "id": 37,
+    "speaker": "",
+    "text": "我們沒有交談，只是互相點了點頭。",
+    "image": "img/FD_PPtrain.png",
+    "character": "",
+    "nextText": 38
+  },
+  {
+    "id": 38,
+    "speaker": "",
+    "text": "在這種場合，任何寒暄都顯得不必要，因為目的地是一樣的。",
+    "image": "img/FD_PPtrain.png",
+    "character": "",
+    "nextText": 39
+  },
+  {
+    "id": 39,
+    "speaker": "",
+    "text": "這時，遠處傳來了低沉的轟鳴聲。",
+    "image": "img/FD_PPtrain.png",
+    "character": "",
+    "nextText": 40
+  },
+  {
+    "id": 40,
+    "speaker": "",
+    "text": "兩道刺眼的白光從隧道深處射出，照亮了月台邊緣的黃色警戒線。",
+    "image": "img/FD_PPtrain.png",
+    "character": "",
+    "nextText": 41
+  },
+  {
+    "id": 41,
+    "speaker": "",
+    "text": "除了火車進站的風冷冷地拂過了我的平頭。",
+    "image": "img/FD_PPtrain.png",
+    "character": "",
+    "nextText": 42
+  },
+  {
+    "id": 42,
+    "speaker": "",
+    "text": "還伴隨著一股”焦味”。",
+    "image": "img/FD_PPtrain.png",
+    "character": "",
+    "nextText": 43
+  },
+  {
+    "id": 43,
+    "speaker": "",
+    "text": "那是氣軔減壓帶來的煞車皮摩擦制動車輪所帶來的氣味。",
+    "image": "img/FD_PPtrain.png",
+    "character": "",
+    "nextText": 44
+  },
+  {
+    "id": 44,
+    "speaker": "",
+    "text": "那是一台E1000型PP自強。",
+    "image": "img/FD_PPtrain.png",
+    "character": "",
+    "nextText": 45
+  },
+  {
+    "id": 45,
+    "speaker": "",
+    "text": "銀色的車廂緩緩滑行，最後精準地停在面前。",
+    "image": "img/FD_PPtrain.png",
+    "character": "",
+    "nextText": 46
+  },
+  {
+    "id": 46,
+    "speaker": "",
+    "text": "車窗倒映出一群坐在地上的人影，看起來毫無生氣。",
+    "image": "img/FD_PPtrain.png",
+    "character": "",
+    "nextText": 47
+  },
+  {
+    "id": 47,
+    "speaker": "",
+    "text": "(框啷，框啷，框啷，框啷)",
+    "image": "img/FD_passenger carriage.png",
+    "character": "",
+    "nextText": 48
+  },
+  {
+    "id": 48,
+    "speaker": "",
+    "text": "車廂安靜得只聽得見規律的鐵軌的撞擊聲。",
+    "image": "img/FD_passenger carriage.png",
+    "character": "",
+    "nextText": 49
+  },
+  {
+    "id": 49,
+    "speaker": "",
+    "text": "有人在跟隔壁的同梯聊天；有人盯著窗外的景色發呆；有人戴著耳機在享受著音樂。",
+    "image": "img/FD_passenger carriage.png",
+    "character": "",
+    "nextText": 50
+  },
+  {
+    "id": 50,
+    "speaker": "",
+    "text": "而我把頭靠在車窗上透過玻璃的震動試著在最後的自由時間裡補眠。",
+    "image": "img/FD_passenger carriage.png",
+    "character": "",
+    "nextText": 51
+  },
+  {
+    "id": 51,
+    "speaker": "帶隊官",
+    "text": "「步三連的，行李拿好，準備下車！」",
+    "image": "img/FD_passenger carriage.png",
+    "character": "img/Leader.png",
+    "nextText": 52
+  },
+  {
+    "id": 52,
+    "speaker": "",
+    "text": "帶隊官的聲音撕裂了車廂內的死寂；所有人像觸電一樣彈起來，手忙腳亂地抓起地上的包包。",
+    "image": "img/FD_passenger carriage.png",
+    "character": "",
+    "nextText": 53
+  },
+  {
+    "id": 53,
+    "speaker": "",
+    "text": "車門打開的瞬間，一股與車廂內完全不匹配的氣流迎面而來。",
+    "image": "img/FD_station.png",
+    "character": "",
+    "nextText": 54
+  },
+  {
+    "id": 54,
+    "speaker": "帶隊官",
+    "text": "「這邊集合列隊」",
+    "image": "img/FD_station.png",
+    "character": "img/Leader.png",
+    "nextText": 55
+  },
+  {
+    "id": 55,
+    "speaker": "",
+    "text": "帶隊官以不小的音量說到。",
+    "image": "img/FD_station.png",
+    "character": "",
+    "nextText": 56
+  },
+  {
+    "id": 56,
+    "speaker": "",
+    "text": "車站出口外面，沒有計程車，也沒有接送的家人。",
+    "image": "img/FD_station.png",
+    "character": "",
+    "nextText": 57
+  },
+  {
+    "id": 57,
+    "speaker": "",
+    "text": "只有一整排發動中、排氣管正冒著熱氣的灰色遊覽車。",
+    "image": "img/Yilan_station.png",
+    "character": "",
+    "nextText": 58
+  },
+  {
+    "id": 58,
+    "speaker": "帶隊官",
+    "text": "「一排四個，上去位置坐滿！」",
+    "image": "img/Yilan_station.png",
+    "character": "img/Leader.png",
+    "nextText": 59
+  },
+  {
+    "id": 59,
+    "speaker": "",
+    "text": "我挑了一個靠窗的位置坐下。",
+    "image": "img/Yilan_station.png",
+    "character": "",
+    "nextText": 60
+  },
+  {
+    "id": 60,
+    "speaker": "馬邦德",
+    "text": "「歹勢」",
+    "image": "img/FD_bus.png",
+    "character": "img/All-Knowing.png",
+    "nextText": 61
+  },
+  {
+    "id": 61,
+    "speaker": "",
+    "text": "旁邊很快擠進來另一個滿頭大汗的同梯，他的肩膀撞到你。",
+    "image": "img/FD_bus.png",
+    "character": "",
+    "nextText": 62
+  },
+  {
+    "id": 62,
+    "speaker": "",
+    "text": "搖搖頭示意沒關係後。",
+    "image": "img/FD_bus.png",
+    "character": "",
+    "nextText": 63
+  },
+  {
+    "id": 63,
+    "speaker": "",
+    "text": "(噠噠噠 )\n",
+    "image": "img/FD_bus.png",
+    "character": "",
+    "nextText": 64
+  },
+  {
+    "id": 64,
+    "speaker": "",
+    "text": "(轟隆隆 )\n",
+    "image": "img/FD_bus.png",
+    "character": "",
+    "nextText": 65
+  },
+  {
+    "id": 65,
+    "speaker": "",
+    "text": "遊覽車就這樣沿著道路行駛了一段時間。",
+    "image": "img/FD_bus.png",
+    "character": "",
+    "nextText": 66
+  },
+  {
+    "id": 66,
+    "speaker": "",
+    "text": "也聽了不少首司機的愛歌。",
+    "image": "img/FD_bus.png",
+    "character": "",
+    "nextText": 67
+  },
+  {
+    "id": 67,
+    "speaker": "???",
+    "text": "「我應該在車底，不應該在車裡」",
+    "image": "img/FD_bus.png",
+    "character": "",
+    "nextText": 68
+  },
+  {
+    "id": 68,
+    "speaker": "馬邦德",
+    "text": "「這我現在想做的事」",
+    "image": "img/FD_bus.png",
+    "character": "img/All-Knowing.png",
+    "nextText": 69
+  },
+  {
+    "id": 69,
+    "speaker": "",
+    "text": "剛那個滿頭大汗的同梯以一種開玩笑的口吻說到。",
+    "image": "img/FD_bus.png",
+    "character": "",
+    "nextText": 70
+  },
+  {
+    "id": 70,
+    "speaker": "",
+    "text": "我忍不住笑了一聲，這句即時的黑色幽默，緩解了我一路積壓的緊張心情。",
+    "image": "img/FD_bus.png",
+    "character": "",
+    "nextText": 71
+  },
+  {
+    "id": 71,
+    "speaker": "",
+    "text": "…",
+    "image": "img/FD_bus.png",
+    "character": "",
+    "nextText": 72
+  },
+  {
+    "id": 72,
+    "speaker": "",
+    "text": "遊覽車緩慢煞停，引擎的轟鳴聲熄滅，車廂內的冷氣也跟著停了。",
+    "image": "img/FD_bus.png",
+    "character": "",
+    "nextText": 73
+  },
+  {
+    "id": 73,
+    "speaker": "帶隊官",
+    "text": "「各位役男，行李拿好，下車！」",
+    "image": "img/FD_bus.png",
+    "character": "img/Leader.png",
+    "nextText": 74
+  },
+  {
+    "id": 74,
+    "speaker": "帶隊官",
+    "text": "「動作快！每個人過來拿兵籍資料袋，拿完去旁邊排隊過安檢！」 ",
+    "image": "img/FD_camp.png",
+    "character": "img/Leader.png",
+    "nextText": 75
+  },
+  {
+    "id": 75,
+    "speaker": "",
+    "text": "安檢的氣氛像是在防走私。",
+    "image": "img/FD_camp.png",
+    "character": "",
+    "nextText": 76
+  },
+  {
+    "id": 76,
+    "speaker": "長官",
+    "text": "「包包全部打開！手機、行動電源、剪刀、打火機全部拿在手上！有帶違禁品自己開口，不要被我翻到！」 ",
+    "image": "img/FD_camp.png",
+    "character": "img/Leader.png",
+    "nextText": 77
+  },
+  {
+    "id": 77,
+    "speaker": "支援阿姨",
+    "text": "「你檢查完了嗎」",
+    "image": "img/FD_camp.png",
+    "character": "img/staff.png",
+    "nextText": 78
+  },
+  {
+    "id": 78,
+    "speaker": "主角",
+    "text": "「阿.....好..好了」",
+    "image": "img/FD_camp.png",
+    "character": "img/LN_CH2.png",
+    "nextText": 79
+  },
+  {
+    "id": 79,
+    "speaker": "支援阿姨",
+    "text": "「那可以去那邊了」",
+    "image": "img/FD_camp.png",
+    "character": "img/staff.png",
+    "nextText": 80
+  },
+  {
+    "id": 80,
+    "speaker": "",
+    "text": "他指了指一個像是活動中心的建築。",
+    "image": "img/FD_camp.png",
+    "character": "",
+    "nextText": 81
+  },
+  {
+    "id": 81,
+    "speaker": "",
+    "text": "在簡單的點頭示意後，我朝著他指的方向移動腳步。",
+    "image": "img/FD_camp.png",
+    "character": "",
+    "nextText": 82
+  },
+  {
+    "id": 82,
+    "speaker": "",
+    "text": "在門口就可以聽到原子筆沙沙沙的書寫聲。 ",
+    "image": "img/FD_Activity Center.png",
+    "character": "",
+    "nextText": 83
+  },
+  {
+    "id": 83,
+    "speaker": "",
+    "text": "進去之後就清一色都低著頭振筆疾書。",
+    "image": "img/FD_Activity Center.png",
+    "character": "",
+    "nextText": 84
+  },
+  {
+    "id": 84,
+    "speaker": "發紙筆的長官",
+    "text": "「這資料表你去找個空位寫」",
+    "image": "img/FD_Activity Center.png",
+    "character": "img/Leader.png",
+    "nextText": 85
+  },
+  {
+    "id": 85,
+    "speaker": "",
+    "text": "姓名、戶籍地址、有沒有前科、有沒有吸毒……像個機器人一樣重複填寫自己的隱私。",
+    "image": "img/FD_Activity Center.png",
+    "character": "",
+    "nextText": 86
+  },
+  {
+    "id": 86,
+    "speaker": "",
+    "text": "就在寫到「緊急聯絡人」時，台前突然換了一個穿著筆挺軍服、頭髮抓得一絲不苟的少尉，手裡還拿著一張彩色文宣。",
+    "image": "img/FD_Activity Center.png",
+    "character": "",
+    "nextText": 87
+  },
+  {
+    "id": 87,
+    "speaker": "宣傳官",
+    "text": "「各位弟兄，大家填資料辛苦了。利用這個時間，長官來跟大家分享一個翻轉人生的機會。」",
+    "image": "img/FD_Activity Center.png",
+    "character": "img/Battalion Commander.png",
+    "nextText": 88
+  },
+  {
+    "id": 88,
+    "speaker": "",
+    "text": "台上的招募員露出了標準的業務微笑，台下的新兵們抬了頭看了一眼便低下頭繼續填寫資料。",
+    "image": "img/FD_Activity Center.png",
+    "character": "",
+    "nextText": 89
+  },
+  {
+    "id": 89,
+    "speaker": "宣傳官",
+    "text": "「大家進來當兵，一個月領六千多塊，對不對？長官坦白跟你們說，這點錢連交女朋友都不夠。但是，如果你們今天轉服志願役，起薪就是四萬五以上。四年存下一百萬不是夢！而且我們營區福利好、可以定期外宿、上下班……」\n",
+    "image": "img/FD_Activity Center.png",
+    "character": "img/Battalion Commander.png",
+    "nextText": 90
+  },
+  {
+    "id": 90,
+    "speaker": "",
+    "text": "在聽完新兵招募的演說後資料也差不多填到一段落了",
+    "image": "img/FD_Activity Center.png",
+    "character": "",
+    "nextText": 91
+  },
+  {
+    "id": 91,
+    "speaker": "",
+    "text": "「來大家集合準備去食堂」",
+    "image": "img/FD_Activity Center.png",
+    "character": "",
+    "nextText": 92
+  },
+  {
+    "id": 92,
+    "speaker": "",
+    "text": "聽到不知哪傳來的聲音並跟著人群向外走去",
+    "image": "img/FD_Activity Center.png",
+    "character": "",
+    "nextText": 93
+  },
+  {
+    "id": 93,
+    "speaker": "班長",
+    "text": "「全連，成三個班！跟著排頭，齊步走！」",
+    "image": "img/camp_area.png",
+    "character": "img/Leader.png",
+    "nextText": 94
+  },
+  {
+    "id": 94,
+    "speaker": "",
+    "text": "四周傳來其他連隊整齊劃一的踏步聲，空氣中飄來一陣陣大鍋油煙的味道，肚子很不爭氣地叫了幾聲",
+    "image": "img/restaurant.png",
+    "character": "",
+    "nextText": 95
+  },
+  {
+    "id": 95,
+    "speaker": "",
+    "text": "…",
+    "image": "img/restaurant.png",
+    "character": "",
+    "nextText": 96
+  },
+  {
+    "id": 96,
+    "speaker": "",
+    "text": "…",
+    "image": "img/restaurant.png",
+    "character": "",
+    "nextText": 97
+  },
+  {
+    "id": 97,
+    "speaker": "",
+    "text": "吃完飯回到剛剛填資料的地方，時間才七點多，但營區外的天空已經徹底黑透了",
+    "image": "img/FD_Activity Center.png",
+    "character": "",
+    "nextText": 98
+  },
+  {
+    "id": 98,
+    "speaker": "班長",
+    "text": "「九點之前繼續把資料填完」",
+    "image": "img/FD_Activity Center.png",
+    "character": "img/Leader.png",
+    "nextText": 99
+  },
+  {
+    "id": 99,
+    "speaker": "",
+    "text": "班長把一疊疊夾帶著油墨味的白紙發了下來。",
+    "image": "img/FD_Activity Center.png",
+    "character": "",
+    "nextText": 100
+  },
+  {
+    "id": 100,
+    "speaker": "",
+    "text": "麻木地拿起桌上的原子筆，看著上面的題目：",
+    "image": "img/FD_Activity Center.png",
+    "character": "",
+    "nextText": 101
+  },
+  {
+    "id": 101,
+    "speaker": "",
+    "text": "「最近是否經常感到焦慮？」",
+    "image": "img/FD_Activity Center.png",
+    "character": "",
+    "nextText": 102
+  },
+  {
+    "id": 102,
+    "speaker": "",
+    "text": "「是否有自殘或傷害他人的想法？」",
+    "image": "img/FD_Activity Center.png",
+    "character": "",
+    "nextText": 103
+  },
+  {
+    "id": 103,
+    "speaker": "",
+    "text": "這裡的時間過得極慢，又極快，不知不覺就八點五十五分了",
+    "image": "img/FD_Activity Center.png",
+    "character": "",
+    "nextText": 104
+  },
+  {
+    "id": 104,
+    "speaker": "",
+    "text": "「所有人收拾桌面，準備回寢室！」",
+    "image": "img/FD_Activity Center.png",
+    "character": "",
+    "nextText": 105
+  },
+  {
+    "id": 105,
+    "speaker": "",
+    "text": "跟著不那麼整齊的隊伍回到寢室",
+    "image": "img/camp_area.png",
+    "character": "",
+    "nextText": 106
+  },
+  {
+    "id": 106,
+    "speaker": "班長",
+    "text": "「盥洗完回寢室，九點半準時熄燈」",
+    "image": "img/sleep.png",
+    "character": "img/Leader.png",
+    "nextText": 107
+  },
+  {
+    "id": 107,
+    "speaker": "",
+    "text": "跟著同梯利索的動作完成了簡單的睡前盥洗",
+    "image": "img/sleep.png",
+    "character": "",
+    "nextText": 108
+  },
+  {
+    "id": 108,
+    "speaker": "班長",
+    "text": "「床位就位！開窗戶、關電扇！熄燈！」",
+    "image": "img/sleep.png",
+    "character": "img/Leader.png",
+    "nextText": 109
+  },
+  {
+    "id": 109,
+    "speaker": "",
+    "text": "爬上上鋪，床板發出恐怖的「喀吱」聲",
+    "image": "img/sleep.png",
+    "character": "",
+    "nextText": 110
+  },
+  {
+    "id": 110,
+    "speaker": "",
+    "text": "四周一下子陷入漆黑，只剩外面走廊微弱的夜燈從窗戶斜射進來，在天花板上投下鐵欄桿的陰影",
+    "image": "img/sleep.png",
+    "character": "",
+    "nextText": 111
+  },
+  {
+    "id": 111,
+    "speaker": "",
+    "text": "躺在那個硬得像石頭一樣的枕頭上，身上蓋著薄薄的綠色單人被。天花板很低，彷彿離鼻尖只有幾十公分",
+    "image": "img/sleep.png",
+    "character": "",
+    "nextText": 112
+  },
+  {
+    "id": 112,
+    "speaker": "",
+    "text": "沒有手機可以滑、沒有音樂可以聽，只有集體的呼吸聲",
+    "image": "img/sleep.png",
+    "character": "",
+    "nextText": 113
+  },
+  {
+    "id": 113,
+    "speaker": "",
+    "text": "慢慢閉上眼睛，任由疲憊掌控主導權",
+    "image": "img/sleep.png",
+    "character": "",
+    "nextText": 114
+  },
+  {
+    "id": 114,
+    "speaker": "",
+    "text": "...",
+    "image": "img/sleep.png",
+    "character": "",
+    "nextText": 115
+  },
+  {
+    "id": 115,
+    "speaker": "",
+    "text": "逼——————！",
+    "image": "img/sleep.png",
+    "character": "",
+    "nextText": 116
+  },
+  {
+    "id": 116,
+    "speaker": "",
+    "text": "一陣刺耳得像要撕裂腦膜的金屬哨音，伴隨著走廊上鐵門被重重踹開的巨響，瞬間在漆黑的寢室裡炸開",
+    "image": "img/sleep.png",
+    "character": "",
+    "nextText": 117
+  },
+  {
+    "id": 117,
+    "speaker": "班長",
+    "text": "「起床！所有人三分鐘內集合完備！寢室熄燈，動作快！」",
+    "image": "img/sleep.png",
+    "character": "img/Leader.png",
+    "nextText": 118
+  },
+  {
+    "id": 118,
+    "speaker": "",
+    "text": "天花板上的日光燈啪地一聲全亮，刺得所有人睜不開眼",
+    "image": "img/sleep.png",
+    "character": "",
+    "nextText": 119
+  },
+  {
+    "id": 119,
+    "speaker": "",
+    "text": "四周全是幾十個光頭同時拉拉鍊、翻床板、找鞋子的聲音",
+    "image": "img/sleep.png",
+    "character": "",
+    "nextText": 120
+  },
+  {
+    "id": 120,
+    "speaker": "",
+    "text": "根本顧不上眼角還有眼屎，胡亂套上迷彩褲，跟著一群滿身汗臭與廉價爽身粉味的人潮衝向走廊",
+    "image": "img/sleep.png",
+    "character": "",
+    "nextText": 121
+  },
+  {
+    "id": 121,
+    "speaker": "",
+    "text": "踩著微涼的晨霧站在操場上時，東邊的天空才剛泛起一片病態的紫紅色",
+    "image": "img/camp_area.png",
+    "character": "",
+    "nextText": 122
+  },
+  {
+    "id": 122,
+    "speaker": "",
+    "text": "接下來的大半天，基本上是第一天的「升級修訂版」",
+    "image": "img/camp_area.png",
+    "character": "",
+    "nextText": 123
+  },
+  {
+    "id": 123,
+    "speaker": "",
+    "text": "下午的流程依然夾雜著填不完的補件資料、沒完沒了的點名，以及在烈日下一次次練習「立正、稍息」的微調",
+    "image": "img/camp_area.png",
+    "character": "",
+    "nextText": 124
+  },
+  {
+    "id": 124,
+    "speaker": "",
+    "text": "吃完依然難以言喻的晚餐，再次把所有服裝裝備清點完畢後，坐在床沿",
+    "image": "img/restaurant.png",
+    "character": "",
+    "nextText": 125
+  },
+  {
+    "id": 125,
+    "speaker": "",
+    "text": "等待著熄燈的口令",
+    "image": "img/sleep.png",
+    "character": "",
+    "nextText": 126
+  },
+  {
+    "id": 126,
+    "speaker": "",
+    "text": "但周圍少了幾分緊張的氣息",
+    "image": "img/sleep.png",
+    "character": "",
+    "nextText": 127
+  },
+  {
+    "id": 127,
+    "speaker": "",
+    "text": "躺回上鋪，聽著四周已經不再那麼僵硬的呼吸聲漸漸入眠",
+    "image": "img/sleep.png",
+    "character": "",
+    "nextText": 128
+  },
+  {
+    "id": 128,
+    "speaker": "",
+    "text": "逼——————！",
+    "image": "img/sleep.png",
+    "character": "",
+    "nextText": 129
+  },
+  {
+    "id": 129,
+    "speaker": "",
+    "text": "早上的哨音依然在 05:30 準時炸響。",
+    "image": "img/sleep.png",
+    "character": "",
+    "nextText": 130
+  },
+  {
+    "id": 130,
+    "speaker": "",
+    "text": "機械式地從上鋪彈起來、拉開被子、折成方塊",
+    "image": "img/sleep.png",
+    "character": "",
+    "nextText": 131
+  },
+  {
+    "id": 131,
+    "speaker": "",
+    "text": "穿鞋的時候，隱約聽到隔壁寢室有人低聲罵了一句：「幹，今天不是禮拜六嗎？」",
+    "image": "img/sleep.png",
+    "character": "",
+    "nextText": 132
+  },
+  {
+    "id": 132,
+    "speaker": "",
+    "text": "對啊，今天是禮拜六",
+    "image": "img/sleep.png",
+    "character": "",
+    "nextText": 133
+  },
+  {
+    "id": 133,
+    "speaker": "班長",
+    "text": "「今日行程，上午中山室保養裝備，下午環境大掃除」",
+    "image": "img/sleep.png",
+    "character": "img/Leader.png",
+    "nextText": 134
+  },
+  {
+    "id": 134,
+    "speaker": "",
+    "text": "心裡那最後一點點「會不會突然放假」的奇蹟徹底破滅了",
+    "image": "img/sleep.png",
+    "character": "",
+    "nextText": 135
+  },
+  {
+    "id": 135,
+    "speaker": "",
+    "text": "拿著一塊黑漆漆的布，在槍管上記起伏伏地塗抹",
+    "image": "img/camp_area.png",
+    "character": "",
+    "nextText": 136
+  },
+  {
+    "id": 136,
+    "speaker": "",
+    "text": "身邊的同梯們開始小聲交談：",
+    "image": "img/camp_area.png",
+    "character": "",
+    "nextText": 137
+  },
+  {
+    "id": 137,
+    "speaker": "同梯",
+    "text": "「你這週沒放假，你女友有吵嗎？」",
+    "image": "img/camp_area.png",
+    "character": "img/All-Knowing.png",
+    "nextText": 138
+  },
+  {
+    "id": 138,
+    "speaker": "同梯",
+    "text": "「吵啊，說我不回訊息，我能怎麼辦？手機一天才發三十分鐘。」",
+    "image": "img/camp_area.png",
+    "character": "img/muddleheaded.png",
+    "nextText": 139
+  },
+  {
+    "id": 139,
+    "speaker": "",
+    "text": "這種「與世隔絕」的焦慮感在週末被無限放大",
+    "image": "img/camp_area.png",
+    "character": "",
+    "nextText": 140
+  },
+  {
+    "id": 140,
+    "speaker": "",
+    "text": "跟著排頭被派去拔水溝蓋旁邊的雜草。",
+    "image": "img/camp_area.png",
+    "character": "",
+    "nextText": 141
+  },
+  {
+    "id": 141,
+    "speaker": "",
+    "text": "期間，又來了兩波國軍招募員",
+    "image": "img/camp_area.png",
+    "character": "",
+    "nextText": 142
+  },
+  {
+    "id": 142,
+    "speaker": "",
+    "text": "他們精神抖擺地走進中山室，播著炫目的宣傳影片，講著「加入迷彩，人生精彩」的順口溜 ，推銷著月薪四萬五與外宿福利 。",
+    "image": "img/FD_Activity Center.png",
+    "character": "",
+    "nextText": 143
+  },
+  {
+    "id": 143,
+    "speaker": "",
+    "text": "台下的新兵們因為連續幾天的體力消耗與無聊，眼神一個比一個空洞。招募員在台上賣力演講，底下的人只求他講慢一點，因為只要他在台上講話，大家就能繼續合法地坐在小板凳上發呆 。",
+    "image": "img/FD_Activity Center.png",
+    "character": "",
+    "nextText": 144
+  },
+  {
+    "id": 144,
+    "speaker": "",
+    "text": "晚上，全連被集合去莒光園地跟聽輔導長宣導。",
+    "image": "img/FD_Activity Center.png",
+    "character": "",
+    "nextText": 145
+  },
+  {
+    "id": 145,
+    "speaker": "",
+    "text": "當電視裡播放著昂揚的軍歌時，透過窗戶看著營區外面的省道。",
+    "image": "img/FD_Activity Center.png",
+    "character": "",
+    "nextText": 146
+  },
+  {
+    "id": 146,
+    "speaker": "",
+    "text": "好不容易到了發手機的時間。",
+    "image": "img/FD_Activity Center.png",
+    "character": "",
+    "nextText": 147
+  },
+  {
+    "id": 147,
+    "speaker": "",
+    "text": "周圍瞬間只剩下指尖敲擊螢幕的聲音，每個人都拼了命地在半小時內補完一整週的訊息",
+    "image": "img/FD_Activity Center.png",
+    "character": "",
+    "nextText": 148
+  },
+  {
+    "id": 148,
+    "speaker": "",
+    "text": "解開手機，跳出一堆朋友在外面喝酒、打卡、去海邊玩的照片。",
+    "image": "img/FD_Activity Center.png",
+    "character": "",
+    "nextText": 149
+  },
+  {
+    "id": 149,
+    "speaker": "",
+    "text": "回了幾條訊息，時間就到了。",
+    "image": "img/FD_Activity Center.png",
+    "character": "",
+    "nextText": 150
+  },
+  {
+    "id": 150,
+    "speaker": "班長",
+    "text": "手機收起來，準備上繳！」",
+    "image": "img/FD_Activity Center.png",
+    "character": "img/Leader.png",
+    "nextText": 151
+  },
+  {
+    "id": 151,
+    "speaker": "",
+    "text": "剛才那短短三十分鐘的螢幕光亮，沒有帶來救贖，反而像是一劑強效的毒藥，讓更清醒地意識到自己現在正被關在什麼地方。",
+    "image": "img/FD_Activity Center.png",
+    "character": "",
+    "nextText": 152
+  },
+  {
+    "id": 152,
+    "speaker": "",
+    "text": "週日的流程與週六如出一願，漫長、無聊、充滿了各種為了「找事給新兵做」而發明的掃地與填表。",
+    "image": "img/camp_area.png",
+    "character": "",
+    "nextText": 153
+  },
+  {
+    "id": 153,
+    "speaker": "",
+    "text": "到了週日晚上熄燈時，寢室裡的氣氛變得極度低迷。",
+    "image": "img/sleep.png",
+    "character": "",
+    "nextText": 154
+  },
+  {
+    "id": 154,
+    "speaker": "",
+    "text": "所有人都知道，這個沒有放假的週末結束了，明天一早，又是新一輪的跑步、基本教練與班長的吼叫。",
+    "image": "img/sleep.png",
+    "character": "",
+    "nextText": 155
+  },
+  {
+    "id": 155,
+    "speaker": "",
+    "text": "躺在上鋪，聽著身邊同梯傳來沉重的嘆息聲。",
+    "image": "img/sleep.png",
+    "character": "",
+    "nextText": 156
+  },
+  {
+    "id": 156,
+    "speaker": "",
+    "text": "摸了摸已經習慣的三分頭，看著天花板。",
+    "image": "img/sleep.png",
+    "character": "",
+    "nextText": 157
+  },
+  {
+    "id": 157,
+    "speaker": "",
+    "text": "不再像第一天那樣焦慮，也不再像第二天那樣震驚。",
+    "image": "img/sleep.png",
+    "character": "",
+    "nextText": 158
+  },
+  {
+    "id": 158,
+    "speaker": "",
+    "text": "第一週不能放假的絕望感過去後，營區生活進入了一種詭異的機械化模式",
+    "image": "img/camp_area.png",
+    "character": "",
+    "nextText": 159
+  },
+  {
+    "id": 159,
+    "speaker": "",
+    "text": "開始認得身邊的人了",
+    "image": "img/camp_area.png",
+    "character": "",
+    "nextText": 160
+  },
+  {
+    "id": 160,
+    "speaker": "",
+    "text": "誰是偷帶備用機被抓到差點害全連被肅殺的天兵",
+    "image": "img/camp_area.png",
+    "character": "",
+    "nextText": 161
+  },
+  {
+    "id": 161,
+    "speaker": "",
+    "text": "誰是到處跟人借錢的騙子",
+    "image": "img/camp_area.png",
+    "character": "",
+    "nextText": 162
+  },
+  {
+    "id": 162,
+    "speaker": "",
+    "text": "還有誰是每天搶著去打飯班只為了能多夾一塊「鋼鐵豬排」的怪咖",
+    "image": "img/camp_area.png",
+    "character": "",
+    "nextText": 163
+  },
+  {
+    "id": 163,
+    "speaker": "",
+    "text": "還記得有次剛公差搬完重物，滿頭大汗地走在走廊上剛好遇到長官面無表情地迎面走來",
+    "image": "img/camp_area.png",
+    "character": "",
+    "nextText": 164
+  },
+  {
+        "id": 164,
+        "speaker": "",
+        "text": "【請選擇你的行動】",
+        "image": "",
+        "character": "",
+        "options": [
+            {
+                "text": "A. 低頭裝作沒看到，快速飄過去。",
+                "nextText": 165
+            },
+            {
+                "text": "B. 主動向長官問好，禮貌地讓開道路。",
+                "nextText": 166
+            },
+            {
+                "text": "C. 眼神飄向窗外，假裝在看風景。",
+                "nextText": 167
+            }
+        ]
+    },
+    {
+        "id": 165,
+        "speaker": "長官",
+        "text": "「站住！你哪一班的？看到長官不會叫人是不是？過來！」連長停下腳步，冷冷地看著你 。接下來的十分鐘，你體驗到了什麼叫「態度不佳」的咆哮 。你只能微彎雙膝、90度鞠躬，連說了十幾次「報告連長我知道錯了」，才獲准離開 。",
+        "image": "img/camp_area.png",
+        "character": "img/Leader.png",
+        "nextText": 168
+    },
+    {
+        "id": 166,
+        "speaker": "",
+        "text": "「長官好！」這是軍中的無敵指令 。連長甚至連眼皮都沒抬一下，繼續滑著手機從你身邊擦肩而過 。平安過關。",
+        "image": "img/camp_area.png",
+        "character": "",
+        "nextText": 168
+    },
+    {
+        "id": 167,
+        "speaker": "長官",
+        "text": "「站住！你哪一班的？看到長官不會叫人是不是？過來！」連長停下腳步，冷冷地看著你 。接下來的十分鐘，你體驗到了什麼叫「態度不佳」的咆哮 。你只能微彎雙膝、90度鞠躬，連說了十幾次「報告連長我知道錯了」，才獲准離開 。",
+        "image": "img/camp_area.png",
+        "character": "img/Leader.png",
+        "nextText": 168
+    },
+    {
+    "id": 168,
+    "speaker": "",
+    "text": "每天的日常就是在烈日下坐板凳、發呆，以及無止盡的基本教練",
+    "image": "img/grass.png",
+    "character": "",
+    "nextText": 169
+  },
+  {
+    "id": 169,
+    "speaker": "",
+    "text": "不是在大草原上趴著練習機械訓練拆裝步槍 ，就是在毒辣的太陽下訓練 。",
+    "image": "img/grass.png",
+    "character": "",
+    "nextText": 170
+  },
+  {
+    "id": 170,
+    "speaker": "",
+    "text": "有時還會伴隨著班長的考驗",
+    "image": "img/grass.png",
+    "character": "",
+    "nextText": 171
+  },
+  {
+    "id": 171,
+    "speaker": "",
+    "text": "班長叫大家趴在滾燙的泥地上。",
+    "image": "img/grass.png",
+    "character": "",
+    "nextText": 172
+  },
+  {
+    "id": 172,
+    "speaker": "班長",
+    "text": "「今天進度落後！只要有人能背出『單兵注意事項』第三條，全班立刻去樹蔭下喝水休息！有沒有人要背？」",
+    "image": "img/grass.png",
+    "character": "img/Leader.png",
+    "nextText": 173
+  },
+  {
+        "id": 173,
+        "speaker": "",
+        "text": "【請選擇你的行動】",
+        "image": "",
+        "character": "",
+        "options": [
+            {
+                "text": "A. 舉手大聲背誦： 成為全班的救星！",
+                "nextText": 174
+            },
+            {
+                "text": "B. 裝死繼續趴著： 秉持著「軍中槍打出頭鳥」的原則，絕不開口。",
+                "nextText": 175
+            },
+            {
+                "text": "C. 故意背錯搞笑： 試圖緩和氣氛。",
+                "nextText": 176
+            }
+        ]
+    },
+    {
+        "id": 174,
+        "speaker": "",
+        "text": "你大聲背了出來，班長露出滿意的神情，宣布全班去樹蔭下休息。你獲得了全班同梯尊崇的眼神，甚至有人遞給你有冰塊的寶礦力。",
+        "image": "img/grass.png",
+        "character": "",
+        "nextText": 177
+    },
+    {
+        "id": 175,
+        "speaker": "",
+        "text": "大家在大太陽下足足趴了二十分鐘，直到隔壁班的天兵受不了中暑喊「報告」，班長才放大家休息。你的手肘多了一大塊瘀青 。",
+        "image": "img/grass.png",
+        "character": "",
+        "nextText": 177
+    },
+    {
+        "id": 176,
+        "speaker": "",
+        "text": "班長臉直接黑掉：「很好，很幽默是不是？全連開法術！伏地挺身預備！」你成功惹怒了班長，成為全連今晚的公敵 。",
+        "image": "img/grass.png",
+        "character": "",
+        "nextText": 177
+    },
+    {
+    "id": 177,
+    "speaker": "",
+    "text": "最恐怖的是「毒氣室」體驗 。",
+    "image": "img/poison gas room.png",
+    "character": "",
+    "nextText": 178
+  },
+  {
+    "id": 178,
+    "speaker": "",
+    "text": "六個人一組被趕進煙霧瀰漫的帳篷裡，在班長的命令下拔掉防毒面具 。",
+    "image": "img/poison gas room.png",
+    "character": "",
+    "nextText": 179
+  },
+  {
+    "id": 179,
+    "speaker": "",
+    "text": "那一瞬間，像是有人拿了一整桶芥末直接塞進的鼻腔與眼球 。",
+    "image": "img/poison gas room.png",
+    "character": "",
+    "nextText": 180
+  },
+  {
+    "id": 180,
+    "speaker": "",
+    "text": "跟同梯們涕淚橫流地從帳篷裡爬出來，在草地上像某種狂熱儀式一樣狼狽地繞圈跑，一邊咳嗽一邊鬼叫",
+    "image": "img/poison gas room.png",
+    "character": "",
+    "nextText": 181
+  },
+  {
+    "id": 181,
+    "speaker": "",
+    "text": "在經過多週的折磨後，終於迎來了鑑測的日子。",
+    "image": "",
+    "character": "",
+    "nextText": 182
+  },
+  {
+    "id": 182,
+    "speaker": "",
+    "text": "驗收成果的時刻到了，如果這場鑑測通過，不僅能證明自己是合格的步槍兵 ，下部隊還能拿到更高的薪水（含專業加給約增加 $11,130$ 台幣）",
+    "image": "img/exam.png",
+    "character": "",
+    "nextText": 183
+  },
+  {
+    "id": 183,
+    "speaker": "",
+    "text": "想到錢也想到第一周的往事",
+    "image": "img/FD_Activity Center.png",
+    "character": "",
+    "nextText": 184
+  },
+  {
+    "id": 184,
+    "speaker": "同梯",
+    "text": "在中山室寫資料的空檔，平時在連上話最多、長得很帥、很會講話的同梯湊了過來 。",
+    "image": "img/FD_Activity Center.png",
+    "character": "img/lier.png",
+    "nextText": 185
+  },
+  {
+    "id": 185,
+    "speaker": "同梯",
+    "text": "他壓低聲音，眼眶甚至有點泛紅：",
+    "image": "img/FD_Activity Center.png",
+    "character": "img/lier.png",
+    "nextText": 186
+  },
+  {
+    "id": 186,
+    "speaker": "同梯",
+    "text": "「兄弟，我真的沒辦法了……我女朋友把我所有積蓄拿去繳貸款，現在連我爸媽的笑心費都給不出來 。你能不能借我兩千塊？下週懇親放假我立刻還你，求你了。」",
+    "image": "img/FD_Activity Center.png",
+    "character": "img/lier.png",
+    "nextText": 187
+  },
+  {
+        "id": 187,
+        "speaker": "",
+        "text": "【請選擇你的行動】",
+        "image": "",
+        "character": "",
+        "options": [
+            {
+                "text": "A. 爽快借他： 「大家都是同梯，拿去吧。」",
+                "nextText": 188
+            },
+            {
+                "text": "B. 婉言拒絕： 「拍謝，我這次進來身上帶不到五百塊，真的沒錢。」",
+                "nextText": 189
+            },
+            {
+                "text": "C. 用軟性方式反推工作給他： 「我沒錢，但我等一下打飯班需要人幫忙洗大鍋，你去幫忙可以多拿個饅頭，加油！」",
+                "nextText": 190
+            }
+        ]
+    },
+    {
+        "id": 188,
+        "speaker": "",
+        "text": "下週放假你打開他的 IG，發現他限時動態全是在夜店開酒、遊山玩水的心得 。你那兩千塊就像丟進了大海，再也回不來了 。",
+        "image": "img/sleep.png",
+        "character": "",
+        "nextText": 191
+    },
+    {
+        "id": 189,
+        "speaker": "",
+        "text": "他嘆了口氣走開，轉頭去找另一個天兵借。你成功保住了財物，證明了「拒絕別人從來不是壞事」。",
+        "image": "img/sleep.png",
+        "character": "",
+        "nextText": 191
+    },
+    {
+        "id": 190,
+        "speaker": "",
+        "text": "他一臉錯愕地離開。你不僅沒花錢，還順便用軟性要求堵住了他的嘴 。",
+        "image": "img/sleep.png",
+        "character": "",
+        "nextText": 191
+    },
+    {
+    "id": 191,
+    "speaker": "",
+    "text": "穿戴好全副武裝，踏上了考場：",
+    "image": "img/exam.png",
+    "character": "",
+    "nextText": 192
+  },
+  {
+    "id": 192,
+    "speaker": "",
+    "text": "1. 三項體能測驗伏地挺身、平板撐體、以及三千公尺徒手跑步 。",
+    "image": "img/exam.png",
+    "character": "",
+    "nextText": 193
+  },
+  {
+    "id": 193,
+    "speaker": "",
+    "text": "肺像是要燒起來一樣，但在班長於終點線前的吼叫聲中，咬著牙硬是挺了過來",
+    "image": "img/exam.png",
+    "character": "",
+    "nextText": 194
+  },
+  {
+    "id": 194,
+    "speaker": "",
+    "text": "2. 機械訓練與射擊機械訓練：步槍的大部拆解與結合，在三十秒內憑手感完成",
+    "image": "img/exam.png",
+    "character": "",
+    "nextText": 195
+  },
+  {
+    "id": 195,
+    "speaker": "",
+    "text": "射擊時幸運的是，分到的那把槍沒有卡彈，靶紙上順利留下了足夠的彈孔 。",
+    "image": "img/exam.png",
+    "character": "",
+    "nextText": 196
+  },
+  {
+    "id": 196,
+    "speaker": "",
+    "text": "手榴彈投擲： 基本投擲順利越過標準線，野戰投擲也精準砸進了目標區 。",
+    "image": "img/exam.png",
+    "character": "",
+    "nextText": 197
+  },
+  {
+    "id": 197,
+    "speaker": "",
+    "text": "3. 野外宿營與野戰行軍揹著包含鋼盔、水壺與槍枝的重裝備，在漫長的行軍中一步一步邁進 。",
+    "image": "img/exam.png",
+    "character": "",
+    "nextText": 198
+  },
+  {
+    "id": 198,
+    "speaker": "",
+    "text": "腳底板的刺痛感已經麻木，只知道跟緊前一個人的屁股 。",
+    "image": "img/exam.png",
+    "character": "",
+    "nextText": 199
+  },
+  {
+    "id": 199,
+    "speaker": "",
+    "text": "夜晚，在野外搭帳篷宿營，聽著周圍的蟲鳴與同梯的鼾聲，疲憊得連話都說不出來 。",
+    "image": "img/exam.png",
+    "character": "",
+    "nextText": 200
+  },
+  {
+    "id": 200,
+    "speaker": "",
+    "text": "4. 壓軸：震撼教育臉上抹滿了黑綠相間的偽裝膏，在黑煙與爆破聲中向前匍匐 。",
+    "image": "img/exam.png",
+    "character": "",
+    "nextText": 201
+  },
+  {
+    "id": 201,
+    "speaker": "",
+    "text": "爬過長達數十公尺、滿是泥濘與尖刺的「低絆網」 ，手肘頂著石頭痛得讓人想飆罵 ；",
+    "image": "img/exam.png",
+    "character": "",
+    "nextText": 202
+  },
+  {
+    "id": 202,
+    "speaker": "",
+    "text": "接著爬上老舊搖晃的竹梯 、跳過壕溝，最後一路衝上山頂，對著虛構的敵軍大聲喊出心戰喊話 。",
+    "image": "img/exam.png",
+    "character": "",
+    "nextText": 203
+  },
+  {
+    "id": 203,
+    "speaker": "",
+    "text": "當最後一聲「殺——！」在山頂迴盪時，所有人癱倒在地，喘得像一條條曬乾的魚 。",
+    "image": "img/exam.png",
+    "character": "",
+    "nextText": 204
+  },
+  {
+    "id": 204,
+    "speaker": "",
+    "text": "幾天後，成績公佈欄貼了出來。找到了自己的名字，旁邊蓋著一個紅色的「合格」章 。",
+    "image": "img/exam.png",
+    "character": "",
+    "nextText": 205
+  },
+  {
+    "id": 205,
+    "speaker": "",
+    "text": "這意味著順利通過了這場為期數週的「集體磨鍊」，也確保了下階段薪資直接增加 11,130 元台幣的資格。",
+    "image": "img/exam.png",
+    "character": "",
+    "nextText": 206
+  },
+  {
+    "id": 206,
+    "speaker": "",
+    "text": "同梯的夥伴走過來，用力拍了拍肩膀",
+    "image": "img/exam.png",
+    "character": "",
+    "nextText": 207
+  },
+  {
+    "id": 207,
+    "speaker": "同梯",
+    "text": "「爽啦！沒被留下來！」",
+    "image": "img/exam.png",
+    "character": "img/All-Knowing.png",
+    "nextText": 208
+  },
+  {
+    "id": 208,
+    "speaker": "",
+    "text": "摸了摸已經稍微長出一點點毛髮的頭皮，看著自己佈滿刮痕的手掌。",
+    "image": "img/exam.png",
+    "character": "",
+    "nextText": 209
+  },
+  {
+    "id": 209,
+    "speaker": "",
+    "text": "幾週前那個在大廳裡因為尿急醒來、對未來充滿徬徨的自己，好像已經是很久以前的事了。",
+    "image": "img/exam.png",
+    "character": "",
+    "nextText": 210
+  },
+  {
+    "id": 210,
+    "speaker": "",
+    "text": "收拾好黃埔包，準備抽籤迎接下部隊的二階段單位 。",
+    "image": "img/exam.png",
+    "character": "",
+    "nextText": 211
+  },
+  {
+    "id": 211,
+    "speaker": "",
+    "text": "知道這地方依然很爛、很荒謬，但至少，活過來了。",
+    "image": "img/exam.png",
+    "character": "",
+    "nextText": 212
+  },
+  {
+    "id": 212,
+    "speaker": "",
+    "text": "感謝遊玩",
+    "image": "img/end.png",
+    "character": ""
+  }
+]

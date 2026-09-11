@@ -314,13 +314,13 @@ function onResults(results) {
             drawConnectors(ui.ctx, results.poseLandmarks, POSE_CONNECTIONS, { color: '#00FF00', lineWidth: 3 });
             drawLandmarks(ui.ctx, results.poseLandmarks, { color: '#FF4444', lineWidth: 2, radius: 4 });
         }
-        // 配合大兵狂想曲：在預備畫面中顯示骨架
+        // 配合模擬軍旅：在預備畫面中顯示骨架
         if (window.RhythmGame && window.RhythmGame.isPreview) {
             drawConnectors(ui.ctx, results.poseLandmarks, POSE_CONNECTIONS, { color: '#4ade80', lineWidth: 3 }); // 綠色骨架
             drawLandmarks(ui.ctx, results.poseLandmarks, { color: '#ffffff', lineWidth: 2, radius: 4 });
         }
 
-        // 配合大兵狂想曲：正式遊戲畫面的骨架 (依照要求先註解掉)
+        // 配合模擬軍旅：正式遊戲畫面的骨架 (依照要求先註解掉)
         /*
         if (window.RhythmGame && window.RhythmGame.isActive) {
             drawConnectors(ui.ctx, results.poseLandmarks, POSE_CONNECTIONS, { color: '#facc15', lineWidth: 3 });
@@ -342,12 +342,12 @@ function onResults(results) {
                 analyzeExercise(results.poseLandmarks, ex.type);
             }
         }
-        // 只有非大兵狂想曲模式才顯示普通的訓練 HUD
+        // 只有非模擬軍旅模式才顯示普通的訓練 HUD
         if (!window.RhythmGame || (!window.RhythmGame.isPreview && !window.RhythmGame.isActive)) {
             drawHUD(w, h, ex.targetReps);
         }
 
-        // 新增：將骨架資料與 Canvas Context 傳遞給大兵狂想曲引擎
+        // 新增：將骨架資料與 Canvas Context 傳遞給模擬軍旅引擎
         if (window.RhythmGame && (window.RhythmGame.isActive || window.RhythmGame.isPreview)) {
             window.RhythmGame.processPose(results.poseLandmarks, ui.ctx);
         }
