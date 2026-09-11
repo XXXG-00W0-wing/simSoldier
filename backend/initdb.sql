@@ -4,8 +4,8 @@ CREATE TABLE IF NOT EXISTS roles (
   name VARCHAR(255) UNIQUE NOT NULL
 );
 
-INSERT INTO roles (id, name) VALUES (1, '準備入營') ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name;
-INSERT INTO roles (id, name) VALUES (2, '正在入營') ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name;
+INSERT INTO roles (id, name) VALUES (1, '行前準備') ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name;
+INSERT INTO roles (id, name) VALUES (2, '役男入營') ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name;
 INSERT INTO roles (id, name) VALUES (3, '延後入營') ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name;
 INSERT INTO roles (id, name) VALUES (4, 'admin') ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name;
 

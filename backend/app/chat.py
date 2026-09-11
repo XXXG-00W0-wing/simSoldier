@@ -44,7 +44,7 @@ def format_user_info(user_info) -> str:
     
     if hasattr(user_info, "username"):
         profile = getattr(user_info, "profile", None)
-        role_text = "準備入營"
+        role_text = "行前準備"
         
         if profile and hasattr(profile, "role_rel") and profile.role_rel:
             role_text = profile.role_rel.name

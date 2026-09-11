@@ -22,8 +22,8 @@ async def lifespan(app: FastAPI):
     db = database.SessionLocal()
     try:
         default_roles = {
-            1: "準備入營",
-            2: "正在入營",
+            1: "行前準備",
+            2: "役男入營",
             3: "延後入營",
             4: "admin"
         }
@@ -111,7 +111,7 @@ app = FastAPI(lifespan=lifespan)
 def build_user_response(user: models.User) -> schemas.UserResponse:
     profile = user.profile
     role_id = profile.role if (profile and profile.role) else 1
-    role_name = profile.role_rel.name if (profile and profile.role_rel) else "準備入營"
+    role_name = profile.role_rel.name if (profile and profile.role_rel) else "行前準備"
     return schemas.UserResponse(
         id=user.id,
         username=user.username,

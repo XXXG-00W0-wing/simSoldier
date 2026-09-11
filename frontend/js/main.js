@@ -35,7 +35,7 @@ async function init() {
         if (user) {
             if (!user.profile) {
                 console.warn('Auto-fixing missing user profile...');
-                user.profile = { name: "士兵", height: 175, weight: 70, role: 1, role_name: "準備入營", scenario: "preparing", date: null };
+                user.profile = { name: "士兵", height: 175, weight: 70, role: 1, role_name: "行前準備", scenario: "preparing", date: null };
             }
             state.isLoggedIn = true;
             state.userData = user.profile;
@@ -242,7 +242,7 @@ function setupEventListeners() {
             localStorage.setItem('simSoldier_userScenario', pendingScenario);
             renderSidebarNav(pendingScenario);
             features.initChatGreeting(); // 即時同步更新聊天室教官開場白
-            features.applyScenarioTaskProgression(pendingScenario); // 正在入營自動推進階段一與階段二任務
+            features.applyScenarioTaskProgression(pendingScenario); // 役男入營自動推進階段任務狀態處理
 
             // 2. 切換對應的預設分頁並立即關閉彈窗 (極速響應)
             const defaultTab = SCENARIO_CONFIG[pendingScenario]?.defaultTab || 'home';

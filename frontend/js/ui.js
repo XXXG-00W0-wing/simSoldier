@@ -207,11 +207,11 @@ export const dom = {
 export const SCENARIO_CONFIG = {
     preparing: {
         id: 'preparing',
-        title: '準備入營',
+        title: '行前準備',
         icon: 'fa-shield-halved',
         colorClass: 'text-emerald-400',
         badgeBg: 'bg-emerald-950/80 text-emerald-300 border-emerald-800',
-        guidanceTitle: '準備入營客製指南',
+        guidanceTitle: '行前準備客製指南',
         guidanceDesc: '系統已為您優先排程「戰情儀表板」、「入伍背包裝備清單」、「行政折抵與證件」與「新訓地點」！',
         guidanceText: '您好！即將踏入軍旅生涯，本系統已為您優先排程側邊欄。建議您第一步進入【戰情儀表板】查看總覽，或進入【入伍背包】確認必帶物品，並於【行政中心】查閱軍訓成績單折抵退伍日事宜！',
         defaultTab: 'home',
@@ -235,11 +235,11 @@ export const SCENARIO_CONFIG = {
     },
     enlisted: {
         id: 'enlisted',
-        title: '正在入營',
+        title: '役男入營',
         icon: 'fa-person-military-rifle',
         colorClass: 'text-amber-400',
         badgeBg: 'bg-amber-950/80 text-amber-300 border-amber-800',
-        guidanceTitle: '正在入營客製指南',
+        guidanceTitle: '役男入營客製指南',
         guidanceDesc: '系統已為您將「戰情儀表板」、「體能測驗」與「教官聊天室」設為營內優先焦點！',
         guidanceText: '勇士好！已為您將日常營內必備功能擺至側邊欄最頂端。操課與自由時間可隨時打開【體能測驗】查看進度，或透過【射擊口訣】複習單兵要領！',
         defaultTab: 'home',
@@ -373,23 +373,19 @@ export function renderSidebarNav(scenarioKey = 'preparing') {
         switchTab(state.activeTab);
     }
 
-    // 同步控制「注意事項」獨立區塊顯示 (僅準備入營與延緩入營顯示)
+    // 同步控制「注意事項」獨立區塊顯示 (在戰情儀表板顯示)
     updateNoticeVisibility(scenarioKey);
 }
 
 /**
  * 依據身分情境控制「注意事項」專區顯示狀態
- * 只有「準備入營」(preparing) 與「延緩入營」(deferred) 顯示
+ * 戰情儀表板全面顯示「徵兵與入營注意事項」
  * @param {string} scenarioKey - 身分情境
  */
 export function updateNoticeVisibility(scenarioKey = state.userScenario || 'preparing') {
     const sectionNotice = document.getElementById('section-notice') || dom.sectionNotice;
     if (!sectionNotice) return;
-    if (scenarioKey === 'preparing' || scenarioKey === 'deferred') {
-        sectionNotice.classList.remove('hidden');
-    } else {
-        sectionNotice.classList.add('hidden');
-    }
+    sectionNotice.classList.remove('hidden');
 }
 
 /**

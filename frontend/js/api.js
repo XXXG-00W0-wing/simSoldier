@@ -329,7 +329,9 @@ export const ROLE_ID_TO_SCENARIO = {
 };
 
 export const ROLE_NAME_TO_SCENARIO = {
+    '行前準備': 'preparing',
     '準備入營': 'preparing',
+    '役男入營': 'enlisted',
     '正在入營': 'enlisted',
     '延後入營': 'deferred',
     '延緩入營': 'deferred'
