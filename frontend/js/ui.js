@@ -4,6 +4,7 @@
  */
 
 import { state } from './state.js';
+import { bmi } from './utils.js';
 
 // DOM Elements Cache
 export const dom = {
@@ -199,7 +200,14 @@ export const dom = {
     btnReselectScenario: document.getElementById('btn-reselect-scenario'),
     btnConfirmScenario: document.getElementById('btn-confirm-scenario'),
     sidebarScenarioTag: document.getElementById('sidebar-scenario-tag'),
-    btnSidebarSwitchScenario: document.getElementById('btn-sidebar-switch-scenario')
+    btnSidebarSwitchScenario: document.getElementById('btn-sidebar-switch-scenario'),
+
+    // --- Exempt Modal Elements ---
+    modalExemptNotice: document.getElementById('modal-exempt-notice'),
+    btnCloseExemptModal: document.getElementById('btn-close-exempt-modal'),
+    btnConfirmExempt: document.getElementById('btn-confirm-exempt'),
+    exemptModalBmiVal: document.getElementById('exempt-modal-bmi-val'),
+    exemptModalReason: document.getElementById('exempt-modal-reason')
 };
 
 // --- Scenario Config & Dict ---
@@ -286,6 +294,34 @@ export const SCENARIO_CONFIG = {
                 title: '訓練與娛樂',
                 badge: '軍常識庫',
                 tabs: ['quiz', 'shooting', 'training', 'rhapsody']
+            }
+        ]
+    },
+    exempt: {
+        id: 'exempt',
+        title: '免役體驗',
+        icon: 'fa-dove',
+        colorClass: 'text-emerald-400',
+        badgeBg: 'bg-emerald-950/80 text-emerald-300 border-emerald-800',
+        guidanceTitle: '免役身分與模擬體驗指南',
+        guidanceDesc: '您已符合免役體位，無須服役，系統全功能皆開放自由模擬與體驗！',
+        guidanceText: '恭喜符合免役條件，無須服役！您仍可在此自由探索所有軍旅模擬、射擊口訣、天兵課堂與教官諮詢等模組，輕鬆體驗模擬大兵！',
+        defaultTab: 'home',
+        blocks: [
+            {
+                title: '模擬與遊戲',
+                badge: '自由體驗',
+                tabs: ['home', 'rhapsody', 'shooting', 'quiz']
+            },
+            {
+                title: '戰情與諮詢',
+                badge: '軍常識庫',
+                tabs: ['chat', 'training', 'docs']
+            },
+            {
+                title: '後勤與其他',
+                badge: '資訊查閱',
+                tabs: ['delay', 'locations', 'inventory']
             }
         ]
     }
@@ -389,10 +425,47 @@ export function updateNoticeVisibility(scenarioKey = state.userScenario || 'prep
 }
 
 /**
+ * 開啟免役體位提示 Modal
+ * @param {boolean} canClose - 是否允許自由關閉
+ */
+export function openExemptModal(canClose = false) {
+    if (!dom.modalExemptNotice) return;
+    dom.modalExemptNotice.classList.remove('hidden');
+
+    if (dom.exemptModalBmiVal && state.userData) {
+        const bmiVal = bmi(state.userData.height, state.userData.weight);
+        dom.exemptModalBmiVal.textContent = `BMI ${bmiVal || '--'}`;
+    }
+    if (dom.exemptModalReason && state.serviceStatus) {
+        dom.exemptModalReason.textContent = state.serviceStatus.reason || 'BMI符合免役標準';
+    }
+
+    if (dom.btnCloseExemptModal) {
+        if (canClose) {
+            dom.btnCloseExemptModal.classList.remove('hidden');
+        } else {
+            dom.btnCloseExemptModal.classList.add('hidden');
+        }
+    }
+}
+
+export function closeExemptModal() {
+    if (dom.modalExemptNotice) {
+        dom.modalExemptNotice.classList.add('hidden');
+    }
+}
+
+/**
  * 開啟情境分流 Modal
  * @param {boolean} canClose - 是否允許自由關閉 (已選取過時為 true)
  */
 export function openScenarioModal(canClose = false) {
+    // 若判定為免役體位，直接導向免役提示彈窗，不給予選擇服役情境身分
+    if (state.serviceStatus?.type?.includes('免役')) {
+        openExemptModal(canClose);
+        return;
+    }
+
     if (!dom.modalScenarioSelect) return;
     dom.modalScenarioSelect.classList.remove('hidden');
 

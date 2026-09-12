@@ -5,7 +5,7 @@
 
 import { api } from './api.js';
 import { state, INITIAL_BACKPACK } from './state.js';
-import { dom, switchTab, renderSidebarNav, openScenarioModal, closeScenarioModal, SCENARIO_CONFIG, updateNoticeVisibility } from './ui.js';
+import { dom, switchTab, renderSidebarNav, openScenarioModal, closeScenarioModal, openExemptModal, closeExemptModal, SCENARIO_CONFIG, updateNoticeVisibility } from './ui.js';
 import { determineServiceType, bmi } from './utils.js';
 import * as game from './game.js';
 import * as features from './features.js';
@@ -93,21 +93,36 @@ async function init() {
         }
 
         // Scenario Triage & Dynamic Sidebar Navigation Initialization
+        const isExempt = state.serviceStatus?.type?.includes('免役');
         const isJustRegistered = sessionStorage.getItem('simSoldier_justRegistered') === 'true';
-        if (isJustRegistered) {
-            sessionStorage.removeItem('simSoldier_justRegistered');
-            state.userScenario = 'preparing';
-            renderSidebarNav('preparing');
-            openScenarioModal(false); // 註冊完成後立即彈出「選擇您的服役情境身分」
-        } else {
-            const initialScenario = state.userScenario || localStorage.getItem('simSoldier_userScenario') || 'preparing';
-            state.userScenario = initialScenario;
-            localStorage.setItem('simSoldier_userScenario', initialScenario);
-            renderSidebarNav(initialScenario);
 
-            // If user scenario was not set previously, prompt modal
-            if (!user || !user.role_name) {
-                openScenarioModal(false);
+        if (isExempt) {
+            state.userScenario = 'exempt';
+            localStorage.setItem('simSoldier_userScenario', 'exempt');
+            renderSidebarNav('exempt');
+
+            // 若為免役體位，不給予選擇服役情境身分，直接跳出免役提示彈窗
+            if (isJustRegistered || !user || !user.role_name || localStorage.getItem('simSoldier_exemptNoticed') !== 'true') {
+                if (isJustRegistered) sessionStorage.removeItem('simSoldier_justRegistered');
+                localStorage.setItem('simSoldier_exemptNoticed', 'true');
+                openExemptModal(false);
+            }
+        } else {
+            if (isJustRegistered) {
+                sessionStorage.removeItem('simSoldier_justRegistered');
+                state.userScenario = 'preparing';
+                renderSidebarNav('preparing');
+                openScenarioModal(false); // 註冊完成後立即彈出「選擇您的服役情境身分」
+            } else {
+                const initialScenario = state.userScenario || localStorage.getItem('simSoldier_userScenario') || 'preparing';
+                state.userScenario = initialScenario;
+                localStorage.setItem('simSoldier_userScenario', initialScenario);
+                renderSidebarNav(initialScenario);
+
+                // If user scenario was not set previously, prompt modal
+                if (!user || !user.role_name) {
+                    openScenarioModal(false);
+                }
             }
         }
 
@@ -150,7 +165,7 @@ function updateUIForUser() {
 
     // Countdown / Exempt Logic
     if (dom.countdownContentGuest) dom.countdownContentGuest.classList.add('hidden');
-    if (state.serviceStatus.type === '免役') {
+    if (state.serviceStatus?.type?.includes('免役')) {
         if (dom.countdownContentUser) dom.countdownContentUser.classList.add('hidden');
         if (dom.countdownContentExempt) dom.countdownContentExempt.classList.remove('hidden');
     } else {
@@ -275,26 +290,56 @@ function setupEventListeners() {
         });
     }
 
-    // Close Modal Button
+    // Close Scenario Modal Button
     if (dom.btnCloseScenarioModal) {
         dom.btnCloseScenarioModal.addEventListener('click', closeScenarioModal);
     }
+    if (dom.modalScenarioSelect) {
+        dom.modalScenarioSelect.addEventListener('click', (e) => {
+            if (e.target === dom.modalScenarioSelect && dom.btnCloseScenarioModal && !dom.btnCloseScenarioModal.classList.contains('hidden')) {
+                closeScenarioModal();
+            }
+        });
+    }
+
+    // Exempt Notice Modal
+    if (dom.btnConfirmExempt) {
+        dom.btnConfirmExempt.addEventListener('click', () => {
+            state.userScenario = 'exempt';
+            localStorage.setItem('simSoldier_userScenario', 'exempt');
+            renderSidebarNav('exempt');
+            features.initChatGreeting();
+            switchTab('home');
+            closeExemptModal();
+        });
+    }
+    if (dom.btnCloseExemptModal) {
+        dom.btnCloseExemptModal.addEventListener('click', closeExemptModal);
+    }
 
     // Scenario Switch Triggers
+    const handleScenarioSwitch = () => {
+        if (state.serviceStatus?.type?.includes('免役')) {
+            openExemptModal(true);
+        } else {
+            openScenarioModal(true);
+        }
+    };
+
     if (dom.btnSidebarSwitchScenario) {
-        dom.btnSidebarSwitchScenario.addEventListener('click', () => openScenarioModal(true));
+        dom.btnSidebarSwitchScenario.addEventListener('click', handleScenarioSwitch);
     }
     if (dom.btnSettingsScenarioSwitch) {
         dom.btnSettingsScenarioSwitch.addEventListener('click', () => {
             if (dom.settingsMenuSidebar) dom.settingsMenuSidebar.classList.add('hidden');
-            openScenarioModal(true);
+            handleScenarioSwitch();
         });
     }
     if (dom.btnScenarioSwitchNew) {
         dom.btnScenarioSwitchNew.addEventListener('click', () => {
             const menu = document.getElementById('settings-menu-new');
             if (menu) menu.classList.add('hidden');
-            openScenarioModal(true);
+            handleScenarioSwitch();
         });
     }
 
@@ -654,6 +699,22 @@ async function handleOnboardingSubmit() {
 
         updateUIForUser();
         dom.modalOnboarding.classList.add('hidden');
+
+        // 若資料更新後判定為免役體位，即時切換至免役體驗並彈出免役提示
+        const isExempt = state.serviceStatus?.type?.includes('免役');
+        if (isExempt) {
+            state.userScenario = 'exempt';
+            localStorage.setItem('simSoldier_userScenario', 'exempt');
+            renderSidebarNav('exempt');
+            features.initChatGreeting();
+            openExemptModal(true);
+        } else if (state.userScenario === 'exempt') {
+            state.userScenario = 'preparing';
+            localStorage.setItem('simSoldier_userScenario', 'preparing');
+            renderSidebarNav('preparing');
+            features.initChatGreeting();
+            openScenarioModal(true);
+        }
 
     } catch (error) {
         console.error(error);

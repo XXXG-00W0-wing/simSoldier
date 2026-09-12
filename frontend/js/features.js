@@ -476,7 +476,11 @@ export function initChatGreeting() {
     const scenario = state.userScenario || 'preparing';
     let greeting = "";
 
-    if (scenario === 'enlisted') {
+    const isExempt = state.serviceStatus?.type?.includes('免役') || scenario === 'exempt';
+
+    if (isExempt) {
+        greeting = `恭喜！${name}，經判定您符合免役標準，無須入營服役！在「模擬大兵」平台中，您仍可自由體驗軍旅生涯、射擊口訣、天兵課堂與各項互動功能，有任何役政法規或疑問，也隨時可以向教官發問！`;
+    } else if (scenario === 'enlisted') {
         greeting = `注意！${name}，現役在營期間請保持良好軍紀與作息！操課遇到瓶頸、射擊口訣要領、每日訓練或軍人權益申訴，有任何問題隨時向教官提問！`;
     } else if (scenario === 'deferred') {
         greeting = `您好！${name}，目前系統已為您優先排程「延役專區」。若對延期徵集申請條件、應備證明文件、體位複檢或停役法規有疑問，歡迎隨時在此諮詢！`;

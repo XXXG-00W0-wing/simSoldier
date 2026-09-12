@@ -52,7 +52,7 @@
         <div
             class="bg-gradient-to-r from-stone-950 via-green-950 to-stone-950 p-5 text-center border-b border-stone-800 relative">
             <button id="btn-close-scenario-modal"
-                class="absolute right-4 top-4 text-stone-400 hover:text-white transition-colors hidden" title="關閉">
+                class="absolute right-4 top-4 text-stone-400 hover:text-white transition-colors hidden cursor-pointer p-2 z-20" title="關閉">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
             <div
@@ -199,6 +199,72 @@
                         <i class="fa-solid fa-arrow-right text-xs"></i>
                     </button>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Exempt Notice Modal (免役體位提示彈窗) -->
+<div id="modal-exempt-notice"
+    class="fixed inset-0 z-[70] bg-black/90 flex items-center justify-center p-4 font-mono backdrop-blur-md hidden transition-all duration-300">
+    <div
+        class="max-w-xl w-full bg-stone-900 rounded-2xl border-2 border-emerald-600/80 shadow-[0_0_50px_rgba(16,185,129,0.2)] overflow-hidden flex flex-col animate-fade-in relative">
+        
+        <!-- Top Accent Bar -->
+        <div class="h-1.5 bg-gradient-to-r from-emerald-600 via-green-400 to-emerald-600"></div>
+
+        <!-- Close Button (已選取過時或允許關閉時顯示) -->
+        <button id="btn-close-exempt-modal"
+            class="absolute right-4 top-4 text-stone-400 hover:text-white transition-colors p-2 z-20 hidden" title="關閉">
+            <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+
+        <div class="p-8 text-center space-y-6">
+            <!-- Icon with Badge -->
+            <div class="relative inline-flex items-center justify-center">
+                <div class="w-24 h-24 rounded-full bg-emerald-950/80 border-2 border-emerald-500/50 flex items-center justify-center text-emerald-400 text-5xl shadow-[0_0_30px_rgba(16,185,129,0.35)] animate-pulse">
+                    <i class="fa-solid fa-dove"></i>
+                </div>
+                <div class="absolute -bottom-2 bg-emerald-600 text-stone-950 font-bold text-[11px] px-3 py-0.5 rounded-full uppercase tracking-wider shadow">
+                    體位判定完成
+                </div>
+            </div>
+
+            <!-- Titles -->
+            <div class="space-y-2">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/60 border border-emerald-800 text-emerald-400 text-xs font-bold tracking-wider">
+                    <i class="fa-solid fa-circle-check"></i> 免役體位判定
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold text-white tracking-wide">
+                    恭喜符合免役條件，無須服役
+                </h2>
+                <p class="text-stone-300 text-sm md:text-base leading-relaxed max-w-md mx-auto">
+                    恭喜符合免役條件，無須服役，但仍可以體驗模擬大兵！
+                </p>
+            </div>
+
+            <!-- Information Card -->
+            <div class="bg-stone-950/90 rounded-xl p-4 border border-emerald-900/50 text-left space-y-3">
+                <div class="flex items-center gap-2.5 text-emerald-400 font-bold text-sm border-b border-stone-800 pb-2">
+                    <i class="fa-solid fa-circle-info text-base"></i>
+                    <span>免役身分與模擬體驗說明</span>
+                </div>
+                <p class="text-xs text-stone-300 leading-relaxed">
+                    因您已符合免役標準，系統將為您跳過「行前準備」與「役男入營」等服役情境選擇。您仍可自由暢玩「模擬大兵」的全套軍旅模擬、射擊口訣、天兵課堂、體能測驗與 AI 教官諮詢！
+                </p>
+                <div class="text-[11px] text-stone-400 flex items-center justify-between pt-1 border-t border-stone-800/60">
+                    <span>判定依據：<span id="exempt-modal-bmi-val" class="text-emerald-400 font-bold">BMI --</span> (<span id="exempt-modal-reason">BMI符合免役標準</span>)</span>
+                    <span class="text-stone-500 text-[10px]">*正式資格依主管機關體檢為準</span>
+                </div>
+            </div>
+
+            <!-- Action Button -->
+            <div>
+                <button id="btn-confirm-exempt"
+                    class="w-full bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-3.5 px-6 rounded-xl transition-all shadow-lg hover:shadow-emerald-900/40 flex items-center justify-center gap-2 text-base group cursor-pointer">
+                    <span>進入模擬大兵體驗系統</span>
+                    <i class="fa-solid fa-arrow-right text-sm group-hover:translate-x-1 transition-transform"></i>
+                </button>
             </div>
         </div>
     </div>
@@ -734,14 +800,14 @@
                                     </div>
 
                                     <div id="countdown-content-exempt"
-                                        class="hidden w-full h-64 bg-stone-950/50 rounded-xl flex flex-col items-center justify-center border border-green-900/50 relative overflow-hidden">
-                                        <div class="absolute inset-0 bg-green-900/10 animate-pulse"></div>
-                                        <i class="fa-solid fa-dove text-6xl text-green-600 mb-4 opacity-80"></i>
-                                        <div class="font-mono text-4xl text-green-500 font-bold tracking-widest z-10">
+                                        class="hidden w-full h-64 bg-stone-950/50 rounded-xl flex flex-col items-center justify-center border border-emerald-900/50 relative overflow-hidden">
+                                        <div class="absolute inset-0 bg-emerald-900/10 animate-pulse"></div>
+                                        <i class="fa-solid fa-dove text-6xl text-emerald-500 mb-3 opacity-90"></i>
+                                        <div class="font-mono text-4xl text-emerald-400 font-bold tracking-widest z-10">
                                             無需入伍</div>
-                                        <p class="text-green-700 mt-2 mb-6 z-10">恭喜！您已符合免役標準</p>
+                                        <p class="text-emerald-400/90 mt-2 mb-6 z-10 text-sm font-bold text-center px-4">恭喜符合免役條件，無須服役，但仍可以體驗模擬大兵！</p>
                                         <button id="btn-fake-countdown"
-                                            class="z-10 bg-stone-900 hover:bg-stone-800 border border-stone-700 px-6 py-2 rounded text-stone-300 transition-colors flex items-center gap-2">
+                                            class="z-10 bg-stone-900 hover:bg-stone-800 border border-stone-700 px-6 py-2 rounded text-stone-300 transition-colors flex items-center gap-2 cursor-pointer">
                                             <i class="fa-solid fa-eye"></i> 體驗入伍緊張感
                                         </button>
                                     </div>
@@ -1134,13 +1200,7 @@
                                             class="fa-solid fa-shield-halved"></i></span>
                                 </div>
                                 <p id="status-type" class="text-green-600 font-bold text-2xl mb-2">常備役</p>
-                                <p class="text-stone-400 text-sm mb-4">判定依據：<span id="status-reason">體位正常</span></p>
-
-                                <div class="bg-stone-800 p-3 rounded text-sm text-stone-300">
-                                    <p class="font-bold text-yellow-500 mb-1 flex items-center gap-1"><i
-                                            class="fa-solid fa-circle-exclamation text-[14px]"></i> 指示：</p>
-                                    <span id="status-instruction">鍛鍊體能，調整作息，準備入營</span>
-                                </div>
+                                <p class="text-stone-400 text-sm">判定依據：<span id="status-reason">體位正常</span></p>
                             </div>
 
                             <!-- Widget: Training Location -->
@@ -1746,7 +1806,6 @@
                                         <option value="all">全台新訓營區總覽</option>
                                         <optgroup label="陸軍">
                                             <option value="成功嶺 (陸軍)">成功嶺 (陸軍)</option>
-                                            <option value="成功嶺營區 (陸軍)">成功嶺營區 (陸軍)</option>
                                             <option value="金六結 (陸軍)">金六結 (陸軍)</option>
                                             <option value="斗煥坪 (陸軍)">斗煥坪 (陸軍)</option>
                                             <option value="關西營區 (陸軍)">關西營區 (陸軍)</option>
@@ -2157,35 +2216,6 @@
                                             </p>
                                             <div class="text-sm text-green-500 flex items-center gap-1">
                                                 <i class="fa-solid fa-train"></i> 竹北火車站轉搭計程車
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Card: 成功嶺 101旅 -->
-                                <div
-                                    class="bg-stone-800 rounded-lg overflow-hidden border border-stone-700 hover:border-green-500 transition-colors group">
-                                    <div class="flex justify-between items-center p-5 cursor-pointer hover:bg-stone-700/50 transition-colors"
-                                        onclick="toggleLocation(this)">
-                                        <h4 class="font-bold text-lg text-white">成功嶺營區 (陸軍)</h4>
-                                        <i
-                                            class="fa-solid fa-chevron-down text-stone-400 transition-transform duration-300"></i>
-                                    </div>
-                                    <div class="location-details hidden border-t border-stone-700 animate-fade-in">
-                                        <div class="p-5">
-                                            <div class="flex flex-wrap gap-2 mb-4">
-                                                <span
-                                                    class="text-xs bg-red-900/40 text-red-200 px-2 py-1 rounded">經典營區</span>
-                                                <span
-                                                    class="text-xs bg-stone-700 text-stone-300 px-2 py-1 rounded">步兵旅</span>
-                                                <span
-                                                    class="text-xs bg-red-900/40 text-red-200 px-2 py-1 rounded">台中烏日</span>
-                                            </div>
-                                            <p class="text-sm text-stone-400 leading-relaxed mb-4">
-                                                與104/302旅共用成功嶺營區，訓練場地與生活機能完整，是歷史悠久的新訓中心。
-                                            </p>
-                                            <div class="text-sm text-green-500 flex items-center gap-1">
-                                                <i class="fa-solid fa-train"></i> 高鐵台中站 / 台鐵成功站
                                             </div>
                                         </div>
                                     </div>
