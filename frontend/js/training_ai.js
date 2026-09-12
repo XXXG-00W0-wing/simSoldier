@@ -21,8 +21,8 @@ const EXERCISES = [
         key: 'pushups',
         name: '伏地挺身 (Push-ups)',
         targetReps: 10,
-        viewHint: '💡 側面朝向鏡頭，手臂與身體完整入鏡',
-        rules: ['偵測到人體，全身入鏡', '臂彎至胸接近地面', '完全撐起完成一次'],
+        viewHint: '💡 側面朝向鏡頭，手臂與上半身入鏡',
+        rules: ['偵測到手臂與軀幹', '手肘彎曲下壓', '完全推起完成一次'],
         type: 'pushup',
         guideImage: 'assets/images/training/push_up_guide.png'
     },
@@ -305,6 +305,7 @@ function onResults(results) {
     ui.ctx.save();
     ui.ctx.clearRect(0, 0, w, h);
 
+    // 水平鏡像繪製視訊背景與骨架
     if (!isVideoMode) { ui.ctx.translate(w, 0); ui.ctx.scale(-1, 1); }
     ui.ctx.drawImage(results.image, 0, 0, w, h);
 
@@ -319,41 +320,109 @@ function onResults(results) {
             drawConnectors(ui.ctx, results.poseLandmarks, POSE_CONNECTIONS, { color: '#4ade80', lineWidth: 3 }); // 綠色骨架
             drawLandmarks(ui.ctx, results.poseLandmarks, { color: '#ffffff', lineWidth: 2, radius: 4 });
         }
-
-        // 配合模擬軍旅：正式遊戲畫面的骨架 (依照要求先註解掉)
-        /*
-        if (window.RhythmGame && window.RhythmGame.isActive) {
-            drawConnectors(ui.ctx, results.poseLandmarks, POSE_CONNECTIONS, { color: '#facc15', lineWidth: 3 });
-            drawLandmarks(ui.ctx, results.poseLandmarks, { color: '#ffffff', lineWidth: 2, radius: 4 });
-        }
-        */
-
-        ui.ctx.restore(); ui.ctx.save();
-
-        const ex = currentExercise();
-        // 檢查是否仍在 3 秒倒數緩衝期
-        const elapsed = Date.now() - cameraStartTime;
-        if (elapsed < WARMUP_DELAY_MS) {
-            const remainingSec = Math.ceil((WARMUP_DELAY_MS - elapsed) / 1000);
-            updateFeedback(`請就位，${remainingSec} 秒後開始計數...`, 'text-yellow-400', 'bg-yellow-900/40');
-        } else {
-            // 超過 3 秒後才開始分析動作與計數
-            if (currentReps < ex.targetReps) {
-                analyzeExercise(results.poseLandmarks, ex.type);
-            }
-        }
-        // 只有非模擬軍旅模式才顯示普通的訓練 HUD
-        if (!window.RhythmGame || (!window.RhythmGame.isPreview && !window.RhythmGame.isActive)) {
-            drawHUD(w, h, ex.targetReps);
-        }
-
-        // 新增：將骨架資料與 Canvas Context 傳遞給模擬軍旅引擎
-        if (window.RhythmGame && (window.RhythmGame.isActive || window.RhythmGame.isPreview)) {
-            window.RhythmGame.processPose(results.poseLandmarks, ui.ctx);
-        }
-    } else {
-        ui.ctx.restore(); ui.ctx.save();
     }
+
+    // 恢復畫布正向座標系，以便正常繪製倒數與 HUD 文字
+    ui.ctx.restore();
+
+    // 確保收到第一個畫格時才開始倒數計時
+    if (!cameraStartTime) {
+        cameraStartTime = Date.now();
+    }
+
+    const ex = currentExercise();
+    const elapsed = Date.now() - cameraStartTime;
+
+    // 檢查是否仍在 3 秒倒數緩衝期
+    if (elapsed < WARMUP_DELAY_MS) {
+        const remainingSec = Math.ceil((WARMUP_DELAY_MS - elapsed) / 1000);
+        const secProgress = (elapsed % 1000) / 1000;
+        // 在鏡頭顯示處中央繪製 3、2、1 倒數
+        drawCountdown(w, h, `${remainingSec}`, '請就位', secProgress);
+        updateFeedback(`請就位，${remainingSec} 秒後開始計數...`, 'text-yellow-400', 'bg-yellow-900/40');
+    } else if (elapsed < WARMUP_DELAY_MS + 600) {
+        // 倒數結束瞬間短暫顯示「開始！」
+        drawCountdown(w, h, '開始！', '', 1);
+        updateFeedback('開始動作！', 'text-green-400', 'bg-green-900/30');
+    } else {
+        // 超過倒數時間後開始分析動作與計數
+        if (results.poseLandmarks && currentReps < ex.targetReps) {
+            analyzeExercise(results.poseLandmarks, ex.type);
+        }
+    }
+
+    // 只有非模擬軍旅模式才顯示普通的訓練 HUD
+    if (!window.RhythmGame || (!window.RhythmGame.isPreview && !window.RhythmGame.isActive)) {
+        drawHUD(w, h, ex.targetReps);
+    }
+
+    // 新增：將骨架資料與 Canvas Context 傳遞給模擬軍旅引擎
+    if (results.poseLandmarks && window.RhythmGame && (window.RhythmGame.isActive || window.RhythmGame.isPreview)) {
+        window.RhythmGame.processPose(results.poseLandmarks, ui.ctx);
+    }
+}
+
+// ── Countdown Overlay (鏡頭中央 3、2、1 倒數) ────────────────────────────────
+function drawCountdown(w, h, text, subtext = '請就位', progress = 0) {
+    const cx = w / 2, cy = h / 2;
+    const isNumber = !isNaN(Number(text));
+    const r = Math.min(w, h) * 0.18;
+
+    ui.ctx.save();
+
+    // 半透明深色圓形底板
+    ui.ctx.beginPath();
+    ui.ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ui.ctx.fillStyle = 'rgba(15, 23, 42, 0.78)';
+    ui.ctx.fill();
+
+    // 外環軌道底線
+    ui.ctx.lineWidth = Math.max(4, Math.round(r * 0.08));
+    ui.ctx.strokeStyle = 'rgba(255, 255, 255, 0.18)';
+    ui.ctx.stroke();
+
+    // 動態倒數光環
+    if (isNumber) {
+        ui.ctx.beginPath();
+        const startAngle = -Math.PI / 2;
+        const endAngle = startAngle + (1 - progress) * Math.PI * 2;
+        ui.ctx.arc(cx, cy, r, startAngle, endAngle);
+        ui.ctx.strokeStyle = '#facc15';
+        ui.ctx.shadowColor = 'rgba(250, 204, 21, 0.85)';
+        ui.ctx.shadowBlur = 15;
+        ui.ctx.stroke();
+    } else {
+        ui.ctx.beginPath();
+        ui.ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ui.ctx.strokeStyle = '#22c55e';
+        ui.ctx.shadowColor = 'rgba(34, 197, 94, 0.9)';
+        ui.ctx.shadowBlur = 20;
+        ui.ctx.stroke();
+    }
+
+    // 倒數主文字 (3, 2, 1 或 開始！)
+    ui.ctx.textAlign = 'center';
+    ui.ctx.textBaseline = 'middle';
+    ui.ctx.fillStyle = isNumber ? '#facc15' : '#22c55e';
+    ui.ctx.shadowColor = isNumber ? 'rgba(250, 204, 21, 0.9)' : 'rgba(34, 197, 94, 0.9)';
+    ui.ctx.shadowBlur = 15;
+
+    if (isNumber) {
+        ui.ctx.font = `900 ${Math.round(r * 1.05)}px sans-serif`;
+        ui.ctx.fillText(text, cx, subtext ? cy - r * 0.15 : cy);
+    } else {
+        ui.ctx.font = `900 ${Math.round(r * 0.55)}px sans-serif`;
+        ui.ctx.fillText(text, cx, cy);
+    }
+
+    // 說明文字 (例如 "請就位")
+    if (subtext) {
+        ui.ctx.shadowBlur = 0;
+        ui.ctx.font = `bold ${Math.round(r * 0.22)}px sans-serif`;
+        ui.ctx.fillStyle = '#f1f5f9';
+        ui.ctx.fillText(subtext, cx, cy + r * 0.52);
+    }
+
     ui.ctx.restore();
 }
 
@@ -482,44 +551,59 @@ function detectSquat(lm) {
 
 // ── Push-up (side view: elbow angle) ────────────────────────────────────────
 function detectPushup(lm) {
-    const lS = lm[11], lE = lm[13], lW = lm[15], lH = lm[23], lA = lm[27];
-    const rS = lm[12], rE = lm[14], rW = lm[16], rH = lm[24], rA = lm[28];
+    const lS = lm[11], lE = lm[13], lW = lm[15], lH = lm[23], lK = lm[25], lA = lm[27];
+    const rS = lm[12], rE = lm[14], rW = lm[16], rH = lm[24], rK = lm[26], rA = lm[28];
 
-    // 檢查側身主要關節點的置信度 (包含臀與踝)
-    const lOk = lS.visibility > 0.5 && lE.visibility > 0.5 && lW.visibility > 0.5 && lH.visibility > 0.4 && lA.visibility > 0.4;
-    const rOk = rS.visibility > 0.5 && rE.visibility > 0.5 && rW.visibility > 0.5 && rH.visibility > 0.4 && rA.visibility > 0.4;
+    // 檢查側身手臂主要關節點的置信度 (放寬門檻至 0.35；腳踝設為可選，不強制入鏡)
+    const lArmOk = lS.visibility > 0.35 && lE.visibility > 0.35 && lW.visibility > 0.35;
+    const rArmOk = rS.visibility > 0.35 && rE.visibility > 0.35 && rW.visibility > 0.35;
 
-    if (!lOk && !rOk) {
-        updateFeedback('請將側面全身（手、軀幹、腳踝）完整入鏡', 'text-yellow-400', 'bg-yellow-900/30');
+    if (!lArmOk && !rArmOk) {
+        updateFeedback('請將側面手臂與上半身入鏡', 'text-yellow-400', 'bg-yellow-900/30');
         return;
     }
     if (ui.rule1) ui.rule1.className = 'transition-colors text-green-400';
 
-    // 選擇可見度較高的一側
-    const useLeft = lOk && (!rOk || (lS.visibility + lE.visibility + lW.visibility) > (rS.visibility + rE.visibility + rW.visibility));
-    const [S, E, W, H, A] = useLeft ? [lS, lE, lW, lH, lA] : [rS, rE, rW, rH, rA];
+    // 選擇手臂置信度較高的一側
+    const lScore = lS.visibility + lE.visibility + lW.visibility + (lH.visibility || 0);
+    const rScore = rS.visibility + rE.visibility + rW.visibility + (rH.visibility || 0);
+    const useLeft = lArmOk && (!rArmOk || lScore >= rScore);
 
-    // 1. 計算軀幹（肩膀到臀部）與水平線的角度
-    // dx, dy 取絕對值計算與水平軸的傾角
-    const torsoDx = Math.abs(H.x - S.x);
-    const torsoDy = Math.abs(H.y - S.y);
-    const torsoAngleToGround = Math.atan2(torsoDy, torsoDx) * (180 / Math.PI); // 0°=完全水平, 90°=垂直站立
+    const [S, E, W, H, K, A] = useLeft
+        ? [lS, lE, lW, lH, lK, lA]
+        : [rS, rE, rW, rH, rK, rA];
 
-    // 2. 判斷身體是否為趴姿 (傾角通常小於 45°，放寬至 50° 避免相機俯視誤差)
-    const isHorizontal = torsoAngleToGround < 50;
+    // 1. 如果臀部可見，判斷軀幹是否大致呈俯臥水平
+    if (H && H.visibility > 0.3) {
+        const torsoDx = Math.abs(H.x - S.x);
+        const torsoDy = Math.abs(H.y - S.y);
+        const torsoAngleToGround = Math.atan2(torsoDy, torsoDx) * (180 / Math.PI); // 0°=完全水平, 90°=垂直站立
 
-    // 3. 檢查背部連線（肩-髖-踝）是否維持在直線上，避免站立彎腰
-    const bodyLineAngle = angle3(S, H, A);
-    const isBodyStraight = bodyLineAngle > 145 && bodyLineAngle < 200;
+        // 放寬趴姿角度判定 (小於 65° 均算水平趴姿，避免相機角度仰俯誤差)
+        if (torsoAngleToGround > 65) {
+            updateFeedback('請保持水平俯臥姿態', 'text-orange-400', 'bg-orange-900/30');
+            return;
+        }
 
-    if (!isHorizontal || !isBodyStraight) {
-        updateFeedback('請保持水平俯臥並打直身體', 'text-orange-400', 'bg-orange-900/30');
-        return;
+        // 2. 腳踝/膝蓋可選：若有照到則輔助判定身體直線，未照到則不強制 (可有可無)
+        let isBodyStraight = true;
+        if (A && A.visibility > 0.35) {
+            const bodyLineAngle = angle3(S, H, A);
+            isBodyStraight = bodyLineAngle > 125 && bodyLineAngle < 235;
+        } else if (K && K.visibility > 0.35) {
+            const bodyLineAngle = angle3(S, H, K);
+            isBodyStraight = bodyLineAngle > 120 && bodyLineAngle < 240;
+        }
+
+        if (!isBodyStraight) {
+            updateFeedback('請盡量打直身體', 'text-orange-400', 'bg-orange-900/30');
+            return;
+        }
     }
 
-    // 4. 通過水平驗證後，才判定手肘屈伸
+    // 3. 通過水平驗證後，判定手肘屈伸 (放寬條件：下壓手肘 < 100°，推起伸直 > 140°)
     const elbowAngle = angle3(S, E, W);
-    repStateMachine(elbowAngle < 85, elbowAngle > 155);
+    repStateMachine(elbowAngle < 100, elbowAngle > 140);
 }
 
 // ── Lying Leg Raise (side view: ankle Y rise above hip Y) ────────────────
@@ -689,10 +773,11 @@ function retryExercise() {
     resetExerciseState();
     loadExerciseUI(currentExIdx);
     cameraStartTime = Date.now(); // 重設 3 秒倒數
-    // stop video if playing
-    isVideoMode = false;
-    ui.video.pause(); ui.video.src = '';
-    ui.overlay.classList.remove('hidden');
+    if (isVideoMode) {
+        isVideoMode = false;
+        ui.video.pause(); ui.video.src = '';
+        ui.overlay.classList.remove('hidden');
+    }
 }
 
 // ── Advance to next exercise (no reload) ─────────────────────────────────────
@@ -792,6 +877,7 @@ function bindEvents() {
             if (camera) { camera.stop(); camera = null; }
             isVideoMode = false;
             cameraRunning = false;
+            cameraStartTime = 0;
             setCameraActive(false);
             ui.overlay.classList.remove('hidden');
             if (ui.ctx) ui.ctx.clearRect(0, 0, ui.canvas.width, ui.canvas.height);
@@ -808,7 +894,7 @@ function bindEvents() {
         try {
             await camera.start();
             cameraRunning = true;
-            cameraStartTime = Date.now();
+            cameraStartTime = 0; // 第一畫格進來時才開始倒數，避免啟動延遲吃掉倒數秒數
             setCameraActive(true);
         } catch (e) {
             console.error(e);
@@ -842,6 +928,7 @@ function bindEvents() {
                 currentExIdx = newIdx;
                 resetExerciseState();
                 loadExerciseUI(currentExIdx);
+                cameraStartTime = Date.now(); // 切換動作重新倒數 3 秒
                 // Also update the completion array if we manually switch exercises
                 // We'll clear the completed list to avoid sequence confusion, or just let them jump around
                 completedResults.length = 0;
