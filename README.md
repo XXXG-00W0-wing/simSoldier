@@ -1,4 +1,4 @@
-# 🎖️ 模擬大兵 SimSoldier
+# 模擬大兵 SimSoldier
 > **全方位役男入伍生存與智慧輔助戰情系統**  
 > *A Comprehensive Smart Guidance and Military Survival Simulation System for Conscripts.*
 
@@ -11,60 +11,60 @@
 
 ---
 
-## 📖 專案簡介
+## 專案簡介
 
 「**模擬大兵 SimSoldier**」是專為台灣役男量身打造的現代化軍旅輔助與生活適應平台。透過智慧化情境導引、AI 姿態視覺辨識、智慧問答教官與互動式軍旅模擬，打破新兵對於軍旅未知的焦慮與資訊斷層，從收到徵集令到光榮退伍，提供全程一站式數位輔助。
 
 ---
 
-## 🌟 核心功能特色
+## 核心功能特色
 
-### 1. 🧭 情境分流導引系統 (Scenario Triage System)
+### 1. 情境分流導引系統 (Scenario Triage System)
 針對役男不同兵役階段，提供客製化情境身分切換與專屬指引：
 - **行前準備**：優先推薦「入伍背包」、「新訓地點」與「行政中心」。
 - **役男入營**：優先推薦「戰情儀表板」、「體能測驗」與「教官聊天室」。
 - **延緩入營**：優先推薦「延役專區」、「體位標準」與「行政諮詢」。
 
-### 2. 📊 戰情儀表板 (Dashboard)
+### 2. 戰情儀表板 (Dashboard)
 - **巨型倒數計時器**：精準計算距離入營或離營剩餘天數。
 - **個人兵籍體位分析**：自動試算 BMI 並比對內政部最新常備役／替代役／免役體位標準。
 - **三階段軍旅旅程**：視覺化階段任務勾選（行前整備、軍事訓練期、部隊生活期）。
 
-### 3. 🏃 AI 體能測驗 (AI Fitness Training)
+### 3. AI 體能測驗 (AI Fitness Training)
 - 透過 **Google MediaPipe Pose** 進行即時人體骨架偵測與關節角度分析。
 - 支援 **徒手深蹲 (Squats)**、**伏地挺身 (Pushups)** 與 **仰臥起坐** 動作計數與標準姿勢檢驗。
 
-### 4. 🤖 智慧教官聊天室 (AI Drill Instructor Chat)
+### 4. 智慧教官聊天室 (AI Drill Instructor Chat)
 - 基於 **Google Gemini API** 搭配軍事規程 Prompt Engineering 與 **ChromaDB** 向量知識庫。
 - 支援口氣嚴厲的威嚴部隊模式與貼心諮詢模式，隨時解答役政法規、軍旅日常生活與心理輔導。
 
-### 5. 🗺️ 全台新訓營區地圖 (Interactive Camp Map)
+### 5. 全台新訓營區地圖 (Interactive Camp Map)
 - 整合 **Leaflet.js** 互動圖資，收錄成功嶺、金六結、斗煥坪、官田、龍泉等全台 14 個主要新訓中心。
 - 支援軍種篩選（陸軍、海軍、海軍陸戰隊），卡片標註交通指南、營區特色與生活機能。
 - 頂端營區下拉選單快速切換，雙向連動地圖並預留最大化可視操作範圍，一鍵直通 Google Maps 規劃路線。
 
-### 6. 🎮 模擬軍旅 (Military Life RPG)
+### 6. 模擬軍旅 (Military Life RPG)
 - 互動式文字冒險劇情分支小遊戲（Visual Novel Style）。
 - 體驗新訓第一天報到、剃頭、填寫身家調查、內務整頓到結束新訓經典情境。
 
-### 7. 🎒 入伍背包與後勤準備 (Inventory Checklist)
+### 7. 入伍背包與後勤準備 (Inventory Checklist)
 - 依重要性將入伍裝備分級分類（證件必備、生活日常、個人醫療、防護收納）。
 - 支援即時勾選儲存、進度百分比計算與一鍵重置清單。
 
-### 8. 📝 天兵課堂 (Military Knowledge Quiz)
+### 8. 天兵課堂 (Military Knowledge Quiz)
 - 隨機抽題測驗庫，題目涵蓋軍紀法規、軍銜識別、違禁品規範與部隊禮儀。
 - 即時評分、解析與答題數據紀錄。
 
-### 9. 🎯 射擊口訣模擬 (Shooting Drill Guide)
+### 9. 射擊口訣模擬 (Shooting Drill Guide)
 - 單兵步槍「托、抵、握、貼、瞄、停、扣、報」八大射擊要領教學。
 - 三點一線瞄準技巧視覺輔助。
 
-### 10. ⏳ 延役專區與行政中心 (Delay & Administrative Docs)
+### 10. 延役專區與行政中心 (Delay & Administrative Docs)
 - 在學緩徵、出國因事因病延期徵集資格與申辦流程指引。
 
 ---
 
-## 🛠️ 系統架構與技術棧
+## 系統架構與技術棧
 
 ```mermaid
 graph TD
@@ -97,7 +97,7 @@ graph TD
 
 ---
 
-## 📂 專案目錄結構
+## 專案目錄結構
 
 ```text
 simSoldier/
@@ -140,7 +140,7 @@ simSoldier/
 
 ---
 
-## 🚀 快速啟動指南
+## 快速啟動指南
 
 ### 使用 Docker Compose（推薦，一鍵運行）
 
@@ -170,8 +170,8 @@ simSoldier/
    ```
 
 5. **存取服務**：
-   - 🌐 **前端網站**：[http://localhost:8080](http://localhost:8080)（或 HTTPS [https://localhost:8443](https://localhost:8443)）
-   - ⚙️ **後端 API 文件**：[http://localhost:8000/docs](http://localhost:8000/docs)
+   - **前端網站**：[http://localhost:8080](http://localhost:8080)（或 HTTPS [https://localhost:8443](https://localhost:8443)）
+   - **後端 API 文件**：[http://localhost:8000/docs](http://localhost:8000/docs)
    - 預設測試帳號：`testuser` / 密碼：`password123`
 
 ---
@@ -180,7 +180,7 @@ simSoldier/
 
 ---
 
-## 📡 核心 API 端點概要
+## 核心 API 端點概要
 
 | 方法 | 路徑 | 說明 | 認證需求 |
 | :--- | :--- | :--- | :---: |
