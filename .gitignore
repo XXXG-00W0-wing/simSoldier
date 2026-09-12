@@ -15,6 +15,7 @@ venv/
 
 # Frontend/Node
 node_modules/
+frontend/vendor/
 .DS_Store
 
 api.md

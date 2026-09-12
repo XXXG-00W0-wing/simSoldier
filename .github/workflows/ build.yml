@@ -29,13 +29,13 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Initialize npm & Install Capacitor
+      - name: Initialize npm & Install Dependencies
         run: |
           # Create package.json if it doesn't exist (plain HTML project)
           if [ ! -f package.json ]; then
             npm init -y
           fi
-          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npm install @capacitor/core @capacitor/cli @capacitor/android @mediapipe/pose @mediapipe/camera_utils @mediapipe/control_utils @mediapipe/drawing_utils
 
       - name: Write Capacitor Config
         # webDir points to the frontend folder containing index.html
@@ -103,6 +103,21 @@ jobs:
                       force "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.24"
                       force "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.24"
                   }
+              }
+          }
+          GRADLE_EOF
+
+      - name: Bundle MediaPipe for APK
+        run: |
+          node scripts/bundle_mediapipe.js
+
+      - name: Configure AAPT Options for Models and WASM
+        run: |
+          cat >> android/app/build.gradle << 'GRADLE_EOF'
+
+          android {
+              aaptOptions {
+                  noCompress 'tflite', 'wasm', 'binarypb'
               }
           }
           GRADLE_EOF

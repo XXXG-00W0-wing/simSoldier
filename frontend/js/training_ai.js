@@ -265,8 +265,16 @@ async function prepareSystem() {
     if (poseTracker) return;
 
     updateFeedback('載入 AI 模型中...', 'text-blue-400', 'bg-blue-900/30');
+
+    // 優先檢查是否在 APK (Capacitor) 環境或已載入本機 vendor 資源
+    const isLocalBundle = !!document.querySelector('script[src*="vendor/mediapipe"]') ||
+                          (typeof window.Capacitor !== 'undefined' && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) ||
+                          (window.location.origin === 'http://localhost' && !window.location.port);
+    const mediapipePoseBase = window.__MEDIAPIPE_BASE_PATH__ ||
+                              (isLocalBundle ? 'vendor/mediapipe/pose/' : 'https://cdn.jsdelivr.net/npm/@mediapipe/pose/');
+
     poseTracker = new Pose({
-        locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
+        locateFile: file => `${mediapipePoseBase}${file}`
     });
     poseTracker.setOptions({
         modelComplexity: 0, // 改為 0 以大幅提升畫面偵數 (FPS)
