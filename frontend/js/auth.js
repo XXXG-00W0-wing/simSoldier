@@ -13,6 +13,10 @@ export function initAuthPage() {
         return;
     }
 
+    window.enterOfflineMode = function () {
+        api.enableOfflineMode();
+    };
+
     setupTabSwitcher();
     setupStepNavigation();
     setupDateInputs();

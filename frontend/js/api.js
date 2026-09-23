@@ -12,6 +12,116 @@
 const DB_KEY = 'simSoldier_users';
 const SESSION_KEY = 'simSoldier_token';
 const API_BASE_KEY = 'simSoldier_apiBase';
+const OFFLINE_KEY = 'simSoldier_offline_mode';
+const OFFLINE_PROFILE_KEY = 'simSoldier_offline_profile';
+
+/**
+ * 檢查是否處於離線模式
+ */
+function isOfflineMode() {
+    return localStorage.getItem(OFFLINE_KEY) === 'true';
+}
+
+/**
+ * 取得本地離線役男資料 (預設空資料或初值)
+ */
+function getOfflineProfile() {
+    try {
+        const data = localStorage.getItem(OFFLINE_PROFILE_KEY);
+        if (data) return JSON.parse(data);
+    } catch (_) {}
+    return {
+        name: '離線役男',
+        date: null,
+        birthday: '2004-01-01',
+        role: 1,
+        role_name: '行前準備',
+        scenario: 'preparing',
+        height: 175,
+        weight: 70,
+        gold: 0
+    };
+}
+
+/**
+ * 儲存本地離線役男資料
+ */
+function saveOfflineProfile(profile) {
+    try {
+        localStorage.setItem(OFFLINE_PROFILE_KEY, JSON.stringify(profile));
+    } catch (_) {}
+}
+
+/**
+ * 離線模式內建精選題庫
+ */
+const FALLBACK_QUIZZES = [
+    {
+        id: 1,
+        question: '進入軍營後，下列何者屬於通訊違禁品不得私自攜帶使用？',
+        options: {
+            A: '個人健保卡與身分證',
+            B: '非公發智慧型手機未安裝MDM管制軟體',
+            C: '個人常備慢性病藥物（附處方箋）',
+            D: '指甲剪（無刀刃附件）'
+        },
+        answer: 'B',
+        explanation: '未依國軍規定安裝軍用管制軟體（MDM）或具照相傳輸之電子設備屬通訊違禁品。',
+        source: '國軍保密安全規定'
+    },
+    {
+        id: 2,
+        question: '在部隊基本教練中，「立正」姿勢時兩腳腳跟靠攏，腳尖向外分開約幾度？',
+        options: {
+            A: '30 度',
+            B: '45 度',
+            C: '60 度',
+            D: '90 度'
+        },
+        answer: 'B',
+        explanation: '國軍徒手基本教練準則規定，立正時兩腳腳跟靠攏並齊，腳尖向外分開 45 度。',
+        source: '中華民國國軍徒手基本教練'
+    },
+    {
+        id: 3,
+        question: '下列何者為國軍士兵階級由低至高之正確排序？',
+        options: {
+            A: '二等兵 → 一等兵 → 上等兵',
+            B: '一等兵 → 二等兵 → 上等兵',
+            C: '下士 → 中士 → 上士',
+            D: '二等兵 → 上等兵 → 一等兵'
+        },
+        answer: 'A',
+        explanation: '國軍士兵編制由低至高依序為：二等兵、一等兵、上等兵。',
+        source: '陸海空軍軍官士官士兵任官條例'
+    },
+    {
+        id: 4,
+        question: '役男入營前接受徵兵檢查，體位判定區分為哪三種？',
+        options: {
+            A: '甲等體位、乙等體位、丙等體位',
+            B: '常備役體位、替代役體位、免役體位',
+            C: '現役體位、預備役體位、退役體位',
+            D: '戰鬥體位、後勤體位、免除體位'
+        },
+        answer: 'B',
+        explanation: '役男徵兵體檢判定體位區分為「常備役體位」、「替代役體位」及「免役體位」。',
+        source: '兵役法及體位區分標準'
+    },
+    {
+        id: 5,
+        question: '服義務役期間，下列哪一項行為符合軍紀與安全維護要求？',
+        options: {
+            A: '在營區內私自拍照打卡上傳社群媒體',
+            B: '休假在外恪遵軍紀，不酒後駕車、不涉足不妥當場所',
+            C: '未經醫務所核准私自分發藥物予同袍',
+            D: '逾假不歸或未依規定回報行蹤'
+        },
+        answer: 'B',
+        explanation: '休假恪遵軍紀安全規定，絕不酒駕、不吸毒、不涉足不良場所是維護軍譽與個人安全的基本要求。',
+        source: '國軍軍紀維護實施規定'
+    }
+];
 
 // ──────────────────────────────────────────────────────────────
 // Base URL Management
@@ -227,6 +337,7 @@ function showApiConfigDialog(errorMessage = '') {
             if (result.ok) {
                 setStatus(result.detail, 'success');
                 setApiBase(val);
+                api.disableOfflineMode();
                 // Brief pause to show success before closing
                 await new Promise(r => setTimeout(r, 600));
                 document.body.removeChild(overlay);
@@ -247,6 +358,7 @@ function showApiConfigDialog(errorMessage = '') {
         const doSkip = () => {
             document.body.removeChild(overlay);
             _dialogPromise = null;
+            api.enableOfflineMode();
             resolve(getApiBase());
         };
 
@@ -302,6 +414,7 @@ function isCapacitorApp() {
  * 在 Capacitor 環境中，如果沒有設定 Base URL，就立即提示使用者設定
  */
 async function ensureBackendConfigured() {
+    if (isOfflineMode()) return;
     if (isCapacitorApp() && !getApiBase()) {
         await showApiConfigDialog('首次使用 APK，請設定後端伺服器 URL');
     }
@@ -343,6 +456,52 @@ export const ROLE_NAME_TO_SCENARIO = {
 
 export const api = {
     /**
+     * 檢查是否處於離線模式
+     */
+    isOfflineMode() {
+        return isOfflineMode();
+    },
+
+    /**
+     * 啟動離線模式 (跳過登入直接進入系統)
+     */
+    enableOfflineMode() {
+        localStorage.setItem(OFFLINE_KEY, 'true');
+        localStorage.setItem(SESSION_KEY, 'offline_token');
+        if (!localStorage.getItem('simSoldier_username')) {
+            localStorage.setItem('simSoldier_username', '離線役男');
+        }
+        if (typeof window !== 'undefined') {
+            const path = window.location.pathname || '';
+            const href = window.location.href || '';
+            if (path.includes('login.html') || href.includes('login.html')) {
+                window.location.href = 'loadingbar.html?dest=index.html';
+            }
+        }
+    },
+
+    /**
+     * 關閉離線模式
+     */
+    disableOfflineMode() {
+        localStorage.removeItem(OFFLINE_KEY);
+    },
+
+    /**
+     * 取得目前離線役男資料
+     */
+    getOfflineProfile() {
+        return getOfflineProfile();
+    },
+
+    /**
+     * 儲存離線役男資料
+     */
+    saveOfflineProfile(profile) {
+        saveOfflineProfile(profile);
+    },
+
+    /**
      * 內部 Fetch 封裝 (包含 Timeout 處理 + 連線失敗 Dialog)
      * @param {string} url - 原始 URL (localhost:8000 會被替換)
      * @param {object} options - fetch options
@@ -350,6 +509,10 @@ export const api = {
      * @param {boolean} _retried - 內部使用，避免無限重試
      */
     async _fetch(url, options = {}, timeout = 15000, _retried = false) {
+        if (this.isOfflineMode()) {
+            throw new Error('離線模式中，伺服器 API 請求已略過');
+        }
+
         // APK 環境下，若尚未設定後端 URL，先提示使用者
         if (isCapacitorApp() && !getApiBase() && !_retried) {
             await showApiConfigDialog('請先設定後端伺服器 URL 才能使用此功能');
@@ -372,6 +535,9 @@ export const api = {
             // 若不攔截，後續 .json() 解析會得到 "Unexpected token '<'" 錯誤。
             const contentType = response.headers.get('content-type') || '';
             if (contentType.includes('text/html')) {
+                if (this.isOfflineMode()) {
+                    throw new Error('離線模式中，收到 HTML 頁面而非 JSON API 回應');
+                }
                 if (!_retried) {
                     await showApiConfigDialog(
                         '後端 URL 設定錯誤 — 收到 HTML 而非 API 回應\n請輸入正確的後端伺服器 URL'
@@ -384,6 +550,10 @@ export const api = {
             return response;
         } catch (error) {
             clearTimeout(id);
+
+            if (this.isOfflineMode()) {
+                throw error;
+            }
 
             // 逾時
             if (error.name === 'AbortError') {
@@ -505,6 +675,28 @@ export const api = {
      * 取得目前使用者資料
      */
     async getMe() {
+        if (this.isOfflineMode()) {
+            const offline = getOfflineProfile();
+            const scenario = offline.scenario || 'preparing';
+            return {
+                username: offline.name || '離線役男',
+                role: offline.role || 1,
+                role_name: offline.role_name || '行前準備',
+                scenario: scenario,
+                profile: {
+                    name: offline.name || '離線役男',
+                    date: offline.date || null,
+                    birthday: offline.birthday || '2004-01-01',
+                    role: offline.role || 1,
+                    role_name: offline.role_name || '行前準備',
+                    scenario: scenario,
+                    height: offline.height || 175,
+                    weight: offline.weight || 70,
+                    gold: offline.gold || 0
+                }
+            };
+        }
+
         try {
             const token = localStorage.getItem(SESSION_KEY);
             if (!token) throw new Error('Not logged in');
@@ -552,6 +744,29 @@ export const api = {
      * @param {object} profile 
      */
     async updateProfile(profile) {
+        if (this.isOfflineMode()) {
+            const current = getOfflineProfile();
+            const updated = {
+                ...current,
+                name: profile.name !== undefined ? profile.name : current.name,
+                birthday: profile.birthday !== undefined ? profile.birthday : current.birthday,
+                height: profile.height ? parseInt(profile.height) : current.height,
+                weight: profile.weight ? parseInt(profile.weight) : current.weight,
+                date: profile.date !== undefined ? profile.date : current.date
+            };
+            if (profile.role) {
+                updated.role = SCENARIO_TO_ROLE_ID[profile.role] || (typeof profile.role === 'number' ? profile.role : current.role);
+                updated.scenario = ROLE_ID_TO_SCENARIO[updated.role] || 'preparing';
+                updated.role_name = Object.keys(ROLE_NAME_TO_SCENARIO).find(k => ROLE_NAME_TO_SCENARIO[k] === updated.scenario) || '行前準備';
+            }
+            saveOfflineProfile(updated);
+            localStorage.setItem('simSoldier_username', updated.name);
+            return {
+                ...updated,
+                _nameChanged: profile.name && profile.name !== current.name
+            };
+        }
+
         try {
             const token = localStorage.getItem(SESSION_KEY);
             if (!token) throw new Error('Not logged in');
@@ -598,6 +813,17 @@ export const api = {
      * @param {string} scenarioKey ('preparing' | 'enlisted' | 'deferred')
      */
     async updateScenario(scenarioKey) {
+        if (this.isOfflineMode()) {
+            const roleId = SCENARIO_TO_ROLE_ID[scenarioKey] || 1;
+            const current = getOfflineProfile();
+            current.role = roleId;
+            current.scenario = scenarioKey;
+            current.role_name = Object.keys(ROLE_NAME_TO_SCENARIO).find(k => ROLE_NAME_TO_SCENARIO[k] === scenarioKey) || '行前準備';
+            saveOfflineProfile(current);
+            localStorage.setItem('simSoldier_userScenario', scenarioKey);
+            return { success: true, scenario: scenarioKey, role: roleId };
+        }
+
         const roleId = SCENARIO_TO_ROLE_ID[scenarioKey] || 1;
         try {
             const token = localStorage.getItem(SESSION_KEY);
@@ -630,8 +856,11 @@ export const api = {
      * 登出
      */
     logout() {
+        this.disableOfflineMode();
         localStorage.removeItem(SESSION_KEY);
         localStorage.removeItem('simSoldier_username');
+        sessionStorage.removeItem('simSoldier_currentUser');
+        sessionStorage.removeItem('simSoldier_justRegistered');
         window.location.href = 'loadingbar.html?dest=login.html';
     },
 
@@ -639,6 +868,9 @@ export const api = {
      * 檢查是否已登入
      */
     checkAuth() {
+        if (this.isOfflineMode()) {
+            return true;
+        }
         return !!localStorage.getItem(SESSION_KEY);
     },
 
@@ -647,6 +879,10 @@ export const api = {
      * @param {number} limit 
      */
     async getRandomQuiz(limit = 5) {
+        if (this.isOfflineMode()) {
+            return FALLBACK_QUIZZES.slice(0, limit);
+        }
+
         try {
             const res = await this._fetch(`http://localhost:8000/api/quiz/random?limit=${limit}`);
             if (!res.ok) throw new Error('Failed to fetch quiz');
@@ -665,8 +901,8 @@ export const api = {
                 source: q.source
             }));
         } catch (e) {
-            console.error(e);
-            throw new Error('無法取得題庫，請稍後再試');
+            console.warn('API quiz fetch failed, using fallback quiz:', e);
+            return FALLBACK_QUIZZES.slice(0, limit);
         }
     },
 
@@ -674,6 +910,10 @@ export const api = {
      * 開始體能訓練 (獲取 Session)
      */
     async startTraining(exerciseType) {
+        if (this.isOfflineMode()) {
+            return { session_token: 'offline_session_' + Date.now(), exercise_type: exerciseType };
+        }
+
         try {
             const token = localStorage.getItem(SESSION_KEY);
             const res = await this._fetch('http://localhost:8000/api/training/start', {
@@ -697,6 +937,10 @@ export const api = {
      * @param {Object} data {session_token, exercise_type, reps, duration_seconds, rep_timestamps}
      */
     async completeTraining(data) {
+        if (this.isOfflineMode()) {
+            return { success: true, message: '離線訓練紀錄已保留' };
+        }
+
         try {
             const token = localStorage.getItem(SESSION_KEY);
             const res = await this._fetch('http://localhost:8000/api/training/complete', {
@@ -720,6 +964,10 @@ export const api = {
      * @param {string} question 
      */
     async askSimSoldier(question) {
+        if (this.isOfflineMode()) {
+            return '報告！目前為離線測試模式，AI 連線功能已暫停，但各項戰備與測驗功能均可正常操作！';
+        }
+
         try {
             const token = localStorage.getItem(SESSION_KEY);
             const headers = { 'Content-Type': 'application/json' };
@@ -742,6 +990,15 @@ export const api = {
      * 獲取梯次統計資料
      */
     async getCohortStats() {
+        if (this.isOfflineMode()) {
+            return {
+                total_users: 100,
+                enlisted_count: 50,
+                preparing_count: 40,
+                deferred_count: 10
+            };
+        }
+
         try {
             const res = await this._fetch('http://localhost:8000/api/cohort-stats', {
                 method: 'GET'

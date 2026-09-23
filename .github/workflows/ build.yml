@@ -61,9 +61,9 @@ jobs:
         run: |
           npx cap add android
 
-      - name: Configure Android Manifest (Cleartext & Camera Permissions)
-        # Android blocks HTTP by default and does not include camera permissions in standard Capacitor template.
-        # This script modifies AndroidManifest.xml to enable cleartext traffic and add camera permission / features.
+      - name: Configure Android Manifest (Cleartext, Camera & Sensor Permissions)
+        # Android blocks HTTP by default and does not include camera/sensor permissions in standard Capacitor template.
+        # This script modifies AndroidManifest.xml to enable cleartext traffic and add camera, gyroscope & sensor permissions.
         run: |
           python3 -c "
           import os
@@ -85,10 +85,21 @@ jobs:
                       <uses-feature android:name=\"android.hardware.camera.autofocus\" android:required=\"false\" />
                   '''
                   data = data.replace('</manifest>', f'{camera_declarations}\n</manifest>')
+
+              # Add gyroscope & motion sensor permissions and features if missing
+              if 'android.permission.HIGH_SAMPLING_RATE_SENSORS' not in data:
+                  sensor_declarations = '''
+                      <!-- Sensor & Gyroscope Permissions & Features -->
+                      <uses-permission android:name=\"android.permission.HIGH_SAMPLING_RATE_SENSORS\" />
+                      <uses-permission android:name=\"android.permission.VIBRATE\" />
+                      <uses-feature android:name=\"android.hardware.sensor.accelerometer\" android:required=\"false\" />
+                      <uses-feature android:name=\"android.hardware.sensor.gyroscope\" android:required=\"false\" />
+                  '''
+                  data = data.replace('</manifest>', f'{sensor_declarations}\n</manifest>')
                   
               with open(path, 'w', encoding='utf-8') as f:
                   f.write(data)
-              print('Successfully configured AndroidManifest.xml (Cleartext & Camera)')
+              print('Successfully configured AndroidManifest.xml (Cleartext, Camera & Sensors)')
           "
 
       - name: Fix Kotlin stdlib duplicate classes

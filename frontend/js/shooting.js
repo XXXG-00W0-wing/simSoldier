@@ -44,6 +44,11 @@ export function initShootingGame() {
     const steadyAimBadge = document.getElementById('steady-aim-badge');
     const textMobileAim = document.getElementById('text-mobile-aim');
 
+    // Gyroscope Mobile Aiming Elements
+    const btnToggleGyro = document.getElementById('btn-toggle-gyro');
+    const textToggleGyro = document.getElementById('text-toggle-gyro');
+    const btnRecenterGyro = document.getElementById('btn-recenter-gyro');
+
     // Instruction Modal & Warning Elements
     const btnShowInstructions = document.getElementById('btn-show-shooting-instructions');
     const btnOpenInstructionsStart = document.getElementById('btn-open-instructions-start');
@@ -75,6 +80,15 @@ export function initShootingGame() {
     let isSteadyAiming = false;
     let steadyAimTimer = null;
     let steadyAimTimeRemaining = 0;
+
+    // Gyroscope State
+    let isGyroEnabled = true;
+    let calibBeta = null;
+    let calibGamma = null;
+    let rawGyroDeltaX = 0;
+    let rawGyroDeltaY = 0;
+    let smoothGyroX = 0;
+    let smoothGyroY = 0;
 
     // Physics & Coordinates
     let cx = 50; // percentage
@@ -490,6 +504,120 @@ export function initShootingGame() {
         });
     }
 
+    // --- Gyroscope Motion Aiming Logic ---
+    async function requestGyroPermission() {
+        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+            try {
+                const state = await DeviceOrientationEvent.requestPermission();
+                return state === 'granted';
+            } catch (e) {
+                console.warn('Gyro permission request error:', e);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function handleDeviceOrientation(e) {
+        if (!isAiming || !isGyroEnabled || window.innerWidth >= 768) return;
+        const beta = e.beta;
+        const gamma = e.gamma;
+        if (beta === null || gamma === null) return;
+
+        // Auto-calibrate baseline on first reading
+        if (calibBeta === null || calibGamma === null) {
+            calibBeta = beta;
+            calibGamma = gamma;
+        }
+
+        const orientationAngle = (screen.orientation && typeof screen.orientation.angle === 'number')
+            ? screen.orientation.angle
+            : (window.orientation || 0);
+
+        const dBeta = beta - calibBeta;
+        const dGamma = gamma - calibGamma;
+
+        let dx = 0;
+        let dy = 0;
+
+        if (orientationAngle === 90) {
+            // Landscape primary (top to left)
+            dx = -dBeta;
+            dy = -dGamma;
+        } else if (orientationAngle === -90 || orientationAngle === 270) {
+            // Landscape inverted (top to right)
+            dx = dBeta;
+            dy = dGamma;
+        } else if (orientationAngle === 180) {
+            // Portrait inverted
+            dx = -dGamma;
+            dy = -dBeta;
+        } else {
+            // Portrait (0)
+            dx = dGamma;
+            dy = dBeta;
+        }
+
+        // Sensitivity factor: ~1.2% offset per degree of tilt
+        const SENSITIVITY = 1.2;
+        rawGyroDeltaX = dx * SENSITIVITY;
+        rawGyroDeltaY = dy * SENSITIVITY;
+    }
+
+    function recenterGyro() {
+        calibBeta = null;
+        calibGamma = null;
+        rawGyroDeltaX = 0;
+        rawGyroDeltaY = 0;
+        smoothGyroX = 0;
+        smoothGyroY = 0;
+        showFloatingText('陀螺儀已歸零校準', 'text-amber-400 font-bold', cx, cy);
+    }
+
+    async function toggleGyro() {
+        if (!isGyroEnabled) {
+            const granted = await requestGyroPermission();
+            if (!granted) {
+                showFloatingText('陀螺儀權限未授權', 'text-red-400 font-bold', 50, 50);
+                return;
+            }
+            isGyroEnabled = true;
+            recenterGyro();
+            if (textToggleGyro) textToggleGyro.textContent = '陀螺儀: 開';
+            if (btnToggleGyro) {
+                btnToggleGyro.className = 'px-2.5 py-1 bg-emerald-900/80 border border-emerald-500/80 text-emerald-300 hover:text-white rounded text-[11px] font-bold flex items-center gap-1 active:scale-95 transition-all shadow';
+            }
+            showFloatingText('陀螺儀瞄準已開啟', 'text-emerald-400 font-bold', cx, cy);
+        } else {
+            isGyroEnabled = false;
+            rawGyroDeltaX = 0;
+            rawGyroDeltaY = 0;
+            smoothGyroX = 0;
+            smoothGyroY = 0;
+            if (textToggleGyro) textToggleGyro.textContent = '陀螺儀: 關';
+            if (btnToggleGyro) {
+                btnToggleGyro.className = 'px-2.5 py-1 bg-stone-800 border border-stone-600 text-stone-400 hover:text-white rounded text-[11px] font-bold flex items-center gap-1 active:scale-95 transition-all shadow';
+            }
+            showFloatingText('陀螺儀已關閉 (使用搖桿)', 'text-stone-400 font-bold', cx, cy);
+        }
+    }
+
+    if (btnToggleGyro) {
+        btnToggleGyro.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleGyro();
+        });
+    }
+
+    if (btnRecenterGyro) {
+        btnRecenterGyro.addEventListener('click', (e) => {
+            e.preventDefault();
+            recenterGyro();
+        });
+    }
+
+    window.addEventListener('deviceorientation', handleDeviceOrientation, { passive: true });
+
 
     // --- Start Aiming Simulator Phase ---
     function startAimingPhase() {
@@ -513,6 +641,17 @@ export function initShootingGame() {
         mousePctY = 50;
         joystickVectorX = 0;
         joystickVectorY = 0;
+
+        // Reset and auto-calibrate gyro
+        calibBeta = null;
+        calibGamma = null;
+        rawGyroDeltaX = 0;
+        rawGyroDeltaY = 0;
+        smoothGyroX = 0;
+        smoothGyroY = 0;
+        if (window.innerWidth < 768 && isGyroEnabled) {
+            requestGyroPermission();
+        }
 
         isAiming = true;
         isHoldingBreath = false;
@@ -568,7 +707,7 @@ export function initShootingGame() {
         recoilX *= 0.85;
         recoilY *= 0.85;
 
-        // Joystick movement logic for mobile
+        // Joystick and Gyro movement logic for mobile
         if (!isDesktop) {
             if (Math.abs(joystickVectorX) > 0.05 || Math.abs(joystickVectorY) > 0.05) {
                 baseX += joystickVectorX * 1.6;
@@ -576,21 +715,32 @@ export function initShootingGame() {
                 baseX = Math.max(10, Math.min(90, baseX));
                 baseY = Math.max(10, Math.min(90, baseY));
             }
+
+            // Gyro smoothing (Low-pass filter / Lerp)
+            if (isGyroEnabled) {
+                smoothGyroX += (rawGyroDeltaX - smoothGyroX) * 0.35;
+                smoothGyroY += (rawGyroDeltaY - smoothGyroY) * 0.35;
+            } else {
+                smoothGyroX = 0;
+                smoothGyroY = 0;
+            }
         } else {
             baseX += (mousePctX - baseX) * 0.15;
             baseY += (mousePctY - baseY) * 0.15;
+            smoothGyroX = 0;
+            smoothGyroY = 0;
         }
 
         // Sway amplitude: 0 when isSteadyAiming
         let speed = (isHoldingBreath || isSteadyAiming) ? 0.1 : 1.8;
-        let amplitudeX = isSteadyAiming ? 0 : ((isHoldingBreath ? 0.8 : (isDesktop ? 5 : 12)));
-        let amplitudeY = isSteadyAiming ? 0 : ((isHoldingBreath ? 0.8 : (isDesktop ? 3.5 : 8)));
+        let amplitudeX = isSteadyAiming ? 0 : ((isHoldingBreath ? 0.8 : (isDesktop ? 5 : 8)));
+        let amplitudeY = isSteadyAiming ? 0 : ((isHoldingBreath ? 0.8 : (isDesktop ? 3.5 : 5.5)));
 
         const swayX = Math.sin(timeElapsed * speed * 1.9) * amplitudeX + Math.cos(timeElapsed * speed * 1.1) * (amplitudeX * 0.4);
         const swayY = Math.cos(timeElapsed * speed * 1.6) * amplitudeY + Math.sin(timeElapsed * speed * 0.8) * (amplitudeY * 0.4);
 
-        cx = baseX + swayX + (isSteadyAiming ? 0 : recoilX);
-        cy = baseY + swayY + (isSteadyAiming ? 0 : recoilY);
+        cx = baseX + swayX + smoothGyroX + (isSteadyAiming ? 0 : recoilX);
+        cy = baseY + swayY + smoothGyroY + (isSteadyAiming ? 0 : recoilY);
 
         cx = Math.max(5, Math.min(95, cx));
         cy = Math.max(5, Math.min(95, cy));
@@ -615,6 +765,15 @@ export function initShootingGame() {
         if (!isSteadyAiming) {
             recoilY -= (isDesktop ? 14 : 10) + Math.random() * 4;
             recoilX += (Math.random() - 0.5) * (isDesktop ? 8 : 12);
+        }
+
+        // Mobile tactical haptic vibration
+        if (navigator.vibrate) {
+            try {
+                navigator.vibrate([35]);
+            } catch (err) {
+                // Ignore vibration errors if unsupported
+            }
         }
 
         triggerFlash(true, 'bg-yellow-200/50');

@@ -3616,20 +3616,38 @@
                                         <img src="docs/Rear_sight.png" alt="" class="w-full h-full object-contain" />
                                     </div>
 
-                                    <!-- Controls (Mobile Virtual Joystick on Left, Aim & Shoot Buttons on Right) -->
+                                    <!-- Controls (Mobile Virtual Joystick on Left, Gyro Controls, Aim & Shoot Buttons on Right) -->
                                     <div id="shooting-mobile-controls"
                                         class="absolute bottom-4 left-4 right-4 md:hidden flex justify-between items-end pointer-events-auto z-30 select-none">
-                                        <!-- Left-bottom: Virtual Joystick (虛擬搖桿操控鐵瞄) -->
-                                        <div id="joystick-container"
-                                            class="relative w-28 h-28 bg-black/60 rounded-full border-2 border-emerald-500/70 shadow-[0_0_20px_rgba(16,185,129,0.4)] flex items-center justify-center touch-none cursor-pointer">
-                                            <!-- Inner Stick Knob -->
-                                            <div id="joystick-stick"
-                                                class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-700 rounded-full border-2 border-emerald-300 shadow-md transition-transform duration-75 pointer-events-none flex items-center justify-center">
-                                                <i
-                                                    class="fa-solid fa-arrows-up-down-left-right text-white/80 text-sm"></i>
+                                        <!-- Left-bottom: Virtual Joystick & Gyro Tool Bar -->
+                                        <div class="flex flex-col items-start gap-2">
+                                            <!-- Gyro Quick Action Bar -->
+                                            <div class="flex items-center gap-1.5 bg-black/70 p-1 rounded-lg border border-stone-700 backdrop-blur-sm shadow-lg pointer-events-auto">
+                                                <button id="btn-toggle-gyro" type="button"
+                                                    class="px-2.5 py-1 bg-emerald-900/80 border border-emerald-500/80 text-emerald-300 hover:text-white rounded text-[11px] font-bold flex items-center gap-1 active:scale-95 transition-all shadow"
+                                                    title="開關體感陀螺儀瞄準">
+                                                    <i class="fa-solid fa-compass text-xs"></i>
+                                                    <span id="text-toggle-gyro">陀螺儀: 開</span>
+                                                </button>
+                                                <button id="btn-recenter-gyro" type="button"
+                                                    class="px-2 py-1 bg-stone-800 hover:bg-stone-700 border border-stone-600 text-stone-200 rounded text-[11px] font-bold flex items-center gap-1 active:scale-95 transition-all shadow"
+                                                    title="將目前握持角度校準為準心中心">
+                                                    <i class="fa-solid fa-crosshairs text-amber-400 text-xs"></i>
+                                                    <span>歸零</span>
+                                                </button>
                                             </div>
-                                            <span
-                                                class="absolute -bottom-5 text-[10px] font-bold text-emerald-400/90 tracking-wider">鐵瞄搖桿</span>
+
+                                            <div id="joystick-container"
+                                                class="relative w-28 h-28 bg-black/60 rounded-full border-2 border-emerald-500/70 shadow-[0_0_20px_rgba(16,185,129,0.4)] flex items-center justify-center touch-none cursor-pointer">
+                                                <!-- Inner Stick Knob -->
+                                                <div id="joystick-stick"
+                                                    class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-700 rounded-full border-2 border-emerald-300 shadow-md transition-transform duration-75 pointer-events-none flex items-center justify-center">
+                                                    <i
+                                                        class="fa-solid fa-arrows-up-down-left-right text-white/80 text-sm"></i>
+                                                </div>
+                                                <span
+                                                    class="absolute -bottom-5 text-[10px] font-bold text-emerald-400/90 tracking-wider">鐵瞄搖桿</span>
+                                            </div>
                                         </div>
 
                                         <!-- Right-bottom: Action Buttons (瞄準 5秒鎖定 + 射擊) -->
@@ -3744,8 +3762,13 @@
                                     <ul class="space-y-3 text-sm text-stone-300 leading-relaxed">
                                         <li class="flex items-start gap-2">
                                             <span
+                                                class="bg-emerald-900 text-emerald-300 border border-emerald-600 font-bold px-2 py-0.5 rounded text-xs shrink-0 mt-0.5">陀螺儀</span>
+                                            <span>支援【<strong class="text-emerald-300">體感陀螺儀瞄準</strong>】：傾斜手機即可直覺微調準心瞄準；點擊【<strong class="text-amber-400">歸零</strong>】可將當前姿勢校準為中心，亦可點擊【陀螺儀】按鈕隨時開關。</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <span
                                                 class="bg-stone-800 text-white font-bold px-2 py-0.5 rounded text-xs shrink-0 mt-0.5">左下搖桿</span>
-                                            <span>滑動左下角【<strong class="text-white">虛擬搖桿</strong>】即時控制鐵瞄與準心移動。</span>
+                                            <span>滑動左下角【<strong class="text-white">虛擬搖桿</strong>】即時控制鐵瞄大範圍移動（可與陀螺儀複合並用）。</span>
                                         </li>
                                         <li class="flex items-start gap-2">
                                             <span
