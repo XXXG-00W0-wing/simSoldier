@@ -37,6 +37,7 @@ export function initShootingGame() {
     const btnMobileAim = document.getElementById('btn-mobile-aim');
     const btnMobileShoot = document.getElementById('btn-mobile-shoot');
     const gameContainer = document.getElementById('shooting-game-container');
+    const targetHuman = document.getElementById('aim-target-human');
 
     // Virtual Joystick & Steady Aim Elements
     const joystickContainer = document.getElementById('joystick-container');
@@ -757,6 +758,153 @@ export function initShootingGame() {
         }
     }
 
+    /**
+     * Tactile vibration helper (supports Capacitor Native Haptics, navigator.vibrate & Gamepad actuators)
+     */
+    function triggerTactileVibration(pattern, gamepadDuration = 50, weakMag = 0.5, strongMag = 0.8) {
+        // 1. Capacitor Native Haptics (Android APK / iOS App)
+        const haptics = window.Capacitor?.Plugins?.Haptics;
+        if (haptics) {
+            try {
+                if (typeof pattern === 'number') {
+                    if (typeof haptics.vibrate === 'function') {
+                        haptics.vibrate({ duration: pattern });
+                    }
+                } else if (Array.isArray(pattern) && pattern.length > 0) {
+                    if (pattern.length === 1) {
+                        if (typeof haptics.vibrate === 'function') {
+                            haptics.vibrate({ duration: pattern[0] });
+                        }
+                    } else {
+                        // Multi-pulse pattern: play intervals sequentially
+                        let delay = 0;
+                        pattern.forEach((dur, idx) => {
+                            if (idx % 2 === 0) {
+                                setTimeout(() => {
+                                    try {
+                                        if (typeof haptics.vibrate === 'function') {
+                                            haptics.vibrate({ duration: dur });
+                                        }
+                                    } catch (e) {}
+                                }, delay);
+                            }
+                            delay += dur;
+                        });
+                    }
+                } else if (typeof haptics.vibrate === 'function') {
+                    haptics.vibrate({ duration: 50 });
+                }
+            } catch (err) {
+                console.warn('Capacitor Haptics vibration error:', err);
+            }
+        }
+
+        // 2. Web Vibration API (Mobile Chrome / Firefox / Safari)
+        if (typeof navigator !== 'undefined' && navigator.vibrate) {
+            try {
+                navigator.vibrate(pattern);
+            } catch (err) {
+                // Ignore vibration errors if unsupported
+            }
+        }
+
+        // 3. Gamepad Actuator (Controllers)
+        if (typeof navigator !== 'undefined' && navigator.getGamepads) {
+            try {
+                const gamepads = navigator.getGamepads();
+                for (const gp of gamepads) {
+                    if (gp && gp.vibrationActuator && typeof gp.vibrationActuator.playEffect === 'function') {
+                        gp.vibrationActuator.playEffect('dual-rumble', {
+                            startDelay: 0,
+                            duration: gamepadDuration,
+                            weakMagnitude: weakMag,
+                            strongMagnitude: strongMag
+                        }).catch(() => {});
+                    }
+                }
+            } catch (e) {
+                // Ignore gamepad errors
+            }
+        }
+    }
+
+    /**
+     * Gunshot feedback vibration (recoil impulse & screen kick)
+     */
+    function triggerShotFeedback() {
+        // Immediate snappy recoil vibration kick
+        triggerTactileVibration([45], 60, 0.4, 0.9);
+
+        // Native tactile haptic impact kick for maximum physical sensation on mobile
+        const haptics = window.Capacitor?.Plugins?.Haptics;
+        if (haptics && typeof haptics.impact === 'function') {
+            try {
+                haptics.impact({ style: 'HEAVY' });
+            } catch (e) {}
+        }
+
+        // Visual screen recoil vibration shake
+        if (aimingArea) {
+            aimingArea.style.transform = `translate(${(Math.random() - 0.5) * 6}px, ${-4 - Math.random() * 4}px)`;
+            setTimeout(() => {
+                if (aimingArea) aimingArea.style.transform = '';
+            }, 60);
+        }
+    }
+
+    /**
+     * Target hit feedback vibration (bullet impact & target shudder)
+     */
+    function triggerHitFeedback(hitScore) {
+        if (hitScore <= 0) return;
+
+        // Slight bullet flight delay (75ms) for realistic ballistics & non-overlapping haptic feedback
+        setTimeout(() => {
+            const haptics = window.Capacitor?.Plugins?.Haptics;
+
+            // Tactile vibration depending on hit precision
+            if (hitScore === 10) {
+                // Bullseye / Headshot / Heart: double-pulse high impact confirmation
+                triggerTactileVibration([60, 35, 55], 120, 0.8, 1.0);
+                if (haptics && typeof haptics.notification === 'function') {
+                    try {
+                        haptics.notification({ type: 'SUCCESS' });
+                    } catch (e) {}
+                }
+            } else if (hitScore >= 7) {
+                // Solid center / torso hit
+                triggerTactileVibration([50], 80, 0.5, 0.7);
+                if (haptics && typeof haptics.impact === 'function') {
+                    try {
+                        haptics.impact({ style: 'MEDIUM' });
+                    } catch (e) {}
+                }
+            } else {
+                // Outer body / Arm hit
+                triggerTactileVibration([30], 50, 0.3, 0.5);
+                if (haptics && typeof haptics.impact === 'function') {
+                    try {
+                        haptics.impact({ style: 'LIGHT' });
+                    } catch (e) {}
+                }
+            }
+
+            // Visual target impact vibration shudder
+            if (targetHuman) {
+                const shakeX = (Math.random() - 0.5) * 6;
+                const shakeY = (Math.random() - 0.5) * 4;
+                targetHuman.style.transition = 'transform 0.05s ease-out';
+                targetHuman.style.transform = `translate(${shakeX}px, ${shakeY}px) scale(0.98)`;
+                setTimeout(() => {
+                    if (targetHuman) {
+                        targetHuman.style.transition = '';
+                        targetHuman.style.transform = '';
+                    }
+                }, 90);
+            }
+        }, 75);
+    }
+
     function fireShot() {
         if (!isAiming || currentRound >= maxRounds) return;
 
@@ -767,14 +915,8 @@ export function initShootingGame() {
             recoilX += (Math.random() - 0.5) * (isDesktop ? 8 : 12);
         }
 
-        // Mobile tactical haptic vibration
-        if (navigator.vibrate) {
-            try {
-                navigator.vibrate([35]);
-            } catch (err) {
-                // Ignore vibration errors if unsupported
-            }
-        }
+        // Firing recoil vibration feedback (Tactile haptics & visual recoil)
+        triggerShotFeedback();
 
         triggerFlash(true, 'bg-yellow-200/50');
 
@@ -816,6 +958,9 @@ export function initShootingGame() {
             ringText = '擦邊 0 分';
             textColor = 'text-stone-500';
         }
+
+        // Target hit vibration feedback (Tactile impact & target shudder)
+        triggerHitFeedback(roundScore);
 
         score += roundScore;
         if (scoreDisplay) scoreDisplay.textContent = score;

@@ -38,7 +38,7 @@ jobs:
           if [ ! -f package.json ]; then
             npm init -y
           fi
-          npm install @capacitor/core @capacitor/cli @capacitor/android @mediapipe/pose @mediapipe/camera_utils @mediapipe/control_utils @mediapipe/drawing_utils
+          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/haptics @mediapipe/pose @mediapipe/camera_utils @mediapipe/control_utils @mediapipe/drawing_utils
 
       - name: Write Capacitor Config
         # webDir points to the frontend folder containing index.html
@@ -96,10 +96,12 @@ jobs:
                       <uses-feature android:name=\"android.hardware.sensor.gyroscope\" android:required=\"false\" />
                   '''
                   data = data.replace('</manifest>', f'{sensor_declarations}\n</manifest>')
+              elif 'android.permission.VIBRATE' not in data:
+                  data = data.replace('</manifest>', '    <uses-permission android:name=\"android.permission.VIBRATE\" />\n</manifest>')
                   
               with open(path, 'w', encoding='utf-8') as f:
                   f.write(data)
-              print('Successfully configured AndroidManifest.xml (Cleartext, Camera & Sensors)')
+              print('Successfully configured AndroidManifest.xml (Cleartext, Camera, Sensors & Vibration)')
           "
 
       - name: Fix Kotlin stdlib duplicate classes
